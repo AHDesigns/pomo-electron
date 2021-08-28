@@ -47,7 +47,7 @@ module.exports = {
   ...common,
   plugins: [
     new CopyPlugin({
-      patterns: [{ from: path.join(rootPath, 'assets'), to: path.join(rootPath, 'build')}],
+      patterns: [{ from: path.join(rootPath, 'assets'), to: path.join(rootPath, 'build') }],
     }),
   ],
   entry: path.resolve(rootPath, 'electron', 'main.ts'),
