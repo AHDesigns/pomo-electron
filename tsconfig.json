@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "strict": true ,
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
@@ -15,10 +15,10 @@
     "baseUrl": ".",
     "types": ["jest"],
     "paths": {
-      "@shared/*": [ "shared/*" ],
-      "@electron/*": [ "electron/*" ],
-      "@client/*": [ "client/*" ],
-      "@test/*": [ "testHelpers/*" ]
+      "@shared/*": ["shared/*"],
+      "@electron/*": ["electron/*"],
+      "@client/*": ["client/*"],
+      "@test/*": ["testHelpers/*"]
     },
     "jsx": "react"
   },

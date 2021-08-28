@@ -16,7 +16,7 @@ module.exports = {
     'airbnb-typescript',
     'airbnb/hooks',
   ],
-  plugins: ['prettier', '@typescript-eslint'],
+  plugins: ['@typescript-eslint'],
   rules: {
     'no-console': 'error',
     'react/prop-types': 'off',
@@ -44,7 +44,7 @@ module.exports = {
       files: ['*.js'],
       extends: [
         // keep this last
-        'plugin:prettier/recommended',
+        'prettier',
       ],
       rules: {
         '@typescript-eslint/no-use-before-define': 'off',
@@ -56,7 +56,7 @@ module.exports = {
         'plugin:@typescript-eslint/recommended',
         'plugin:@typescript-eslint/recommended-requiring-type-checking',
         // keep this last
-        'plugin:prettier/recommended',
+        'prettier',
       ],
       rules: {
         'no-underscore-dangle': 'off',
