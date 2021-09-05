@@ -24,6 +24,7 @@
     "dev:react": "cross-env NODE_ENV=development webpack-dev-server --config tooling/webpack/react.webpack.js --mode development",
     "checks": "FORCE_COLOR=1 npm-run-all --print-label --parallel lint test --serial build",
     "release": "electron-builder --mac",
+    "postrelease": "rm -rf dist",
     "postinstall": "electron-builder install-app-deps"
   },
   "keywords": [],
