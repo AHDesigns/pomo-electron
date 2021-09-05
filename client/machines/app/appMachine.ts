@@ -18,7 +18,7 @@ export interface AppContext {
 export const defaultAppSettings: AppContext = {
   completed: { longBreaks: 0, pomos: 0 },
   autoStart: { beforeLongBreak: false, beforePomo: false, beforeShortBreak: true },
-  timers: { longBreak: 24, pomo: 26, shortBreak: 5 },
+  timers: { longBreak: 25, pomo: 25, shortBreak: 5 },
   breakNumber: 4,
 };
 
