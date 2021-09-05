@@ -61,6 +61,7 @@ module.exports = {
       rules: {
         'no-underscore-dangle': 'off',
         'react/destructuring-assignment': 'off',
+        'react/jsx-props-no-spreading': 'off',
         '@typescript-eslint/no-floating-promises': 'off',
         '@typescript-eslint/no-unused-vars': 'off',
         '@typescript-eslint/no-unused-params': 'off',
@@ -168,7 +169,6 @@ module.exports = {
       files: ['*.stories.@(js|jsx|ts|tsx)'],
       rules: {
         '@typescript-eslint/consistent-type-assertions': 'off',
-        'react/jsx-props-no-spreading': 'off',
         'import/no-extraneous-dependencies': 'off',
       },
     },
