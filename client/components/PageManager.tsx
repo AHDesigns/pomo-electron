@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { Page, Pomodoro, Settings, Box, MenuButton } from '@client/components';
 import styled, { useTheme } from 'styled-components';
-import { useConfig } from '@client/contexts';
+import { useConfig, useTimer } from '@client/contexts';
 import pj from 'package.json';
 
 const Header = styled.div`
@@ -13,6 +13,7 @@ const Header = styled.div`
 export type Pages = 'Pomodoro' | 'Settings';
 
 export const PageManager: FC = () => {
+  const { send, state } = useTimer();
   const [page, navigatePageTo] = useState<Pages>('Pomodoro');
   // const [page, navigatePageTo] = useState<Pages>('Settings');
   const { loading } = useConfig();
@@ -42,7 +43,7 @@ export const PageManager: FC = () => {
       </Header>
       <Box style={{ flexGrow: 1 }}>
         {page === 'Settings' && <Settings />}
-        {page === 'Pomodoro' && <Pomodoro />}
+        {page === 'Pomodoro' && <Pomodoro send={send} state={state} />}
       </Box>
     </Page>
   );
