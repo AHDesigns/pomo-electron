@@ -11,7 +11,7 @@ import { handlers, setupIpcHandlers } from '@electron/ipc';
 
 checkForUpdates(logger);
 
-const icon = asset('IconTemplate.png');
+const icon = asset(`IconTemplate${isDev ? 'Dev' : ''}.png`);
 
 const mb = menubar({
   icon,
@@ -32,7 +32,7 @@ const mb = menubar({
 const repos = isIntegration ? fakeRepositories() : productionRepositories(mb);
 setupIpcHandlers(ipcMain, handlers(repos));
 
-const trayIcon = nativeImage.createFromPath(asset('IconTemplate.png'));
+const trayIcon = nativeImage.createFromPath(asset(`IconTemplate${isDev ? 'Dev' : ''}.png`));
 
 mb.on('after-create-window', () => {
   mb.app.dock.hide();

@@ -1,10 +1,6 @@
 import React, { FC, useState } from 'react';
-import { Page , Pomodoro , Settings , Box , MenuButton } from '@client/components';
+import { Page, Pomodoro, Settings, Box, MenuButton } from '@client/components';
 import styled, { useTheme } from 'styled-components';
-
-
-
-
 import { useConfig } from '@client/contexts';
 import pj from 'package.json';
 

@@ -1,9 +1,9 @@
 import React, { FC, useState } from 'react';
 import { useConfig } from '@client/contexts';
 import { useTheme } from 'styled-components';
-import { Setting , Form, InputText, Label, InputPassword , Button } from '@client/components';
-
-
+import { Button } from '@client/components';
+import { Setting } from './Setting';
+import { Form, InputPassword, Label } from './Form';
 
 export const Slack: FC = () => {
   const {
