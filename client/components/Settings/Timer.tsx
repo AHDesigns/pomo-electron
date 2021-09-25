@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
-import { useConfig } from '@client/components/useConfig';
+import { useConfig } from '@client/contexts';
 import { useTheme } from 'styled-components';
-import { Setting } from '@client/components/Settings/Setting';
-import { Form, InputText, Label } from '@client/components/Settings/Form';
+import { Setting } from './Setting';
+import { Form, InputText, Label } from './Form';
 
 export const Timer: FC = () => {
   const {

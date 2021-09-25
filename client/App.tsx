@@ -4,11 +4,10 @@ import { ipcRenderer } from '@electron/electron';
 import { bridgeCreator } from '@electron/ipc/bridgeCreator';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@client/styles/theme';
-import { ErrorBoundary } from '@client/components/ErrorBoundary/ErrorBoundary';
+import { ErrorBoundary, PageManager, ScrollBar } from '@client/components';
 import { logger } from '@electron/services/logger';
-import { ConfigProvider } from '@client/components/useConfig';
-import { PageManager } from '@client/components/PageManager';
-import { ScrollBar } from '@client/components/ScrollBar';
+import { ConfigProvider } from '@client/contexts';
+
 import { GlobalStyle } from './styles/GlobalStyle';
 
 const mainElement = document.createElement('div');

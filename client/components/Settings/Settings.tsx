@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
-import { Timer } from '@client/components/Settings/Timer';
-import { Slack } from '@client/components/Settings/Slack';
+import { Timer } from './Timer';
+import { Slack } from './Slack';
 
 export const Settings: FC = () => (
   <>

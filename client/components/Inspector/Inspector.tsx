@@ -1,7 +1,7 @@
 import React, { FC, useLayoutEffect, useState } from 'react';
 import { inspect } from '@xstate/inspect';
 import { isDev } from '@shared/constants';
-import { NullComp } from '@client/components';
+import { NullComp, Button } from '@client/components';
 
 export interface IInspector {
   toggleable?: boolean;

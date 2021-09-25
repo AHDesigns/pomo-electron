@@ -5,10 +5,10 @@ import { defaultTimerContext, timerMachine } from '@client/machines/timer/timerM
 import { merge } from '@shared/merge';
 import { isDev } from '@shared/constants';
 import { timerOptions } from '@client/machines/timer/timerOptions';
-// import { Button } from '@client/components/Button';
-import { Box } from '@client/components/Box';
+// import { Button } from '@client/components';
+import { Box } from '@client/components';
 import styled, { useTheme } from 'styled-components';
-import { TimerProgress } from '@client/components/TimerProgress';
+import { TimerProgress } from '@client/components';
 
 const Button = styled.button`
   width: 50px;

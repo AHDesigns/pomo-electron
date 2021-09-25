@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
-import { useConfig } from '@client/components/useConfig';
+import { useConfig } from '@client/contexts';
 import { SlackAuth } from '@electron/repositories/slack/slack';
 import { useMachine } from '@client/machines';
 import { appMachine, defaultAppSettings } from '@client/machines/app/appMachine';
 import { isDev } from '@shared/constants';
 import { appOptions } from '@client/machines/app/appOptions';
 import { logger } from '@electron/services/logger';
-import { Timer } from '@client/components/Timer';
+import { Timer } from '@client/components';
 
 export const Pomodoro: FC = () => {
   const { config } = useConfig();

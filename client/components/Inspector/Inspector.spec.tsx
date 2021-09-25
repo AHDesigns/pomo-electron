@@ -4,6 +4,7 @@ import { render, RenderResult, screen } from '@test/rtl';
 import { mocked } from 'ts-jest/utils';
 import * as _constants from '@shared/constants';
 import TestIds from '@shared/testids';
+import { Button } from '@client/components';
 import { IInspector, Inspector } from './Inspector';
 
 jest.mock('@shared/constants');

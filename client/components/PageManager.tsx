@@ -1,11 +1,11 @@
 import React, { FC, useState } from 'react';
-import { Page } from '@client/components/Page';
+import { Page , Pomodoro , Settings , Box , MenuButton } from '@client/components';
 import styled, { useTheme } from 'styled-components';
-import { Pomodoro } from '@client/components/Pomodoro';
-import { Settings } from '@client/components/Settings/Settings';
-import { Box } from '@client/components/Box';
-import { MenuButton } from '@client/components/MenuButton';
-import { useConfig } from '@client/components/useConfig';
+
+
+
+
+import { useConfig } from '@client/contexts';
 import pj from 'package.json';
 
 const Header = styled.div`

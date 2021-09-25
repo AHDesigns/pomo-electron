@@ -6,9 +6,9 @@ import { slackRepository, SlackRepository } from '@electron/repositories/slack';
 import { logger } from '@electron/services';
 import { Menubar } from 'menubar';
 import { ok, Result } from '@shared/Result';
+import { asset } from '@shared/constants';
 import { fakeShell, shellRepository, ShellRepository } from './shell';
 import { fakeStoreRepoFactory, storeRepository, StoreRepository } from './store';
-import { asset } from '@shared/constants';
 
 interface IconRepo {
   setTrayIcon(state: 'active' | 'inactive'): void;
