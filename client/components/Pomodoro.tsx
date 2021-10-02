@@ -37,7 +37,7 @@ export const Pomodoro: FC = () => {
             if (slackAuth) {
               window.bridge.slackSetProfile(slackAuth, {
                 text: mins === 1 ? `free in 1 min` : `free in ${mins} mins`,
-                emoji: ':tomato:',
+                emoji: ':eggplant:',
                 expiration,
               });
             }
