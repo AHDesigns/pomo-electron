@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { useConfig } from '@client/contexts';
+import { useConfig, useBridge } from '@client/contexts';
 import { useTheme } from 'styled-components';
 import { Button } from '@client/components';
 import { Setting } from './Setting';
@@ -11,6 +11,7 @@ export const Slack: FC = () => {
     storeUpdate,
   } = useConfig();
   const theme = useTheme();
+  const bridge = useBridge();
 
   const initialToken = slack.enabled ? slack.slackToken : '';
   const initialCookie = slack.enabled ? slack.slackDCookie : '';
@@ -91,9 +92,7 @@ export const Slack: FC = () => {
               type="button"
               variant="tertiary"
               onClick={() => {
-                window.bridge.openExternal(
-                  'https://github.com/AHDesigns/pomo-electron#slack-integration'
-                );
+                bridge.openExternal('https://github.com/AHDesigns/pomo-electron#slack-integration');
               }}
             >
               where do I get these from?

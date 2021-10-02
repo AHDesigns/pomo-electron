@@ -9,6 +9,7 @@ import { timerOptions } from '@client/machines/timer/timerOptions';
 import { Box } from '@client/components';
 import styled, { useTheme } from 'styled-components';
 import { TimerProgress } from '@client/components';
+import { useBridge } from '@client/contexts';
 
 const Button = styled.button`
   width: 50px;
@@ -53,6 +54,7 @@ export const Timer: FC<{
   title: 'break' | 'long break' | 'pomodoro';
   duration: number;
 }> = ({ appSend, title, autoStart, duration }) => {
+  const bridge = useBridge();
   const [state, send] = useMachine(
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     timerMachine.withContext(
@@ -71,7 +73,7 @@ export const Timer: FC<{
         },
         services: {
           count1Second: async () => {
-            await window.bridge.count1Second();
+            await bridge.count1Second();
           },
         },
       }),

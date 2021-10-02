@@ -5,9 +5,11 @@ import { appOptions } from '@client/machines/app/appOptions';
 import { logger } from '@electron/services/logger';
 import { isDev } from '@shared/constants';
 import { useConfig } from './config';
+import { useBridge } from './bridge';
 
 export const useTimer = (): TimerHook => {
   const { config } = useConfig();
+  const bridge = useBridge();
 
   const slackAuth: SlackAuth | null = config.slack.enabled
     ? {
@@ -26,14 +28,14 @@ export const useTimer = (): TimerHook => {
     ...appOptions({
       actions: {
         runTickHook: (_, { timeLeft: { mins, seconds } }) => {
-          window.bridge.setTrayTitle(`${mins}:${seconds >= 10 ? seconds : `0${seconds}`}`);
+          bridge.setTrayTitle(`${mins}:${seconds >= 10 ? seconds : `0${seconds}`}`);
 
           if (seconds === 0 && mins > 0) {
             const expiration = new Date();
             expiration.setMinutes(expiration.getMinutes() + mins);
 
             if (slackAuth) {
-              window.bridge.slackSetProfile(slackAuth, {
+              bridge.slackSetProfile(slackAuth, {
                 text: mins === 1 ? `free in 1 min` : `free in ${mins} mins`,
                 emoji: ':tomato:',
                 expiration,
@@ -49,12 +51,12 @@ export const useTimer = (): TimerHook => {
           const expiration = new Date();
           expiration.setMinutes(expiration.getMinutes() + duration);
 
-          window.bridge.setTrayIcon('active');
+          bridge.setTrayIcon('active');
 
           if (slackAuth) {
-            window.bridge.slackSetPresence(slackAuth, 'away');
-            window.bridge.slackSetSnooze(slackAuth, duration);
-            window.bridge.slackSetProfile(slackAuth, {
+            bridge.slackSetPresence(slackAuth, 'away');
+            bridge.slackSetSnooze(slackAuth, duration);
+            bridge.slackSetProfile(slackAuth, {
               text: `free in ${config.timers.pomo} mins`,
               emoji: ':tomato:',
               expiration,
@@ -63,14 +65,14 @@ export const useTimer = (): TimerHook => {
         },
         runEndHooks: () => {
           logger.info('end hooks called');
-          window.bridge.windowFocus();
-          window.bridge.setTrayTitle('');
-          window.bridge.setTrayIcon('inactive');
+          bridge.windowFocus();
+          bridge.setTrayTitle('');
+          bridge.setTrayIcon('inactive');
 
           if (slackAuth) {
-            window.bridge.slackSetPresence(slackAuth, 'active');
-            window.bridge.slackSetSnooze(slackAuth, 0);
-            window.bridge.slackSetProfile(slackAuth, {
+            bridge.slackSetPresence(slackAuth, 'active');
+            bridge.slackSetSnooze(slackAuth, 0);
+            bridge.slackSetProfile(slackAuth, {
               text: '',
               emoji: '',
             });

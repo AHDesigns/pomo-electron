@@ -1,2 +1,4 @@
 export { useConfig, ConfigProvider } from './config';
-export { useTimer, TimerHook } from './useTimer';
+export { useTimer } from './useTimer';
+export type { TimerHook } from './useTimer';
+export { useBridge, BridgeProvider } from './bridge';
