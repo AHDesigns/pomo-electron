@@ -71,7 +71,7 @@ export const appMachine = createMachine<AppContext, AppEvent, 'app'>({
   },
 });
 
-function breaks(action: 'incrementLongBreak'[]) {
+function breaks(action: 'incrementLongBreak'[]): any {
   return {
     initial: 'inactive',
     states: {

@@ -11,3 +11,7 @@ export const dialog = {
 export const ipcMain = {
   on: jest.fn(),
 };
+
+export const nativeImage = {
+  createFromPath: jest.fn(),
+};

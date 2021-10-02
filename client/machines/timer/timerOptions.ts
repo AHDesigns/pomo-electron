@@ -21,7 +21,7 @@ const timerOptionsDefaults: TimerOptions = {
     // ONE_SECOND: 1000,
   },
   services: {
-    count1Second() {},
+    count1Second: async () => {},
   },
 };
 

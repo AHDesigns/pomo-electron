@@ -2,11 +2,11 @@
 import { nativeImage } from 'electron';
 import { merge } from '@shared/merge';
 import { emptyConfig, UserConfig } from '@shared/types';
-import { slackRepository, SlackRepository } from '@electron/repositories/slack';
 import { logger } from '@electron/services';
 import { Menubar } from 'menubar';
 import { ok, Result } from '@shared/Result';
 import { asset, isDev } from '@shared/constants';
+import { fakeSlackRepository, slackRepository, SlackRepository } from './slack';
 import { fakeShell, shellRepository, ShellRepository } from './shell';
 import { fakeStoreRepoFactory, storeRepository, StoreRepository } from './store';
 
@@ -76,7 +76,7 @@ export const fakeRepositories = (overrides?: RepositoryOverrides): Repositories 
       windowFocus() {},
       setTrayIcon() {},
       setTrayTitle() {},
-      ...slackRepository(),
+      ...fakeSlackRepository(),
       ...fakeShell(overrides),
       ...fakeStoreRepoFactory({
         name: 'client',

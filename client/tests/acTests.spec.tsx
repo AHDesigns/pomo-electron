@@ -1,6 +1,21 @@
+import React from 'react';
+import { render, screen, waitFor } from '@testing-library/react';
+import { App } from '@client/App';
+import { createFakeBridge } from '@electron/ipc/createFakeBridge';
+
+jest.mock('@electron/services/logger');
+
 describe('given a brand new user with no existing config', () => {
   describe('when the app is opened', () => {
-    it.todo('should show the timer');
+    it('should show the timer', async () => {
+      render(<App bridge={createFakeBridge()} />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Pomodoro App')).toBeInTheDocument();
+        expect(screen.getByText('Timer')).toBeInTheDocument();
+      });
+    });
+
     it.todo('should have a default time of 25 mins');
   });
 
