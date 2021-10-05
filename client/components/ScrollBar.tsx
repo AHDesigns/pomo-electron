@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { createGlobalStyle } from 'styled-components';
+import { NullComp } from './NullComp/NullComp';
 
 const ScrollbarStyle = createGlobalStyle`
   /* width */
@@ -25,7 +26,7 @@ const ScrollbarStyle = createGlobalStyle`
   }
 `;
 
-export const ScrollBar = (): JSX.Element => {
+const ScrollBarC = (): JSX.Element => {
   const [showScroll, setShowScroll] = useState(false);
 
   useEffect(() => {
@@ -55,3 +56,5 @@ export const ScrollBar = (): JSX.Element => {
 
   return <>{showScroll && <ScrollbarStyle />}</>;
 };
+
+export const ScrollBar = NullComp(ScrollBarC, 'scroll-bar');

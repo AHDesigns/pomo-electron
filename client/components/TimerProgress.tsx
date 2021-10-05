@@ -1,6 +1,7 @@
 import { TimerState } from '@client/machines/timer/timerMachine';
 import { useTheme } from 'styled-components';
 import React from 'react';
+import { NullComp } from './NullComp/NullComp';
 
 interface ITimerProgress {
   duration: number;
@@ -10,7 +11,9 @@ interface ITimerProgress {
   title: string;
 }
 
-export function TimerProgress({
+export const TimerProgress = NullComp(TimerProgressC, 'timer-progress');
+
+export function TimerProgressC({
   duration,
   mins,
   seconds,

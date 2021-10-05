@@ -42,9 +42,8 @@ export const timerMachine = createMachine<TimerContext, TimerEvent, 'timer'>({
         PAUSE: 'paused',
         STOP: 'initial',
       },
-      invoke: {
-        src: 'count1Second',
-        onDone: [
+      after: {
+        ONE_SECOND: [
           {
             cond: 'isComplete',
             target: 'complete',
@@ -55,18 +54,6 @@ export const timerMachine = createMachine<TimerContext, TimerEvent, 'timer'>({
           },
         ],
       },
-      // after: {
-      //   ONE_SECOND: [
-      //     {
-      //       cond: 'isComplete',
-      //       target: 'complete',
-      //     },
-      //     {
-      //       actions: ['decrement1Second', 'tickEvent'],
-      //       target: 'counting',
-      //     },
-      //   ],
-      // },
     },
     paused: {
       on: {

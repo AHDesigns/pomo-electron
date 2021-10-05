@@ -8,7 +8,7 @@ import { BridgeProvider, ConfigProvider } from '@client/contexts';
 import { GlobalStyle } from './styles/GlobalStyle';
 import { IBridge } from '@shared/types';
 
-export const App: FC<{ bridge: IBridge }> = ({ bridge }) => {
+export const App: FC<{ bridge: IBridge; clock: any }> = ({ bridge, clock }) => {
   return (
     <ErrorBoundary logger={logger}>
       <ThemeProvider theme={theme}>
@@ -16,7 +16,7 @@ export const App: FC<{ bridge: IBridge }> = ({ bridge }) => {
           <GlobalStyle />
           <ScrollBar />
           <ConfigProvider>
-            <PageManager />
+            <PageManager clock={clock} />
           </ConfigProvider>
         </BridgeProvider>
       </ThemeProvider>

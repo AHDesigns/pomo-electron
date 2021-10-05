@@ -1,6 +1,7 @@
 import React, { FC, MouseEventHandler } from 'react';
 import styled from 'styled-components';
 import { CssSize } from '@shared/types';
+import { NullComp } from './NullComp/NullComp';
 
 interface IBar {
   width: CssSize;
@@ -79,22 +80,30 @@ const Bar = styled.div<IBar>`
   }
 `;
 
+const HamburgerC: FC<{ showClose: boolean }> = ({ showClose }) => (
+  <div
+    aria-hidden={true}
+    style={{
+      width: '35px',
+      height: '16px',
+      position: 'relative',
+    }}
+  >
+    <Bar width="26px" className={cls('top', showClose)} />
+    <Bar width="35px" className={cls('middle', showClose)} />
+    <Bar width="26px" className={cls('bottom', showClose)} />
+  </div>
+);
+
+const Hamburger = NullComp(HamburgerC, 'hamburger');
+
 export const MenuButton: FC<{
   onClick: MouseEventHandler<HTMLButtonElement>;
   showClose: boolean;
 }> = ({ onClick, showClose }) => (
   <Button onClick={onClick}>
-    <div
-      style={{
-        width: '35px',
-        height: '16px',
-        position: 'relative',
-      }}
-    >
-      <Bar width="26px" className={cls('top', showClose)} />
-      <Bar width="35px" className={cls('middle', showClose)} />
-      <Bar width="26px" className={cls('bottom', showClose)} />
-    </div>
+    <span style={{ display: 'none' }}>menu</span>
+    <Hamburger showClose={showClose} />
   </Button>
 );
 

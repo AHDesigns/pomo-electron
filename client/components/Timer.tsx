@@ -53,7 +53,8 @@ export const Timer: FC<{
   autoStart: boolean;
   title: 'break' | 'long break' | 'pomodoro';
   duration: number;
-}> = ({ appSend, title, autoStart, duration }) => {
+  clock: any;
+}> = ({ appSend, title, autoStart, duration, clock }) => {
   const bridge = useBridge();
   const [state, send] = useMachine(
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
@@ -61,6 +62,8 @@ export const Timer: FC<{
       merge(defaultTimerContext, { autoStart, duration })
     ) as typeof timerMachine,
     {
+      // @ts-expect-error met
+      clock,
       devTools: isDev,
       ...timerOptions({
         actions: {
@@ -69,11 +72,6 @@ export const Timer: FC<{
           },
           completed: () => {
             appSend({ type: 'COMPLETE' });
-          },
-        },
-        services: {
-          count1Second: async () => {
-            await bridge.count1Second();
           },
         },
       }),

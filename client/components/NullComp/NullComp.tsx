@@ -1,5 +1,11 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { isTest } from '@shared/constants';
-import TestIds from '@shared/testids';
 
-export const NullComp: FC = () => (isTest ? <span data-testid={TestIds.NULL_COMP} /> : null);
+export function NullComp<A>(Component: A, testId: string): A {
+  // @ts-expect-error meh
+  return isTest
+    ? // @ts-expect-error meh
+      ({ children }) => <span data-testid={testId}>{children}</span>
+    : // @ts-expect-error meh
+      (props) => <Component {...props} />;
+}

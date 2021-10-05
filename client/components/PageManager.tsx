@@ -12,7 +12,7 @@ const Header = styled.div`
 
 export type Pages = 'Pomodoro' | 'Settings';
 
-export const PageManager: FC = () => {
+export const PageManager: FC<{ clock: any }> = ({ clock }) => {
   const { send, state } = useTimer();
   const [page, navigatePageTo] = useState<Pages>('Pomodoro');
   // const [page, navigatePageTo] = useState<Pages>('Settings');
@@ -43,7 +43,7 @@ export const PageManager: FC = () => {
       </Header>
       <Box style={{ flexGrow: 1 }}>
         {page === 'Settings' && <Settings />}
-        {page === 'Pomodoro' && <Pomodoro send={send} state={state} />}
+        {page === 'Pomodoro' && <Pomodoro clock={clock} send={send} state={state} />}
       </Box>
     </Page>
   );

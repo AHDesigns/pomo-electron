@@ -23,6 +23,8 @@ const mb = menubar({
     width: 300,
     webPreferences: {
       nodeIntegration: true,
+      backgroundThrottling: false, // needed to keep timers smooth
+      plugins: true,
     },
     ...(isDev && { alwaysOnTop: true }),
   },

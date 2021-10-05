@@ -18,10 +18,7 @@ const timerOptionsDefaults: TimerOptions = {
     completed: () => {},
   },
   delays: {
-    // ONE_SECOND: 1000,
-  },
-  services: {
-    count1Second: async () => {},
+    ONE_SECOND: 1000,
   },
 };
 

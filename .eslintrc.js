@@ -60,6 +60,7 @@ module.exports = {
       ],
       rules: {
         'no-underscore-dangle': 'off',
+        'no-void': 'off',
         'react/destructuring-assignment': 'off',
         'react/jsx-props-no-spreading': 'off',
         '@typescript-eslint/no-floating-promises': 'off',
