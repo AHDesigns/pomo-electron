@@ -1,37 +1,31 @@
-/**
- * @jest-environment jsdom
- */
 import React from 'react';
-import FakeTimers from '@sinonjs/fake-timers';
-import { render, screen, waitFor, act } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { App } from '@client/App';
 import { createFakeBridge } from '@electron/ipc/createFakeBridge';
+import { tick } from '@test/tick';
 
 jest.mock('@electron/services/logger');
 
-describe('given a brand new user with no existing config', () => {
-  async function load(): Promise<{
-    tick: (duration: number | string) => Promise<void>;
-    runAllAsync: () => Promise<void>;
-  }> {
-    const clock = FakeTimers.createClock();
+beforeEach(() => {
+  jest.useFakeTimers();
+});
 
-    render(<App bridge={createFakeBridge()} clock={clock} />);
+afterEach(() => {
+  // deliberatly not wrapping this in act. If anything throws errors, make sure to clean it up in the test
+  jest.runOnlyPendingTimers();
+  jest.useRealTimers();
+});
+
+describe('given a brand new user with no existing config', () => {
+  async function load() {
+    /* const clock = FakeTimers.createClock(); */
+
+    render(<App bridge={createFakeBridge()} clock={{}} />);
 
     await waitFor(() => {
       expect(screen.getByText('Pomodoro App')).toBeInTheDocument();
     });
-
-    async function tick(duration: number | string): Promise<void> {
-      await act(async () => void (await clock.tickAsync(duration)));
-    }
-
-    async function runAllAsync(): Promise<void> {
-      await act(async () => void (await clock.runAllAsync()));
-    }
-
-    return { tick, runAllAsync };
   }
 
   describe('when the app is opened', () => {
@@ -44,11 +38,11 @@ describe('given a brand new user with no existing config', () => {
 
   describe('when the timer is started', () => {
     it('should display the timer in the app and menu bar, pausing and stopping when appropriate', async () => {
-      const { tick, runAllAsync } = await load();
+      await load();
 
       userEvent.click(screen.getByRole('button', { name: 'start' }));
 
-      await tick('11');
+      tick(11);
 
       expect(screen.getByText(/24 : 49/)).toBeInTheDocument();
 
@@ -64,9 +58,7 @@ describe('given a brand new user with no existing config', () => {
 
       expect(screen.getByText(/24 : 49/)).toBeInTheDocument();
 
-      // await tick('5');
-      // await clock.runAllAsync();
-      await runAllAsync();
+      tick(4);
 
       expect(screen.getByText(/24 : 49/)).toBeInTheDocument();
       // // it.todo('should show the stopped time in the menu bar');
@@ -74,22 +66,15 @@ describe('given a brand new user with no existing config', () => {
       // // -------------- press play -------------- //
       userEvent.click(screen.getByRole('button', { name: 'play' }));
 
-      // await time({ seconds: 9 });
-      //  await time({ seconds: 1 });
-      await tick('09');
+      tick(9);
       // // timer ticks down
       expect(screen.getByText(/24 : 40/)).toBeInTheDocument();
 
-      // userEvent.click(screen.getByRole('button', { name: 'stop' }));
-      // await clock.tickAsync('11');
-      //  await clock.runAllAsync();
-      //  await waitFor(() => {
-      //     expect(screen.getByText('25 : 00')).toBeInTheDocument();
-      //   });
+      userEvent.click(screen.getByRole('button', { name: 'stop' }));
 
-      // expect(screen.getByText('start')).toBeInTheDocument();
+      expect(screen.getByText('25 : 00')).toBeInTheDocument();
 
-      // console.log('test should be finished');
+      expect(screen.getByText('start')).toBeInTheDocument();
     });
   });
 });
