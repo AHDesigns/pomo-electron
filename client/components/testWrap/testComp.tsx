@@ -1,7 +1,7 @@
 import React from 'react';
 import { isTest } from '@shared/constants';
 
-export function NullComp<A>(Component: A, testId: string): A {
+export function testWrap<A>(Component: A, testId: string): A {
   // @ts-expect-error meh
   return isTest
     ? // @ts-expect-error meh

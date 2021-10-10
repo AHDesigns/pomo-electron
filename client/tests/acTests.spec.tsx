@@ -3,26 +3,13 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { App } from '@client/App';
 import { createFakeBridge } from '@electron/ipc/createFakeBridge';
-import { ok } from '@shared/Result';
-jest.mock('@electron/services/logger');
+import { createFakeLogger } from '@electron/services';
 
 describe('given a brand new user with no existing config', () => {
   const timerSpy = jest.fn();
   const time = timer(timerSpy);
   async function load() {
-    render(
-      <App
-        bridge={createFakeBridge({
-          count1Second: timerSpy.mockImplementation(async () => {
-            return new Promise((resolve) => {
-              setTimeout(() => {
-                resolve(ok(undefined));
-              }, 1);
-            });
-          }),
-        })}
-      />
-    );
+    render(<App bridge={createFakeBridge()} logger={createFakeLogger()} />);
 
     await waitFor(() => {
       expect(screen.getByText('Pomodoro App')).toBeInTheDocument();

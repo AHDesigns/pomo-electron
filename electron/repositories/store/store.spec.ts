@@ -1,7 +1,8 @@
+import { createFakeLogger } from '@electron/services';
 import { err, ok } from '@shared/Result';
 import * as fs from 'fs';
 
-import { StoreConfig, storeRepository } from './store';
+import { StoreRepo, storeRepository } from './store';
 
 jest.unmock('electron');
 
@@ -23,10 +24,13 @@ describe('StoreRepository', () => {
     b: 'hi',
   };
 
-  const defaultStoreOptions: StoreConfig<Schema> = {
-    defaults: schema,
-    name: 'test',
-    cwd: storeFilePath,
+  const defaultStoreOptions: StoreRepo<Schema> = {
+    logger: createFakeLogger(),
+    storeConfig: {
+      defaults: schema,
+      name: 'test',
+      cwd: storeFilePath,
+    },
   };
 
   afterEach((done) => {
@@ -37,9 +41,9 @@ describe('StoreRepository', () => {
   });
 
   describe('#read', () => {
-    it('should return the store contents', () => {
+    it('should return the store contents', async () => {
       const store = storeRepository(defaultStoreOptions);
-      const res = store.storeRead();
+      const res = await store.storeRead();
 
       expect(res).toMatchResult(ok(schema));
     });
@@ -47,9 +51,9 @@ describe('StoreRepository', () => {
 
   describe('#update', () => {
     describe('when update works', () => {
-      it('should update the store with the new value and return the result', () => {
+      it('should update the store with the new value and return the result', async () => {
         const store = storeRepository(defaultStoreOptions);
-        const updateRes = store.storeUpdate({
+        const updateRes = await store.storeUpdate({
           a: 4,
           foo: { ping: 'bye' },
         });
@@ -64,30 +68,30 @@ describe('StoreRepository', () => {
             b: 'hi',
           })
         );
-        expect(updateRes).toMatchResult(store.storeRead());
+        expect(updateRes).toMatchResult(await store.storeRead());
       });
     });
 
     describe('when update fails', () => {
-      it('should roll back to the initial state and return an error', () => {
+      it('should roll back to the initial state and return an error', async () => {
         const store = storeRepository(defaultStoreOptions);
-        const initialStore = store.storeRead();
-        const updateRes = store.storeUpdate({ foo: { ping: 'bye' }, a: undefined });
+        const initialStore = await store.storeRead();
+        const updateRes = await store.storeUpdate({ foo: { ping: 'bye' }, a: undefined });
 
         expect(updateRes).toMatchResult(err('failed to update'));
-        expect(initialStore).toMatchResult(store.storeRead());
+        expect(initialStore).toMatchResult(await store.storeRead());
       });
     });
   });
 
   describe('#reset', () => {
-    it('should clear the store and reset all values to defaults', () => {
+    it('should clear the store and reset all values to defaults', async () => {
       const store = storeRepository(defaultStoreOptions);
-      store.storeUpdate({
+      await store.storeUpdate({
         a: 4,
         foo: { ping: 'bye' },
       });
-      const res = store.storeReset();
+      const res = await store.storeReset();
 
       expect(res).toMatchResult(ok(schema));
     });

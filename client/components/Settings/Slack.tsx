@@ -1,9 +1,14 @@
 import React, { FC, useState } from 'react';
 import { useConfig, useBridge } from '@client/contexts';
-import { useTheme } from 'styled-components';
-import { Button } from '@client/components';
+import styled, { useTheme } from 'styled-components';
 import { Setting } from './Setting';
 import { Form, InputPassword, Label } from './Form';
+
+interface IButton {
+  variant?: 'secondary' | 'tertiary';
+}
+
+const Button = styled.button<IButton>``;
 
 export const Slack: FC = () => {
   const {

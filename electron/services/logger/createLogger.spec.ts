@@ -1,8 +1,9 @@
 import _log, { LevelOption } from 'electron-log';
 import { mocked } from 'ts-jest/utils';
 import { Nodenv } from '@shared/asserts';
+import type { ILogger } from '@shared/types';
 import * as _constants from '@shared/constants';
-import { createLogger, ILogger, loggerErrorHandler } from './createLogger';
+import { createLogger, loggerErrorHandler } from './createLogger';
 
 jest.mock('electron-log');
 jest.mock('@shared/constants');

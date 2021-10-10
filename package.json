@@ -51,7 +51,6 @@
     "@types/lodash.merge": "4.6.6",
     "@types/react": "17.0.2",
     "@types/react-dom": "17.0.1",
-    "@types/sinonjs__fake-timers": "6.0.4",
     "@types/styled-components": "^5.1.0",
     "@typescript-eslint/eslint-plugin": "4.16.1",
     "@typescript-eslint/parser": "4.16.1",
@@ -85,7 +84,6 @@
     "webpack-dev-server": "3.11.2"
   },
   "dependencies": {
-    "@types/lodash": "4.14.171",
     "@xstate/inspect": "0.4.1",
     "@xstate/react": "1.6.1",
     "dotenv": "10.0.0",
@@ -93,17 +91,13 @@
     "electron-log": "4.3.2",
     "electron-store": "8.0.0",
     "electron-updater": "4.3.5",
-    "fp-ts": "2.10.5",
     "got": "11.8.2",
-    "io-ts": "2.2.16",
     "lodash.merge": "4.6.2",
     "menubar": "9.0.5",
     "react": "16.14.0",
     "react-dom": "16.14.0",
-    "react-hook-form": "7.12.1",
     "styled-components": "5.2.1",
-    "xstate": "4.25.0",
-    "xstate-codegen": "0.3.0"
+    "xstate": "4.25.0"
   },
   "build": {
     "appId": "com.electron.pomo",

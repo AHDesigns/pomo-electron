@@ -1,13 +1,14 @@
 import React, { FC, useLayoutEffect, useState } from 'react';
 import { inspect } from '@xstate/inspect';
-import { Button } from '@client/components';
-import { NullComp } from '../NullComp/NullComp';
+import styled from 'styled-components';
+
+const Button = styled.button``;
 
 export interface IInspector {
   toggleable?: boolean;
 }
 
-export const InspectorComponent: FC<IInspector> = ({ toggleable }) => {
+export const Inspector: FC<IInspector> = ({ toggleable }) => {
   const [inspecting, setInspecting] = useState(!toggleable);
 
   // required to run before render cycle so as that listeners are present when machine is mounted
@@ -45,5 +46,3 @@ export const InspectorComponent: FC<IInspector> = ({ toggleable }) => {
     </>
   );
 };
-
-export const Inspector = NullComp(InspectorComponent, 'inspector');

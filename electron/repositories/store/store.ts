@@ -1,7 +1,6 @@
 import Store from 'electron-store';
 import { err, ok, Result } from '@shared/Result';
-import { logger } from '@electron/services';
-import { DeepPartial, UserConfig } from '@shared/types';
+import { DeepPartial, ILogger, UserConfig } from '@shared/types';
 import { getKeyPathsAndValues } from './getKeyPathsAndValues';
 
 export interface StoreRepository<T> {
@@ -27,16 +26,23 @@ export interface StoreConfig<T> {
   defaults: T;
 }
 
-export const storeRepository = <T = UserConfig>(
-  storeConfig: StoreConfig<T>
-): StoreRepository<T> => {
+export interface StoreRepo<T> {
+  storeConfig: StoreConfig<T>;
+  logger: ILogger;
+}
+
+export const storeRepository = <T = UserConfig>({
+  logger,
+  storeConfig,
+}: StoreRepo<T>): StoreRepository<T> => {
   const { name, cwd } = storeConfig;
 
   // eslint-disable-next-line no-console
-  console.log(`setting up Store Repo: name ${name}${cwd ? `cwd ${cwd}` : ''}`);
+  logger.info(`setting up Store Repo: name ${name}${cwd ? `cwd ${cwd}` : ''}`);
 
   const store = new Store<T>(storeConfig);
-  console.log(store.path);
+  logger.debug(store.path);
+
   return {
     async storeRead() {
       logger.info('reading store', store.store);

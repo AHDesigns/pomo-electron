@@ -1,6 +1,5 @@
 import { StoreRepository } from '@electron/repositories/store';
-import { logger } from '@electron/services/logger';
-import { emptyConfig, UserConfig } from '@shared/types';
+import { emptyConfig, ILogger, UserConfig } from '@shared/types';
 import React, { createContext, FC, useContext, useEffect, useState } from 'react';
 import { useBridge } from './bridge';
 
@@ -26,7 +25,7 @@ const { Provider } = configContext;
 
 export const useConfig = (): Config => useContext(configContext);
 
-export const ConfigProvider: FC<Partial<Config>> = (props) => {
+export const ConfigProvider: FC<Partial<Config> & { logger: ILogger }> = (props) => {
   const [config, setConfig] = useState(props.config ?? emptyConfig);
   const [loading, setLoading] = useState(true);
   const bridge = useBridge();
@@ -37,7 +36,7 @@ export const ConfigProvider: FC<Partial<Config>> = (props) => {
       .then((data) => {
         data.match({
           Ok: setConfig,
-          Err: logger.error,
+          Err: props.logger.error,
         });
       })
       .then(() => {
@@ -54,12 +53,8 @@ export const ConfigProvider: FC<Partial<Config>> = (props) => {
           const res = await bridge.storeUpdate(data);
 
           res.match({
-            Ok: (d) => {
-              setConfig(d);
-            },
-            Err: (e) => {
-              logger.error(e);
-            },
+            Ok: setConfig,
+            Err: props.logger.error,
           });
 
           return res;
@@ -68,12 +63,8 @@ export const ConfigProvider: FC<Partial<Config>> = (props) => {
           const res = await bridge.storeReset();
 
           res.match({
-            Ok: (d) => {
-              setConfig(d);
-            },
-            Err: (e) => {
-              logger.error(e);
-            },
+            Ok: setConfig,
+            Err: props.logger.error,
           });
 
           return res;

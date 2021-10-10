@@ -10,4 +10,6 @@ export {
   ipcRenderer,
   shell,
   session,
+  nativeImage,
+  dialog,
 } from 'electron'; // eslint-disable-line import/no-extraneous-dependencies

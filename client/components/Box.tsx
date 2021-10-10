@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { NullComp } from './NullComp/NullComp';
+import { testWrap } from './testWrap/testComp';
 
 const BoxC = styled.div`
   display: flex;
@@ -8,4 +8,4 @@ const BoxC = styled.div`
   align-items: stretch;
 `;
 
-export const Box = NullComp(BoxC, 'box');
+export const Box = testWrap(BoxC, 'box');

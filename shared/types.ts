@@ -5,9 +5,7 @@ import { Repositories } from '@electron/repositories';
 export interface ILogger extends ElectronLog {
   errorWithContext(context: string): (err: Error | string) => void;
 
-  info(...msg: string[]): void;
-
-  error(...msg: string[]): void;
+  info(...msg: any[]): void;
 }
 
 export type IClientLogger = Pick<ILogger, 'error' | 'info'>;

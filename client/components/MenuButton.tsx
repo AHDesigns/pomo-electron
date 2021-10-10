@@ -1,7 +1,7 @@
 import React, { FC, MouseEventHandler } from 'react';
 import styled from 'styled-components';
 import { CssSize } from '@shared/types';
-import { NullComp } from './NullComp/NullComp';
+import { testWrap } from './testWrap/testComp';
 
 interface IBar {
   width: CssSize;
@@ -82,7 +82,7 @@ const Bar = styled.div<IBar>`
 
 const HamburgerC: FC<{ showClose: boolean }> = ({ showClose }) => (
   <div
-    aria-hidden={true}
+    aria-hidden
     style={{
       width: '35px',
       height: '16px',
@@ -95,7 +95,7 @@ const HamburgerC: FC<{ showClose: boolean }> = ({ showClose }) => (
   </div>
 );
 
-const Hamburger = NullComp(HamburgerC, 'hamburger');
+const Hamburger = testWrap(HamburgerC, 'hamburger');
 
 export const MenuButton: FC<{
   onClick: MouseEventHandler<HTMLButtonElement>;

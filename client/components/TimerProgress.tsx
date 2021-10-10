@@ -1,17 +1,16 @@
-import { TimerState } from '@client/machines/timer/timerMachine';
 import { useTheme } from 'styled-components';
 import React from 'react';
-import { NullComp } from './NullComp/NullComp';
+import { testWrap } from './testWrap/testComp';
 
 interface ITimerProgress {
   duration: number;
   mins: number;
   seconds: number;
-  state: TimerState;
+  state: { matches(state: string): boolean };
   title: string;
 }
 
-export const TimerProgress = NullComp(TimerProgressC, 'timer-progress');
+export const TimerProgress = testWrap(TimerProgressC, 'timer-progress');
 
 export function TimerProgressC({
   duration,

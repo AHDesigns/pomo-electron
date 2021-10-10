@@ -4,10 +4,13 @@ import { menubar } from 'menubar';
 import { asset, isDev, isIntegration } from '@shared/constants';
 import url from 'url';
 import path from 'path';
-import { checkForUpdates, logger, setUpDevtools } from '@electron/services';
+import log from 'electron-log';
+import { checkForUpdates, createLogger, setUpDevtools } from '@electron/services';
 import { ipcMain } from '@electron/electron';
 import { fakeRepositories, productionRepositories } from '@electron/repositories';
 import { handlers, setupIpcHandlers } from '@electron/ipc';
+
+const logger = createLogger(log);
 
 checkForUpdates(logger);
 

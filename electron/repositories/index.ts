@@ -1,64 +1,32 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { nativeImage } from 'electron';
-import { merge } from '@shared/merge';
-import { emptyConfig, UserConfig } from '@shared/types';
-import { logger } from '@electron/services';
 import { Menubar } from 'menubar';
-import { ok, Result } from '@shared/Result';
-import { asset, isDev } from '@shared/constants';
+import { merge } from '@shared/merge';
+import { emptyConfig, UserConfig, ILogger } from '@shared/types';
 import { fakeSlackRepository, slackRepository, SlackRepository } from './slack';
 import { fakeShell, shellRepository, ShellRepository } from './shell';
 import { fakeStoreRepoFactory, storeRepository, StoreRepository } from './store';
+import { menuBarRepository, MenuBarRepository, fakeMenuBarRepository } from './menuBar';
 
-interface IconRepo {
-  setTrayIcon(state: 'active' | 'inactive'): void;
-  setTrayTitle(msg: string): void;
-  windowFocus(): void;
-  count1Second(): Promise<Result<void>>;
-}
-
-export type Repositories = IconRepo &
+export type Repositories = MenuBarRepository &
   ShellRepository &
   SlackRepository &
   StoreRepository<UserConfig>;
 
-const trayIcon = nativeImage.createFromPath(asset(`IconTemplate${isDev ? 'Dev' : ''}.png`));
-const trayActiveIcon = nativeImage.createFromPath(
-  asset(`IconActiveTemplate${isDev ? 'Dev' : ''}.png`)
-);
+interface RepoArgs {
+  logger: ILogger;
+  mb: Menubar;
+}
 
-export const productionRepositories = (mb: Menubar): Repositories => ({
-  async count1Second() {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(ok(undefined));
-      }, 1000);
-    });
-  },
-  windowFocus() {
-    mb.showWindow();
-  },
-  setTrayIcon(state) {
-    logger.info('called', state);
-    switch (state) {
-      case 'active':
-        mb.tray.setImage(trayActiveIcon);
-        break;
-      default:
-      case 'inactive':
-        mb.tray.setImage(trayIcon);
-        break;
-    }
-  },
-  setTrayTitle(msg: string) {
-    mb.tray.setTitle(msg);
-  },
-  ...slackRepository(),
+export const productionRepositories = ({ logger, mb }: RepoArgs): Repositories => ({
+  ...slackRepository({ logger }),
   ...shellRepository,
   ...storeRepository({
-    name: 'client',
-    defaults: emptyConfig,
+    storeConfig: {
+      name: 'client',
+      defaults: emptyConfig,
+    },
+    logger,
   }),
+  ...menuBarRepository({ logger, mb }),
 });
 
 export type RepositoryOverrides = Partial<Repositories>;
@@ -66,22 +34,13 @@ export type RepositoryOverrides = Partial<Repositories>;
 export const fakeRepositories = (overrides?: RepositoryOverrides): Repositories =>
   merge(
     {
-      async count1Second() {
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(ok(undefined));
-          }, 1000);
-        });
-      },
-      windowFocus() {},
-      setTrayIcon() {},
-      setTrayTitle() {},
       ...fakeSlackRepository(),
       ...fakeShell(overrides),
       ...fakeStoreRepoFactory({
         name: 'client',
         defaults: emptyConfig,
       }),
+      ...fakeMenuBarRepository,
     },
     overrides
   );
