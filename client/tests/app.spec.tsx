@@ -4,6 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { App } from '@client/App';
 import { createFakeBridge } from '@electron/ipc/createFakeBridge';
 import { tick } from '@test/tick';
+import { createFakeLogger } from '@electron/services';
 
 jest.mock('@electron/services/logger');
 
@@ -21,7 +22,7 @@ describe('given a brand new user with no existing config', () => {
   async function load() {
     /* const clock = FakeTimers.createClock(); */
 
-    render(<App bridge={createFakeBridge()} clock={{}} />);
+    render(<App bridge={createFakeBridge()} logger={createFakeLogger()} />);
 
     await waitFor(() => {
       expect(screen.getByText('Pomodoro App')).toBeInTheDocument();

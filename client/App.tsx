@@ -8,15 +8,15 @@ import { IBridge, ILogger } from '@shared/types';
 import { GlobalStyle } from './styles/GlobalStyle';
 
 export const App: FC<{ bridge: IBridge; logger: ILogger }> = ({ bridge, logger }) => (
-    <ErrorBoundary logger={logger}>
-      <ThemeProvider theme={theme}>
-        <BridgeProvider bridge={bridge}>
-          <GlobalStyle />
-          <ScrollBar />
-          <ConfigProvider logger={logger}>
-            <PageManager />
-          </ConfigProvider>
-        </BridgeProvider>
-      </ThemeProvider>
-    </ErrorBoundary>
-  );
+  <ErrorBoundary logger={logger}>
+    <ThemeProvider theme={theme}>
+      <BridgeProvider bridge={bridge}>
+        <GlobalStyle />
+        <ScrollBar />
+        <ConfigProvider logger={logger}>
+          <PageManager />
+        </ConfigProvider>
+      </BridgeProvider>
+    </ThemeProvider>
+  </ErrorBoundary>
+);

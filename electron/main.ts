@@ -34,7 +34,7 @@ const mb = menubar({
   showDockIcon: false,
 });
 
-const repos = isIntegration ? fakeRepositories() : productionRepositories(mb);
+const repos = isIntegration ? fakeRepositories() : productionRepositories({ logger, mb });
 setupIpcHandlers(ipcMain, handlers(repos));
 
 const trayIcon = nativeImage.createFromPath(asset(`IconTemplate${isDev ? 'Dev' : ''}.png`));
