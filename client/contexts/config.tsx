@@ -42,7 +42,7 @@ export const ConfigProvider: FC<Partial<Config> & { logger: ILogger }> = (props)
       .then(() => {
         setLoading(false);
       });
-  }, []);
+  }, [bridge, setLoading, props.logger]);
 
   return (
     <Provider

@@ -3,9 +3,8 @@ import { IpcMainEvent, IpcMainInvokeEvent } from '@electron/electron';
 import { Repositories } from '@electron/repositories';
 
 export interface ILogger extends ElectronLog {
+  info: (...msg: any[]) => void;
   errorWithContext(context: string): (err: Error | string) => void;
-
-  info(...msg: any[]): void;
 }
 
 export type IClientLogger = Pick<ILogger, 'error' | 'info'>;

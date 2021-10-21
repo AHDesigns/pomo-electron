@@ -40,8 +40,10 @@ interface Options {
   overrides?: Overrides;
 }
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
 export const renderWithoutWaiting = (
   ui: ReactElement,
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   { renderOptions, overrides } = {} as Options
 ) =>
   render(ui, {
@@ -49,6 +51,7 @@ export const renderWithoutWaiting = (
     ...renderOptions,
   });
 
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types,@typescript-eslint/consistent-type-assertions
 const renderAsync = async (ui: ReactElement, { renderOptions, overrides } = {} as Options) => {
   const result = render(ui, {
     wrapper: ({ children }) => (

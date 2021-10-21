@@ -74,6 +74,8 @@ module.exports = {
           },
         ],
         '@typescript-eslint/explicit-module-boundary-types': 'error',
+        // unlikely to be a problem as I avoid `this`
+        '@typescript-eslint/unbound-method': 'off',
         '@typescript-eslint/consistent-type-assertions': [
           'error',
           {
@@ -157,13 +159,14 @@ module.exports = {
       rules: {
         // '@typescript-eslint/no-unsafe-call': 'off',
         '@typescript-eslint/require-await': 'off', // very common to create simple promise returns, and this saves on boilerplate
-        '@typescript-eslint/unbound-method': 'off',
         'import/no-extraneous-dependencies': [
           'error',
           {
             devDependencies: true,
           },
         ],
+        // for simple test utils this is often overkill and makes test updates slow
+        '@typescript-eslint/explicit-function-return-type':  'off',
       },
     },
     {

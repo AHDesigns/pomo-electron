@@ -1,3 +1,24 @@
+import React from 'react';
+import { screen, render } from '@test/rtl';
+import { IPomo, Pomodoro } from '@client/components';
+import { ok } from '@shared/Result';
+import { emptyConfig } from '@shared/types';
+import userEvent from '@testing-library/user-event';
+import { tick } from '@test/tick';
+
+beforeEach(() => {
+  jest.useFakeTimers();
+});
+
+afterEach(() => {
+  // turn off if test fails
+  const button = screen.queryByRole('button', { name: 'stop' });
+  if (button) userEvent.click(button);
+  // deliberately not wrapping this in act. If anything throws errors, make sure to clean it up in the test
+  jest.runOnlyPendingTimers();
+  jest.useRealTimers();
+});
+
 describe('timer tests', () => {
   const settingsNoAutoStarts = {
     pomo: 10,
@@ -8,33 +29,71 @@ describe('timer tests', () => {
   describe(`given a timer has not been run and has settings "${JSON.stringify(
     settingsNoAutoStarts
   )}"`, () => {
-    describe('when the timer is started', () => {
-      it.todo('should start counting down for 10 minutes');
-      it.todo("should show the user hasn't completed any timers yet");
-      it.todo('should invoke the onStartHooks with pomo argument');
+    test('the timer behaves as expected', async () => {
+      const hooks: IPomo['hooks'] = {
+        start: jest.fn(),
+        tick: jest.fn(),
+      };
 
-      describe('when the timer is paused', () => {
-        it.todo('should pause the timer');
-        it.todo('should invoke the onPauseHooks with pomo argument');
-
-        describe('when play is pressed', () => {
-          it.todo('should resume the countdown');
-          it.todo('should invoke the onResumeHooks with pomo argument');
-
-          describe('when stop is pressed', () => {
-            it.todo('should stop the timer and reset to 10 minutes');
-            it.todo("should show the user hasn't completed any timers yet");
-            it.todo('should invoke the onStopHooks with pomo argument');
-          });
-        });
+      await render(<Pomodoro hooks={hooks} />, {
+        overrides: {
+          bridge: {
+            storeRead: async () =>
+              ok({
+                ...emptyConfig,
+                timers: settingsNoAutoStarts,
+              }),
+          },
+        },
       });
+
+      expect(screen.getByText(/10 : 00/)).toBeInTheDocument();
+
+      userEvent.click(screen.getByRole('button', { name: 'start' }));
+
+      expect(hooks.start).toHaveBeenCalledTimes(1);
+      expect(hooks.start).toHaveBeenCalledWith(
+        expect.objectContaining({ mins: 10, seconds: 0, timer: 'pomo' })
+      );
+
+      tick(11);
+
+      expect(hooks.tick).toHaveBeenCalledTimes(11);
+      expect(hooks.tick).toHaveBeenNthCalledWith(
+        11,
+        expect.objectContaining({ mins: 9, seconds: 49, timer: 'pomo' })
+      );
+
+      expect(screen.getByText(/9 : 49/)).toBeInTheDocument();
+
+      expect(screen.getByText(/completed pomos: 0/)).toBeInTheDocument();
+      expect(screen.getByText(/completed breaks: 0/)).toBeInTheDocument();
+
+      // describe('when the timer is paused', () => {
+      //   it.todo('should pause the timer');
+      //   it.todo('should invoke the onPauseHooks with pomo argument');
+      //
+      //   describe('when play is pressed', () => {
+      //     it.todo('should resume the countdown');
+      //     it.todo('should invoke the onResumeHooks with pomo argument');
+      //
+      //     describe('when stop is pressed', () => {
+      //       it.todo('should stop the timer and reset to 10 minutes');
+      //       it.todo("should show the user hasn't completed any timers yet");
+      //       it.todo('should invoke the onStopHooks with pomo argument');
+      //     });
+      //   });
+      // });
+
+      // TODO keeps running without this
+      userEvent.click(screen.getByRole('button', { name: 'stop' }));
     });
 
-    describe('when the pomo timer is started and finishes', () => {
-      it.todo('should transition to the short timer but not start');
-      it.todo('should show a single pomo timer has been completed');
-      it.todo('should invoke the onCompleteHooks with pomo argument');
-    });
+    // describe('when the pomo timer is started and finishes', () => {
+    //   it.todo('should transition to the short timer but not start');
+    //   it.todo('should show a single pomo timer has been completed');
+    //   it.todo('should invoke the onCompleteHooks with pomo argument');
+    // });
   });
 
   describe('given 3/4 pomo timers have finished', () => {
@@ -131,6 +190,24 @@ describe('timer tests', () => {
       describe('when the final pomo timer before a long break finishes', () => {
         it.todo('should transition to the long break and start immediately');
         it.todo('should invoke the onStartHooks with long break argument');
+      });
+    });
+  });
+
+  // settings interaction
+  describe('given the user starts a 10 minute timer', () => {
+    describe('when they naviagte to settings and then back to the timer', () => {
+      // it.todo('should continue to tick down every second');
+    });
+  });
+
+  describe('given the user starts a 10 minute timer', () => {
+    describe('when the user navigates to settings and changes the timer to 20 minutes, and then navigates back to the timer', () => {
+      // it.todo('should still be counting down on the orginal timer');
+
+      describe('when stop is pressed', () => {
+        // it.todo('should stop the timer');
+        // it.todo('should reset the timer to 20 minutes');
       });
     });
   });

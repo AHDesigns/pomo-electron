@@ -1,6 +1,10 @@
 import { act } from '@testing-library/react';
 
-export function tick(duration: number) {
+/**
+ * Advance fake timer by `duration` in seconds
+ * @param duration
+ */
+export function tick(duration: number): void {
   act(() => {
     jest.advanceTimersByTime(duration * 1000);
   });

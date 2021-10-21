@@ -14,7 +14,6 @@ export type Pages = 'Pomodoro' | 'Settings';
 
 export const PageManager: FC = () => {
   const [page, navigatePageTo] = useState<Pages>('Pomodoro');
-  // const [page, navigatePageTo] = useState<Pages>('Settings');
   const { loading } = useConfig();
   const theme = useTheme();
 
