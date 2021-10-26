@@ -1,4 +1,4 @@
-import { ActorRefFrom, assign, sendParent } from 'xstate';
+import { ActorContext, ActorRefFrom, assign, ContextFrom, sendParent } from 'xstate';
 import { pomodoroModel } from './pomodoroModel';
 import { timerModel } from './timerModel';
 
@@ -17,7 +17,9 @@ const timerMachine = timerModel.createMachine(
         on: {
           play: 'counting',
         },
-        exit: sendParent(({ timeLeft }) => pomodoroModel.events.start(timeLeft)),
+        exit: sendParent(({ timeLeft, timerType }) =>
+          pomodoroModel.events.start({ ...timeLeft, timer: timerType })
+        ),
       },
       counting: {
         on: {
@@ -34,7 +36,9 @@ const timerMachine = timerModel.createMachine(
             {
               actions: [
                 'decrement1Second',
-                sendParent(({ timeLeft }) => pomodoroModel.events.tick(timeLeft)),
+                sendParent(({ timeLeft, timerType }) =>
+                  pomodoroModel.events.tick({ ...timeLeft, timer: timerType })
+                ),
               ],
               target: 'counting',
             },
@@ -42,22 +46,39 @@ const timerMachine = timerModel.createMachine(
         },
       },
       paused: {
-        entry: [sendParent(pomodoroModel.events.pause())],
+        entry: [
+          sendParent(({ timeLeft, timerType }) =>
+            pomodoroModel.events.pause({ ...timeLeft, timer: timerType })
+          ),
+        ],
         on: {
           play: {
-            actions: [sendParent(({ timeLeft }) => pomodoroModel.events.play(timeLeft))],
+            actions: [
+              sendParent(({ timeLeft, timerType }) =>
+                pomodoroModel.events.play({ ...timeLeft, timer: timerType })
+              ),
+            ],
             target: 'counting',
           },
           stop: 'stopped',
         },
       },
       complete: {
-        entry: [sendParent(pomodoroModel.events.complete())],
-        always: 'ready',
+        entry: [
+          sendParent(({ timeLeft, timerType }) =>
+            pomodoroModel.events.complete({ ...timeLeft, timer: timerType })
+          ),
+        ],
+        type: 'final',
       },
       stopped: {
-        entry: [sendParent(pomodoroModel.events.stop())],
-        always: 'ready',
+        entry: [
+          sendParent(({ timeLeft, timerType }) =>
+            pomodoroModel.events.stop({ ...timeLeft, timer: timerType })
+          ),
+        ],
+        // always: 'ready',
+        type: 'final',
       },
     },
   },
@@ -84,6 +105,17 @@ const timerMachine = timerModel.createMachine(
 );
 
 export type TimerActor = ActorRefFrom<typeof timerMachine>;
-export type TimeLeft = TimerActor['state']['context']['timeLeft'];
+
+type TimerFactoryConfig = Pick<ContextFrom<typeof timerModel>, 'duration'>;
+
+// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types,@typescript-eslint/explicit-function-return-type
+export function createTimerMachine({ duration }: TimerFactoryConfig) {
+  return timerMachine.withContext({
+    timerType: 'pomo',
+    autoStart: false,
+    timeLeft: { mins: 0, seconds: 0 },
+    duration,
+  });
+}
 
 export default timerMachine;

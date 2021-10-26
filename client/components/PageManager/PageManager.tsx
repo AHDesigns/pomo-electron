@@ -17,6 +17,7 @@ export const PageManager: FC = () => {
   const { loading } = useConfig();
   const theme = useTheme();
 
+  console.log(loading);
   if (loading) {
     return <p>loading...</p>;
   }
@@ -41,7 +42,17 @@ export const PageManager: FC = () => {
       </Header>
       <Box style={{ flexGrow: 1 }}>
         {page === 'Settings' && <Settings />}
-        {page === 'Pomodoro' && <Pomodoro />}
+        {page === 'Pomodoro' && (
+          <Pomodoro
+            hooks={{
+              pause: console.log,
+              tick: console.log,
+              start: console.log,
+              stop: console.log,
+              play: console.log,
+            }}
+          />
+        )}
       </Box>
     </Page>
   );

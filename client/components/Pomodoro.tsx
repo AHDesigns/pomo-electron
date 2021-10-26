@@ -1,47 +1,61 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { useActor, useMachine } from '@xstate/react';
 import pomodoroMachine from '@client/machines/timer/pomodoroMachine';
-import { TimeLeft, TimerActor } from '@client/machines/timer/timerMachine';
+import { TimerActor } from '@client/machines/timer/timerMachine';
 import { timerModel } from '@client/machines/timer/timerModel';
 import { useConfig } from '@client/contexts';
-import { pomodoroModel, TimerType } from '@client/machines/timer/pomodoroModel';
+import { pomodoroModel, HookInfo } from '@client/machines/timer/pomodoroModel';
 import { assertEventType } from '@client/machines/utils';
-
-interface HookInfo extends TimeLeft {
-  timer: TimerType;
-}
 
 export interface IPomo {
   hooks: {
     start: (info: HookInfo) => void;
     tick: (info: HookInfo) => void;
+    pause: (info: HookInfo) => void;
+    play: (info: HookInfo) => void;
+    stop: (info: HookInfo) => void;
   };
 }
 
 export const Pomodoro: FC<IPomo> = ({ hooks }) => {
   const { config } = useConfig();
 
-  const [state] = useMachine(pomodoroMachine, {
-    context: {
+  const [state] = useMachine(
+    pomodoroMachine.withContext({
       ...pomodoroModel.initialContext,
       timers: config.timers,
-    },
-    actions: {
-      onStartHooks: (_c, event, { action: { timer } }) => {
-        assertEventType(event, 'start');
-        hooks.start({ ...event, timer });
+    }),
+    {
+      actions: {
+        onStartHooks: (_c, event) => {
+          assertEventType(event, 'start');
+          hooks.start({ ...event });
+        },
+        onTickHooks: (_c, event) => {
+          assertEventType(event, 'tick');
+          hooks.tick({ ...event });
+        },
+        onPauseHooks: (_c, event) => {
+          assertEventType(event, 'pause');
+          hooks.pause({ ...event });
+        },
+        onPlayHooks: (_c, event) => {
+          assertEventType(event, 'play');
+          hooks.play({ ...event });
+        },
+        onStopHooks: (_c, event) => {
+          assertEventType(event, 'stop');
+          hooks.stop({ ...event });
+        },
       },
-      onTickHooks: (_c, event) => {
-        assertEventType(event, 'tick');
-        hooks.tick(event);
-      },
-    },
-  });
+    }
+  );
 
-  const timer = state.context.pomodoro.match({
-    None: () => null,
-    Some: (actor) => actor,
-  });
+  const timer = state.context.pomodoro;
+  // const timer = state.context.pomodoro.match({
+  //   None: () => null,
+  //   Some: (actor) => actor,
+  // });
 
   return (
     <>
@@ -73,6 +87,9 @@ const Timer: FC<{ timer: TimerActor }> = ({ timer }) => {
       </button>
       <button type="button" onClick={() => send(timerModel.events.stop())}>
         stop
+      </button>
+      <button type="button" onClick={() => send(timerModel.events.play())}>
+        play
       </button>
       <button type="button" onClick={() => send(timerModel.events.complete())}>
         complete

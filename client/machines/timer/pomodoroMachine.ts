@@ -1,8 +1,9 @@
-import { assign, spawn } from 'xstate';
+import { assign, spawn, EventFrom } from 'xstate';
 import { OptionsFromModel } from '@client/machines/utils';
 import { ModelContextFrom } from 'xstate/lib/model.types';
 import { ModelEventsFrom } from 'xstate/es/model.types';
-import timerMachine from './timerMachine';
+import { some } from '@shared/Option';
+import timerMachine, { createTimerMachine } from './timerMachine';
 import { pomodoroModel } from './pomodoroModel';
 
 const pomodoroMachine = pomodoroModel.createMachine(
@@ -10,19 +11,26 @@ const pomodoroMachine = pomodoroModel.createMachine(
     id: 'pomodoro',
     context: pomodoroModel.initialContext,
     initial: 'pomodoro',
+    on: {
+      start: { actions: 'onStartHooks' },
+      pause: { actions: 'onPauseHooks' },
+      play: { actions: 'onPlayHooks' },
+      stop: { actions: 'onStopHooks' },
+      tick: { actions: 'onTickHooks' },
+    },
     states: {
       pomodoro: {
-        entry: 'createPomoTimer',
+        // entry: ['createPomoTimer', pomodoroModel.assign({ current: 'pomo' })],
+        entry: [
+          assign({
+            pomodoro: ({ timers }) => spawn(createTimerMachine({ duration: timers.pomo })),
+          }),
+        ],
         on: {
           complete: {
             target: 'break',
-            actions: ['increasePomoCount', pomodoroModel.actions.onCompleteHooks('pomo')],
+            actions: ['increasePomoCount'],
           },
-          start: [{ actions: pomodoroModel.actions.onStartHooks('pomo') }],
-          pause: [{ actions: pomodoroModel.actions.onPauseHooks('pomo') }],
-          play: [{ actions: pomodoroModel.actions.onPlayHooks('pomo') }],
-          stop: [{ actions: pomodoroModel.actions.onStopHooks('pomo') }],
-          tick: [{ actions: pomodoroModel.actions.onTickHooks('pomo') }],
         },
       },
       break: {
@@ -35,35 +43,35 @@ const pomodoroMachine = pomodoroModel.createMachine(
         ],
       },
       shortBreak: {
+        // entry: [pomodoroModel.assign({ current: 'shortBreak' })],
+        entry: [
+          assign({
+            pomodoro: ({ timers }) => spawn(createTimerMachine({ duration: timers.shortBreak })),
+          }),
+        ],
         on: {
           complete: {
             target: 'pomodoro',
-            actions: [pomodoroModel.actions.onCompleteHooks('shortBreak')],
           },
-          start: [{ actions: pomodoroModel.actions.onStartHooks('shortBreak') }],
-          pause: [{ actions: pomodoroModel.actions.onPauseHooks('shortBreak') }],
-          play: [{ actions: pomodoroModel.actions.onPlayHooks('shortBreak') }],
           stop: {
             target: 'pomodoro',
-            actions: pomodoroModel.actions.onStopHooks('shortBreak'),
           },
-          tick: [{ actions: pomodoroModel.actions.onTickHooks('shortBreak') }],
         },
       },
       longBreak: {
+        // entry: [pomodoroModel.assign({ current: 'longBreak' })],
+        entry: [
+          assign({
+            pomodoro: ({ timers }) => spawn(createTimerMachine({ duration: timers.longBreak })),
+          }),
+        ],
         on: {
           complete: {
             target: 'pomodoro',
-            actions: [pomodoroModel.actions.onCompleteHooks('shortBreak')],
           },
-          start: [{ actions: pomodoroModel.actions.onStartHooks('shortBreak') }],
-          pause: [{ actions: pomodoroModel.actions.onPauseHooks('shortBreak') }],
-          play: [{ actions: pomodoroModel.actions.onPlayHooks('shortBreak') }],
           stop: {
             target: 'pomodoro',
-            actions: pomodoroModel.actions.onStopHooks('shortBreak'),
           },
-          tick: [{ actions: pomodoroModel.actions.onTickHooks('shortBreak') }],
         },
         exit: 'increaseLongBreakCount',
       },
@@ -75,7 +83,6 @@ const pomodoroMachine = pomodoroModel.createMachine(
         pomos > 0 && pomos % breakNumber === 0,
     },
     actions: {
-      onStartHooks: (_, c, { action: { timer } }) => {},
       increasePomoCount: assign({
         completed: ({ completed }) => ({
           ...completed,
@@ -88,19 +95,6 @@ const pomodoroMachine = pomodoroModel.createMachine(
           long: completed.long + 1,
         }),
       }),
-      createPomoTimer: assign({
-        pomodoro: ({ pomodoro, timers }) =>
-          pomodoro.else(
-            spawn(
-              timerMachine.withContext({
-                timerType: 'pomodoro',
-                autoStart: false,
-                timeLeft: { mins: 0, seconds: 0 },
-                duration: timers.pomo,
-              })
-            )
-          ),
-      }),
     },
   }
 );
@@ -111,8 +105,9 @@ const pomodoroMachine = pomodoroModel.createMachine(
 //
 // type Action = (
 //   context: ModelContextFrom<typeof pomodoroModel>,
-//   event: ModelEventsFrom<typeof pomodoroModel>
+//   event: EventFrom<typeof pomodoroModel>
 // ) => void;
+
 //
 // interface PomoOptions {
 //   actions: {
