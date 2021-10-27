@@ -77,7 +77,6 @@ const timerMachine = timerModel.createMachine(
             pomodoroModel.events.stop({ ...timeLeft, timer: timerType })
           ),
         ],
-        // always: 'ready',
         type: 'final',
       },
     },

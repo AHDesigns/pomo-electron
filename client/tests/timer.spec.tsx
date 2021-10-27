@@ -106,7 +106,21 @@ describe('timer tests', () => {
 
       expect(screen.getByText(/completed pomos: 0/)).toBeInTheDocument();
       expect(screen.getByText(/completed breaks: 0/)).toBeInTheDocument();
+
+      expect(screen.getByText(/10 : 00/)).toBeInTheDocument();
+
+      userEvent.click(screen.getByRole('button', { name: 'start' }));
+
+      tick(5);
+
+      expect(hooks.start).toHaveBeenCalledTimes(2);
+      expect(hooks.start).toHaveBeenNthCalledWith(
+        2,
+        expect.objectContaining({ mins: 10, seconds: 0, timer: 'pomo' })
+      );
     });
+
+    // test('when the timer is started and finishes')
 
     // describe('when the pomo timer is started and finishes', () => {
     //   it.todo('should transition to the short timer but not start');

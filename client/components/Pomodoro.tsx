@@ -52,10 +52,6 @@ export const Pomodoro: FC<IPomo> = ({ hooks }) => {
   );
 
   const timer = state.context.pomodoro;
-  // const timer = state.context.pomodoro.match({
-  //   None: () => null,
-  //   Some: (actor) => actor,
-  // });
 
   return (
     <>
@@ -63,7 +59,7 @@ export const Pomodoro: FC<IPomo> = ({ hooks }) => {
       <p>completed pomos: {state.context.completed.pomos}</p>
       <p>completed breaks: {state.context.completed.long}</p>
       <p>timer</p>
-      {timer && <Timer timer={timer} />}
+      {timer && <Timer key={timer.id} timer={timer} />}
     </>
   );
 };
