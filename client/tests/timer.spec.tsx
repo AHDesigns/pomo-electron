@@ -27,17 +27,17 @@ describe('timer tests', () => {
     longBreak: 8,
   };
 
+  const hooks: IPomo['hooks'] = {
+    start: jest.fn(),
+    tick: jest.fn(),
+    pause: jest.fn(),
+    play: jest.fn(),
+    stop: jest.fn(),
+    complete: jest.fn(),
+  };
+
   describe(`given a timer has not been run and has settings`, () => {
     test('the timer behaves as expected', async () => {
-      const hooks: IPomo['hooks'] = {
-        start: jest.fn(),
-        tick: jest.fn(),
-        pause: jest.fn(),
-        play: jest.fn(),
-        stop: jest.fn(),
-      };
-
-      // render(<Pomodoro hooks={hooks} />);
       await render(<Pomodoro hooks={hooks} />, {
         overrides: {
           bridge: {
@@ -118,9 +118,52 @@ describe('timer tests', () => {
         2,
         expect.objectContaining({ mins: 10, seconds: 0, timer: 'pomo' })
       );
+
+      expect(screen.getByText(/9 : 55/)).toBeInTheDocument();
+      expect(hooks.tick).toHaveBeenLastCalledWith(
+        expect.objectContaining({ mins: 9, seconds: 55, timer: 'pomo' })
+      );
     });
 
-    // test('when the timer is started and finishes')
+    test('when the timer progresses through a full long break cycle', async () => {
+      await render(<Pomodoro hooks={hooks} />, {
+        overrides: {
+          bridge: {
+            storeRead: async () =>
+              ok({
+                ...emptyConfig,
+                timers: settingsNoAutoStarts,
+              }),
+          },
+        },
+      });
+
+      userEvent.click(screen.getByRole('button', { name: 'start' }));
+
+      expect(screen.getByText(/10 : 00/)).toBeInTheDocument();
+
+      tick(60 * 9 + 59);
+
+      expect(screen.getByText(/0 : 01/)).toBeInTheDocument();
+      expect(screen.getByText(/completed pomos: 0/)).toBeInTheDocument();
+      expect(screen.getByText(/completed breaks: 0/)).toBeInTheDocument();
+
+      tick(1);
+
+      // expect(hooks.complete).toHaveBeenCalledTimes(1);
+      // expect(hooks.complete).toHaveBeenCalledWith(expect.objectContaining({ timer: 'pomo' }));
+
+      expect(screen.getByText(/5 : 00/)).toBeInTheDocument();
+
+      expect(screen.getByText(/completed pomos: 1/)).toBeInTheDocument();
+      expect(screen.getByText(/completed breaks: 0/)).toBeInTheDocument();
+
+      // stopping for now, as having all sorts of issues with spawning actors not stopping. https://github.com/statelyai/xstate/issues/1642 this issue makes me question the validity of working with this library. I think i will wait till v5, getting tired of working with something that breaks all the time.
+
+      // this only exists as a problem in tests when the timer is unmounted, and I get a bunch of issues about the itnerpreter unable to read `name` of some property.
+
+      // can be recreated in the app by simply unmounting the Pomodoro component (the pomoMachine must have a timerMachine spawned to cause this issue)
+    });
 
     // describe('when the pomo timer is started and finishes', () => {
     //   it.todo('should transition to the short timer but not start');
