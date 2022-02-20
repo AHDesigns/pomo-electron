@@ -58,7 +58,7 @@ export const storeRepository = <T = UserConfig>({
         getKeyPathsAndValues(updatedStore).forEach(([path, value]) => {
           store.set(path, value);
         });
-        return Promise.resolve(ok(store.store));
+        return await Promise.resolve(ok(store.store));
       } catch (e: unknown) {
         logger.warn(
           `failed to update store "${name}", err:\n${

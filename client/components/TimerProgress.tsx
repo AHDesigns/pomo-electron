@@ -10,8 +10,6 @@ interface ITimerProgress {
   title: string;
 }
 
-export const TimerProgress = testWrap(TimerProgressC, 'timer-progress');
-
 export function TimerProgressC({
   duration,
   mins,
@@ -62,3 +60,5 @@ export function TimerProgressC({
     </svg>
   );
 }
+
+export const TimerProgress = testWrap(TimerProgressC, 'timer-progress');

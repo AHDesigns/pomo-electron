@@ -11,11 +11,7 @@ module.exports = {
     tsconfigRootDir: __dirname,
     project: ['./tsconfig.json'],
   },
-  extends: [
-    // airbnb also contains react rules
-    'airbnb-typescript',
-    'airbnb/hooks',
-  ],
+  extends: ['airbnb', 'airbnb-typescript', 'airbnb/hooks'],
   plugins: ['@typescript-eslint'],
   rules: {
     'no-console': 'error',
@@ -166,7 +162,7 @@ module.exports = {
           },
         ],
         // for simple test utils this is often overkill and makes test updates slow
-        '@typescript-eslint/explicit-function-return-type':  'off',
+        '@typescript-eslint/explicit-function-return-type': 'off',
       },
     },
     {

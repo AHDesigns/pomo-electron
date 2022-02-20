@@ -26,7 +26,7 @@ const ScrollbarStyle = createGlobalStyle`
   }
 `;
 
-const ScrollBarC = (): JSX.Element => {
+function ScrollBarC(): JSX.Element {
   const [showScroll, setShowScroll] = useState(false);
 
   useEffect(() => {
@@ -55,6 +55,6 @@ const ScrollBarC = (): JSX.Element => {
   }, []);
 
   return <>{showScroll && <ScrollbarStyle />}</>;
-};
+}
 
 export const ScrollBar = testWrap(ScrollBarC, 'scroll-bar');
