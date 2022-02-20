@@ -33,7 +33,7 @@ describe('timer tests', () => {
     pause: jest.fn(),
     play: jest.fn(),
     stop: jest.fn(),
-    complete: jest.fn(),
+    // complete: jest.fn(),
   };
 
   describe(`given a timer has not been run and has settings`, () => {
