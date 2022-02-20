@@ -1,3 +1,4 @@
+import { ContextFrom, EventFrom } from 'xstate';
 import { createModel } from 'xstate/lib/model';
 
 export const timerModel = createModel(
@@ -19,8 +20,16 @@ export const timerModel = createModel(
       setTimer: () => ({}),
       decrement1Second: () => ({}),
       tickEvent: () => ({}),
+      fudge: () => ({}),
+      butter: () => ({}),
+      cheese: () => ({}),
+      dog: () => ({}),
+      cat: () => ({}),
+      fish: () => ({}),
     },
   }
 );
 
 export type TimerType = 'break' | 'longBreak' | 'pomo';
+export type TimerEvents = EventFrom<typeof timerModel>;
+export type TimerContext = ContextFrom<typeof timerModel>;

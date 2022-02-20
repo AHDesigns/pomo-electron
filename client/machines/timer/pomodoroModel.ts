@@ -1,4 +1,5 @@
 import { createModel } from 'xstate/lib/model';
+import { ContextFrom, EventFrom } from 'xstate';
 import { none, Option } from '@shared/Option';
 import { TimerActor } from '@client/machines/timer/timerMachine';
 import { emptyConfig } from '@shared/types';
@@ -44,3 +45,6 @@ export const pomodoroModel = createModel(
     },
   }
 );
+
+// export type PomodoroEvents = EventFrom<typeof pomodoroModel>;
+// export type PomodoroContext = ContextFrom<typeof pomodoroModel>;

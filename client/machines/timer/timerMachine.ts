@@ -1,120 +1,117 @@
-import { ActorContext, ActorRefFrom, assign, ContextFrom, sendParent } from 'xstate';
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { ActorRefFrom, assign, ContextFrom, sendParent } from 'xstate';
 import { pomodoroModel } from './pomodoroModel';
-import { timerModel } from './timerModel';
+import { TimerContext, TimerEvents, timerModel } from './timerModel';
 
-const timerMachine = timerModel.createMachine(
-  {
-    id: 'timer',
-    context: timerModel.initialContext,
-    initial: 'ready',
-    states: {
-      ready: {
-        entry: 'setTimer',
-        always: {
-          cond: ({ autoStart }) => autoStart,
-          target: 'counting',
-        },
-        on: {
-          play: 'counting',
-        },
-        exit: sendParent(({ timeLeft, timerType }) =>
-          pomodoroModel.events.start({ ...timeLeft, timer: timerType })
-        ),
+const timerMachine = timerModel.createMachine({
+  id: 'timer',
+  context: timerModel.initialContext,
+  initial: 'ready',
+  states: {
+    ready: {
+      entry: 'setTimer',
+      always: {
+        cond: ({ autoStart }) => autoStart,
+        target: 'counting',
       },
-      counting: {
-        on: {
-          pause: 'paused',
-          stop: 'stopped',
-          complete: 'complete',
-        },
-        after: {
-          ONE_SECOND: [
-            {
-              cond: 'isComplete',
-              target: 'complete',
-            },
-            {
-              actions: [
-                'decrement1Second',
-                sendParent(({ timeLeft, timerType }) =>
-                  pomodoroModel.events.tick({ ...timeLeft, timer: timerType })
-                ),
-              ],
-              target: 'counting',
-            },
-          ],
-        },
+      on: {
+        play: 'counting',
       },
-      paused: {
-        entry: [
-          sendParent(({ timeLeft, timerType }) =>
-            pomodoroModel.events.pause({ ...timeLeft, timer: timerType })
-          ),
-        ],
-        on: {
-          play: {
-            actions: [
-              sendParent(({ timeLeft, timerType }) =>
-                pomodoroModel.events.play({ ...timeLeft, timer: timerType })
-              ),
-            ],
+      exit: 'fudge',
+    },
+    counting: {
+      on: {
+        pause: 'paused',
+        stop: 'stopped',
+        complete: 'complete',
+      },
+      after: {
+        ONE_SECOND: [
+          {
+            cond: 'isComplete',
+            target: 'complete',
+          },
+          {
+            actions: ['decrement1Second', 'butter'],
             target: 'counting',
           },
-          stop: 'stopped',
+        ],
+      },
+    },
+    paused: {
+      entry: ['cheese'],
+      on: {
+        play: {
+          actions: ['fish'],
+          target: 'counting',
         },
+        stop: 'stopped',
       },
-      complete: {
-        entry: [
-          sendParent(({ timeLeft, timerType }) =>
-            pomodoroModel.events.complete({ ...timeLeft, timer: timerType })
-          ),
-        ],
-        type: 'final',
-      },
-      stopped: {
-        entry: [
-          sendParent(({ timeLeft, timerType }) =>
-            pomodoroModel.events.stop({ ...timeLeft, timer: timerType })
-          ),
-        ],
-        type: 'final',
-      },
+    },
+    complete: {
+      entry: ['cat'],
+      type: 'final',
+    },
+    stopped: {
+      entry: ['dog'],
+      type: 'final',
     },
   },
-  {
-    delays: {
-      ONE_SECOND: 1000,
-    },
-    guards: {
-      isComplete: ({ timeLeft: { mins, seconds } }) => mins === 0 && seconds === 1,
-    },
-    actions: {
-      setTimer: assign({
-        timeLeft: ({ duration }) => ({
-          mins: duration,
-          seconds: 0,
-        }),
+});
+
+export const defaultOptions = {
+  delays: {
+    ONE_SECOND: 1000,
+  },
+  guards: {
+    isComplete: ({ timeLeft: { mins, seconds } }: TimerContext) => mins === 0 && seconds === 1,
+  },
+  actions: {
+    setTimer: assign<TimerContext>({
+      timeLeft: ({ duration }) => ({
+        mins: duration,
+        seconds: 0,
       }),
-      decrement1Second: assign({
-        timeLeft: ({ timeLeft: { mins, seconds } }) =>
-          seconds === 0 ? { mins: mins - 1, seconds: 59 } : { mins, seconds: seconds - 1 },
-      }),
-    },
-  }
-);
+    }),
+    decrement1Second: assign<TimerContext>({
+      timeLeft: ({ timeLeft: { mins, seconds } }) =>
+        seconds === 0 ? { mins: mins - 1, seconds: 59 } : { mins, seconds: seconds - 1 },
+    }),
+    fudge: sendParent<TimerContext, TimerEvents>(({ timeLeft, timerType }) =>
+      pomodoroModel.events.start({ ...timeLeft, timer: timerType })
+    ),
+    butter: sendParent<TimerContext, TimerEvents>(({ timeLeft, timerType }) =>
+      pomodoroModel.events.tick({ ...timeLeft, timer: timerType })
+    ),
+    cheese: sendParent<TimerContext, TimerEvents>(({ timeLeft, timerType }) =>
+      pomodoroModel.events.pause({ ...timeLeft, timer: timerType })
+    ),
+    fish: sendParent<TimerContext, TimerEvents>(({ timeLeft, timerType }) =>
+      pomodoroModel.events.play({ ...timeLeft, timer: timerType })
+    ),
+    cat: sendParent<TimerContext, TimerEvents>(({ timeLeft, timerType }) =>
+      pomodoroModel.events.complete({ ...timeLeft, timer: timerType })
+    ),
+    dog: sendParent<TimerContext, TimerEvents>(({ timeLeft, timerType }) =>
+      pomodoroModel.events.stop({ ...timeLeft, timer: timerType })
+    ),
+  },
+};
 
 export type TimerActor = ActorRefFrom<typeof timerMachine>;
 
 type TimerFactoryConfig = Pick<ContextFrom<typeof timerModel>, 'duration'>;
 
-// eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types,@typescript-eslint/explicit-function-return-type
 export function createTimerMachine({ duration }: TimerFactoryConfig) {
-  return timerMachine.withContext({
-    timerType: 'pomo',
-    autoStart: false,
-    timeLeft: { mins: 0, seconds: 0 },
-    duration,
-  });
+  return timerMachine
+    .withContext({
+      timerType: 'pomo',
+      autoStart: false,
+      timeLeft: { mins: 0, seconds: 0 },
+      duration,
+    })
+    .withConfig(defaultOptions);
 }
 
 export default timerMachine;
