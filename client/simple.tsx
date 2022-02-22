@@ -1,6 +1,6 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { useMachine } from '@xstate/react';
+import { useActor, useMachine } from '@xstate/react';
 import machine from '@client/machines/app/machine';
 // import { ipcRenderer } from '@electron/electron';
 // import { bridgeCreator } from '@electron/ipc/bridgeCreator';
@@ -8,6 +8,7 @@ import machine from '@client/machines/app/machine';
 // import log from 'electron-log';
 // import { App } from './App';
 import { inspect } from '@xstate/inspect';
+import { TimerActor } from './machines/app/model';
 
 inspect({
   // options
@@ -26,7 +27,7 @@ function App(): JSX.Element {
 }
 
 function LoginMachine(): JSX.Element {
-  useMachine(machine, {
+  const [state] = useMachine(machine, {
     devTools: true,
     // ...loginOptions(bridge),
     // /* eslint-disable */
@@ -36,6 +37,14 @@ function LoginMachine(): JSX.Element {
     // /* eslint-enable */
     // devTools: true,
   });
+
+  const x = state.context.pomodoro.active;
+
+  return <p>{x ? <Child child={x} /> : 'hello'}</p>;
+}
+
+function Child({ child }: { child: TimerActor }): JSX.Element {
+  const [state] = useActor(child);
 
   return <p>hello</p>;
 }

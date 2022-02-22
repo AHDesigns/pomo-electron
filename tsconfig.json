@@ -3,10 +3,8 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-
     "noImplicitReturns": true,
     "esModuleInterop": true,
     "allowUnreachableCode": false,
@@ -15,12 +13,22 @@
     "strictPropertyInitialization": true,
     "resolveJsonModule": true,
     "baseUrl": ".",
-    "types": ["jest"],
+    "types": [
+      "jest"
+    ],
     "paths": {
-      "@shared/*": ["shared/*"],
-      "@electron/*": ["electron/*"],
-      "@client/*": ["client/*"],
-      "@test/*": ["testHelpers/*"]
+      "@shared/*": [
+        "shared/*"
+      ],
+      "@electron/*": [
+        "electron/*"
+      ],
+      "@client/*": [
+        "client/*"
+      ],
+      "@test/*": [
+        "testHelpers/*"
+      ]
     },
     "jsx": "react"
   },
@@ -34,5 +42,7 @@
     "testHelpers",
     "e2e"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

@@ -1,9 +1,9 @@
 import { ContextFrom, EventFrom, EventObject, MachineOptions } from 'xstate';
 import { Model, ModelActionsFrom, ModelEventsFrom, ModelContextFrom } from 'xstate/lib/model.types';
 
-export type OptionsFromModel<A extends Model<any, any, any, any>> = Partial<
-  MachineOptions<ContextFrom<A>, EventFrom<A>, ModelActionsFrom<A>>
->;
+// export type OptionsFromModel<A extends Model<any, any, any, any>> = Partial<
+//   MachineOptions<ContextFrom<A>, EventFrom<A>, ModelActionsFrom<A>>
+// >;
 
 /**
  *
