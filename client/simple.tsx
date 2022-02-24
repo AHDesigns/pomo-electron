@@ -1,14 +1,15 @@
 import React from 'react';
 import { render } from 'react-dom';
-import { useActor, useMachine } from '@xstate/react';
-import machine from '@client/machines/app/machine';
+import { useActor, useInterpret, useMachine, useSelector } from '@xstate/react';
+import machine, { timerMachine, timerModel } from '@client/machines/pomodoro/machine';
 // import { ipcRenderer } from '@electron/electron';
 // import { bridgeCreator } from '@electron/ipc/bridgeCreator';
 // import { createLogger } from '@electron/services/logger';
 // import log from 'electron-log';
 // import { App } from './App';
 import { inspect } from '@xstate/inspect';
-import { TimerActor } from './machines/app/model';
+import { ActorRef, ActorRefFrom } from 'xstate';
+// import { TimerActor } from './machines/app/model';
 
 inspect({
   // options
@@ -27,7 +28,7 @@ function App(): JSX.Element {
 }
 
 function LoginMachine(): JSX.Element {
-  const [state] = useMachine(machine, {
+  const service = useInterpret(timerMachine.withContext({ minutes: 2, seconds: 0 }), {
     devTools: true,
     // ...loginOptions(bridge),
     // /* eslint-disable */
@@ -38,22 +39,51 @@ function LoginMachine(): JSX.Element {
     // devTools: true,
   });
 
-  const x = state.context.pomodoro.active;
+  // const x = state.context;
+  // const x = { minutes: 3, seconds: 2 };
 
-  return <p>{x ? <Child child={x} /> : 'hello'}</p>;
+  return <Child service={service as any} />;
+  // return (
+  //   <div>
+  //     <p>{m}</p>
+  //     <p>{s}</p>
+  //   </div>
+  // );
+
+  // return <p>{x ? <Child child={x} /> : 'hello'}</p>;
 }
 
-function Child({ child }: { child: TimerActor }): JSX.Element {
-  const [state] = useActor(child);
+type TimerService = ActorRefFrom<typeof timerMachine>;
 
-  return <p>hello</p>;
+function Child({ service }: { service: TimerService }): JSX.Element {
+  const m = useSelector(service, (y) => y.context.minutes);
+  const s = useSelector(service, (y) => y.context.seconds);
+  const match = useSelector(service, (y) => y.matches);
+
+  return (
+    <div>
+      <p>{m}</p>
+      <p>{s}</p>
+      {match('counting') && <p>counting</p>}
+      <button
+        type="button"
+        onClick={() => {
+          service.send(timerModel.events.BUMP());
+        }}
+      >
+        up!
+      </button>
+    </div>
+  );
 }
 
 function Login(): JSX.Element {
   return (
     <>
       {/* <Inspector /> */}
-      <LoginMachine />
+      <React.StrictMode>
+        <LoginMachine />
+      </React.StrictMode>
     </>
   );
 }
