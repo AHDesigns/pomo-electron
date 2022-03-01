@@ -24,14 +24,7 @@ export const timerMachine = timerModel.createMachine(
     states: {
       counting: {
         invoke: {
-          src: () => (cb) => {
-            const interval = setInterval(() => {
-              cb(timerModel.events.TICK());
-            }, 100);
-            return () => {
-              clearInterval(interval);
-            };
-          },
+          src: 'countOneSecond',
         },
         on: {
           TICK: [
@@ -52,6 +45,16 @@ export const timerMachine = timerModel.createMachine(
     },
   },
   {
+    services: {
+      countOneSecond: () => (sendBack) => {
+        const interval = setInterval(() => {
+          sendBack(timerModel.events.TICK());
+        }, 100);
+        return () => {
+          clearInterval(interval);
+        };
+      },
+    },
     guards: {
       isTimerFinished: ({ minutes, seconds }) => minutes === 0 && seconds === 0,
     },

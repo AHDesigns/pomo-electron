@@ -4,10 +4,10 @@ import { ipcRenderer } from '@electron/electron';
 import { bridgeCreator } from '@electron/ipc/bridgeCreator';
 import { createLogger } from '@electron/services/logger';
 import log from 'electron-log';
-import { App } from './App';
+import { Providers } from './Providers';
 
 const mainElement = document.createElement('div');
 mainElement.setAttribute('id', 'root');
 document.body.appendChild(mainElement);
 
-render(<App bridge={bridgeCreator(ipcRenderer)} logger={createLogger(log)} />, mainElement);
+render(<Providers bridge={bridgeCreator(ipcRenderer)} logger={createLogger(log)} />, mainElement);

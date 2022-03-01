@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/consistent-type-assertions */
 import { screen, render } from '@test/rtl';
 import { inspect as _inspect } from '@xstate/inspect';
 import React, { useState } from 'react';
@@ -25,13 +28,13 @@ describe('Inspector', () => {
       }
       return inspectorReturnsInstance
         ? undefined
-        : {
+        : ({
             disconnect: disconnectSpy,
             send: () => {},
             subscribe: () => ({ unsubscribe: () => {} }),
             id: '',
             getSnapshot: () => {},
-          };
+          } as any);
     });
   });
 
@@ -112,7 +115,9 @@ function InspectorWrapper({ toggleable }: IInspector) {
         onClick={() => {
           setIsVisible((v) => !v);
         }}
-      />
+      >
+        toggle
+      </button>
       {isVisible ? <Inspector toggleable={toggleable} /> : null}
     </div>
   );

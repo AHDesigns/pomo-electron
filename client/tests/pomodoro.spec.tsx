@@ -1,7 +1,6 @@
 import React from 'react';
 import { screen, render } from '@test/rtl';
-// import { screen, render, cleanup } from '@testing-library/react';
-import { IPomo, Pomodoro } from '@client/components';
+import { App, IApp } from '@client/App';
 import { ok } from '@shared/Result';
 import { emptyConfig } from '@shared/types';
 import userEvent from '@testing-library/user-event';
@@ -13,21 +12,21 @@ beforeEach(() => {
 
 afterEach(() => {
   // turn off if test fails
-  // const button = screen.queryByRole('button', { name: 'stop' });
-  // if (button) userEvent.click(button);
+  const button = screen.queryByRole('button', { name: 'stop' });
+  if (button) userEvent.click(button);
   // deliberately not wrapping this in act. If anything throws errors, make sure to clean it up in the test
-  // jest.runOnlyPendingTimers();
-  // jest.useRealTimers();
+  jest.runOnlyPendingTimers();
+  jest.useRealTimers();
 });
 
-describe('timer tests', () => {
+describe('Pomodoro tests', () => {
   const settingsNoAutoStarts = {
     pomo: 10,
     shortBreak: 5,
     longBreak: 8,
   };
 
-  const hooks: IPomo['hooks'] = {
+  const hooks: IApp['hooks'] = {
     start: jest.fn(),
     tick: jest.fn(),
     pause: jest.fn(),
@@ -38,7 +37,7 @@ describe('timer tests', () => {
 
   describe(`given a timer has not been run and has settings`, () => {
     test('the timer behaves as expected', async () => {
-      await render(<Pomodoro hooks={hooks} />, {
+      await render(<App hooks={hooks} />, {
         overrides: {
           bridge: {
             storeRead: async () =>
@@ -52,6 +51,9 @@ describe('timer tests', () => {
 
       expect(screen.getByText(/10 : 00/)).toBeInTheDocument();
 
+      /* ******************************************************************* */
+      /* START
+      /* ******************************************************************* */
       userEvent.click(screen.getByRole('button', { name: 'start' }));
 
       expect(hooks.start).toHaveBeenCalledTimes(1);
@@ -68,10 +70,15 @@ describe('timer tests', () => {
       );
 
       expect(screen.getByText(/9 : 49/)).toBeInTheDocument();
+      // it.todo('should show the time in the menu bar');
+      // it.todo('should show the active icon in the menu bar');
 
       expect(screen.getByText(/completed pomos: 0/)).toBeInTheDocument();
       expect(screen.getByText(/completed breaks: 0/)).toBeInTheDocument();
 
+      /* ******************************************************************* */
+      /* PAUSE
+      /* ******************************************************************* */
       userEvent.click(screen.getByRole('button', { name: 'pause' }));
 
       tick(11);
@@ -82,7 +89,11 @@ describe('timer tests', () => {
       );
 
       expect(screen.getByText(/9 : 49/)).toBeInTheDocument();
+      // // it.todo('should show the paused time in the menu bar');
 
+      /* ******************************************************************* */
+      /* PLAY
+      /* ******************************************************************* */
       userEvent.click(screen.getByRole('button', { name: 'play' }));
 
       tick(9);
@@ -94,7 +105,11 @@ describe('timer tests', () => {
       expect(hooks.tick).toHaveBeenCalledTimes(20);
 
       expect(screen.getByText(/9 : 40/)).toBeInTheDocument();
+      // it.todo('should show the time in the menu bar');
 
+      /* ******************************************************************* */
+      /* STOP
+      /* ******************************************************************* */
       userEvent.click(screen.getByRole('button', { name: 'stop' }));
 
       tick(5);
@@ -108,7 +123,12 @@ describe('timer tests', () => {
       expect(screen.getByText(/completed breaks: 0/)).toBeInTheDocument();
 
       expect(screen.getByText(/10 : 00/)).toBeInTheDocument();
+      // it.todo('should clear the time in the menu bar');
+      // it.todo('should show the inactive icon in the menu bar');
 
+      /* ******************************************************************* */
+      /* RESTART
+      /* ******************************************************************* */
       userEvent.click(screen.getByRole('button', { name: 'start' }));
 
       tick(5);
@@ -123,10 +143,17 @@ describe('timer tests', () => {
       expect(hooks.tick).toHaveBeenLastCalledWith(
         expect.objectContaining({ mins: 9, seconds: 55, timer: 'pomo' })
       );
+      // it.todo('should show the time in the menu bar');
+      // it.todo('should show the active icon in the menu bar');
+
+      /* ******************************************************************* */
+      /* STOP
+      /* ******************************************************************* */
+      userEvent.click(screen.getByRole('button', { name: 'stop' }));
     });
 
     test('when the timer progresses through a full long break cycle', async () => {
-      await render(<Pomodoro hooks={hooks} />, {
+      await render(<App hooks={hooks} />, {
         overrides: {
           bridge: {
             storeRead: async () =>

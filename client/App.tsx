@@ -1,22 +1,19 @@
-import React, { FC } from 'react';
-import { ThemeProvider } from 'styled-components';
-import { theme } from '@client/styles/theme';
-import { ErrorBoundary, PageManager, ScrollBar } from '@client/components';
-import { BridgeProvider, ConfigProvider } from '@client/contexts';
+import React from 'react';
 
-import { IBridge, ILogger } from '@shared/types';
-import { GlobalStyle } from './styles/GlobalStyle';
+interface Hook {
+  (): void;
+}
 
-export const App: FC<{ bridge: IBridge; logger: ILogger }> = ({ bridge, logger }) => (
-  <ErrorBoundary logger={logger}>
-    <ThemeProvider theme={theme}>
-      <BridgeProvider bridge={bridge}>
-        <GlobalStyle />
-        <ScrollBar />
-        <ConfigProvider logger={logger}>
-          <PageManager />
-        </ConfigProvider>
-      </BridgeProvider>
-    </ThemeProvider>
-  </ErrorBoundary>
-);
+export interface IApp {
+  hooks?: {
+    start: Hook;
+    tick: Hook;
+    pause: Hook;
+    play: Hook;
+    stop: Hook;
+  };
+}
+
+export function App(props: IApp): JSX.Element {
+  return <div>hello App!</div>;
+}
