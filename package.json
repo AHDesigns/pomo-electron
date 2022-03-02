@@ -20,7 +20,7 @@
     "build:react": "webpack --config tooling/webpack/react.webpack.js --mode production",
     "dev:electron": "wait-on http-get://localhost:4000/ && cross-env NODE_ENV=development webpack --config tooling/webpack/electron.webpack.js --mode development && yarn start",
     "dev:react": "cross-env NODE_ENV=development webpack-dev-server --config tooling/webpack/react.webpack.js --mode development",
-    "dev:web": "cross-env NODE_ENV=development webpack-dev-server --config tooling/webpack/web.webpack.js --mode development",
+    "de:web": "cross-env NODE_ENV=development webpack-dev-server --config tooling/webpack/web.webpack.js --mode development",
     "checks": "FORCE_COLOR=1 npm-run-all --print-label --parallel lint test --serial build",
     "release": "electron-builder --mac",
     "postrelease": "rm -rf dist",

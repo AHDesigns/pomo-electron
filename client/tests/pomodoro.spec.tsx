@@ -1,6 +1,7 @@
 import React from 'react';
-import { screen, render } from '@test/rtl';
+import { screen, render, act } from '@test/rtl';
 import { App, IApp } from '@client/App';
+import T from '@client/copy';
 import { ok } from '@shared/Result';
 import { emptyConfig } from '@shared/types';
 import userEvent from '@testing-library/user-event';
@@ -11,12 +12,25 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  // turn off if test fails
-  const button = screen.queryByRole('button', { name: 'stop' });
-  if (button) userEvent.click(button);
-  // deliberately not wrapping this in act. If anything throws errors, make sure to clean it up in the test
-  jest.runOnlyPendingTimers();
-  jest.useRealTimers();
+  // eslint-disable-next-line prefer-const
+  let testFailed = false;
+
+  // XXX: uncomment if error, for better test output
+  testFailed = true;
+
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (testFailed) {
+    const button = screen.queryByRole('button', { name: T.pomoTimer.stop });
+    if (button) userEvent.click(button);
+    act(() => {
+      jest.runOnlyPendingTimers();
+      jest.useRealTimers();
+    });
+  } else {
+    // deliberately not wrapping this in act. If anything throws errors, make sure to clean it up in the test
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
+  }
 });
 
 describe('Pomodoro tests', () => {
@@ -35,7 +49,7 @@ describe('Pomodoro tests', () => {
     // complete: jest.fn(),
   };
 
-  describe(`given a timer has not been run and has settings`, () => {
+  describe.only(`given a timer has not been run and has settings`, () => {
     test('the timer behaves as expected', async () => {
       await render(<App hooks={hooks} />, {
         overrides: {
@@ -54,7 +68,7 @@ describe('Pomodoro tests', () => {
       /* ******************************************************************* */
       /* START
       /* ******************************************************************* */
-      userEvent.click(screen.getByRole('button', { name: 'start' }));
+      userEvent.click(screen.getByRole('button', { name: T.pomoTimer.start }));
 
       expect(hooks.start).toHaveBeenCalledTimes(1);
       expect(hooks.start).toHaveBeenCalledWith(
@@ -79,7 +93,7 @@ describe('Pomodoro tests', () => {
       /* ******************************************************************* */
       /* PAUSE
       /* ******************************************************************* */
-      userEvent.click(screen.getByRole('button', { name: 'pause' }));
+      userEvent.click(screen.getByRole('button', { name: T.pomoTimer.pause }));
 
       tick(11);
 
@@ -94,7 +108,7 @@ describe('Pomodoro tests', () => {
       /* ******************************************************************* */
       /* PLAY
       /* ******************************************************************* */
-      userEvent.click(screen.getByRole('button', { name: 'play' }));
+      userEvent.click(screen.getByRole('button', { name: T.pomoTimer.play }));
 
       tick(9);
 
@@ -110,7 +124,7 @@ describe('Pomodoro tests', () => {
       /* ******************************************************************* */
       /* STOP
       /* ******************************************************************* */
-      userEvent.click(screen.getByRole('button', { name: 'stop' }));
+      userEvent.click(screen.getByRole('button', { name: T.pomoTimer.stop }));
 
       tick(5);
 
@@ -129,7 +143,7 @@ describe('Pomodoro tests', () => {
       /* ******************************************************************* */
       /* RESTART
       /* ******************************************************************* */
-      userEvent.click(screen.getByRole('button', { name: 'start' }));
+      userEvent.click(screen.getByRole('button', { name: T.pomoTimer.start }));
 
       tick(5);
 
@@ -149,7 +163,7 @@ describe('Pomodoro tests', () => {
       /* ******************************************************************* */
       /* STOP
       /* ******************************************************************* */
-      userEvent.click(screen.getByRole('button', { name: 'stop' }));
+      userEvent.click(screen.getByRole('button', { name: T.pomoTimer.stop }));
     });
 
     test('when the timer progresses through a full long break cycle', async () => {
@@ -165,7 +179,7 @@ describe('Pomodoro tests', () => {
         },
       });
 
-      userEvent.click(screen.getByRole('button', { name: 'start' }));
+      userEvent.click(screen.getByRole('button', { name: T.pomoTimer.start }));
 
       expect(screen.getByText(/10 : 00/)).toBeInTheDocument();
 
@@ -184,12 +198,6 @@ describe('Pomodoro tests', () => {
 
       expect(screen.getByText(/completed pomos: 1/)).toBeInTheDocument();
       expect(screen.getByText(/completed breaks: 0/)).toBeInTheDocument();
-
-      // stopping for now, as having all sorts of issues with spawning actors not stopping. https://github.com/statelyai/xstate/issues/1642 this issue makes me question the validity of working with this library. I think i will wait till v5, getting tired of working with something that breaks all the time.
-
-      // this only exists as a problem in tests when the timer is unmounted, and I get a bunch of issues about the itnerpreter unable to read `name` of some property.
-
-      // can be recreated in the app by simply unmounting the Pomodoro component (the pomoMachine must have a timerMachine spawned to cause this issue)
     });
 
     // describe('when the pomo timer is started and finishes', () => {

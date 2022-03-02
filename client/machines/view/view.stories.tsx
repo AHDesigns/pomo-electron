@@ -14,7 +14,7 @@ export default {
 } as Meta;
 
 function LoginMachine(): JSX.Element {
-  useMachine(machine, {
+  const [context, send] = useMachine(machine, {
     devTools: true,
   });
 

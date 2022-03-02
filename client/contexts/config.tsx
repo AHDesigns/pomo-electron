@@ -25,8 +25,17 @@ const { Provider } = configContext;
 
 export const useConfig = (): Config => useContext(configContext);
 
-export const ConfigProvider: FC<Partial<Config> & { logger: ILogger }> = (props) => {
-  const [config, setConfig] = useState(props.config ?? emptyConfig);
+interface IConfigProvider extends Partial<Config> {
+  logger: ILogger;
+  children: React.ReactNode;
+}
+
+export function ConfigProvider({
+  children,
+  logger,
+  config: configOverride,
+}: IConfigProvider): JSX.Element {
+  const [config, setConfig] = useState(configOverride ?? emptyConfig);
   const [loading, setLoading] = useState(true);
   const bridge = useBridge();
 
@@ -36,13 +45,13 @@ export const ConfigProvider: FC<Partial<Config> & { logger: ILogger }> = (props)
       .then((data) => {
         data.match({
           Ok: setConfig,
-          Err: props.logger.error,
+          Err: logger.error,
         });
       })
       .then(() => {
         setLoading(false);
       });
-  }, [bridge, setLoading, props.logger]);
+  }, [bridge, setLoading, logger]);
 
   return (
     <Provider
@@ -54,7 +63,7 @@ export const ConfigProvider: FC<Partial<Config> & { logger: ILogger }> = (props)
 
           res.match({
             Ok: setConfig,
-            Err: props.logger.error,
+            Err: logger.error,
           });
 
           return res;
@@ -64,15 +73,14 @@ export const ConfigProvider: FC<Partial<Config> & { logger: ILogger }> = (props)
 
           res.match({
             Ok: setConfig,
-            Err: props.logger.error,
+            Err: logger.error,
           });
 
           return res;
         },
-        ...props,
       }}
     >
-      {props.children}
+      {children}
     </Provider>
   );
-};
+}

@@ -145,6 +145,13 @@ module.exports = {
       },
     },
     {
+      // Machine only rules
+      files: ['client/machines/**'],
+      rules: {
+        '@typescript-eslint/consistent-type-assertions': 'off',
+      },
+    },
+    {
       files: ['*.spec.@(js|jsx|ts|tsx)', 'e2e/**', 'testHelpers/**'],
       plugins: ['testing-library', 'jest-dom'],
       extends: ['plugin:testing-library/react', 'plugin:jest-dom/recommended'],
