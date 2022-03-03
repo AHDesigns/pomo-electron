@@ -1,183 +1,117 @@
 import { override } from '@shared/merge';
 import { DeepPartial } from '@shared/types';
-import { ContextFrom, InterpreterFrom, send, sendParent } from 'xstate';
-import { createModel } from 'xstate/lib/model';
+import { InterpreterFrom, send } from 'xstate';
+// import timerMachine from '../timer/machine';
+// import timerModel from '../timer/model';
 import model, { PomodoroModel } from './model';
 
-export const timerModel = createModel(
-  {
-    minutes: 0,
-    seconds: 0,
-  },
-  {
-    events: {
-      TICK: () => ({}),
-      BUMP: () => ({}),
-      PAUSE: () => ({}),
-      PLAY: () => ({}),
-    },
-  }
-);
+// import { createMachine, send, sendParent, forwardTo, assign } from 'xstate';
 
-export type TimerContext = ContextFrom<typeof timerModel>;
-
-export const timerMachine = timerModel.createMachine(
+const pomodoroMachine = model.createMachine(
   {
-    context: timerModel.initialContext,
-    initial: 'counting',
+    id: 'pomodoroMachine',
+    context: model.initialContext,
+    type: 'parallel',
     states: {
-      counting: {
-        invoke: {
-          src: 'countOneSecond',
-        },
-        on: {
-          TICK: [
-            {
-              cond: 'isTimerFinished',
-              target: 'finished',
+      pomodoro: {
+        initial: 'pomo',
+        states: {
+          pomo: {
+            entry: 'resetTimerPomo',
+            on: {
+              STOP: 'pomo',
+              _COMPLETE: [
+                {
+                  cond: 'isLongBreak',
+                  actions: ['increaseCompletedCount'],
+                  target: 'long',
+                },
+                {
+                  actions: ['increaseCompletedCount'],
+                  target: 'short',
+                },
+              ],
             },
-            {
-              actions: ['decrementOneSecond', 'updateParent'],
+          },
+          short: {
+            entry: 'resetTimerShort',
+            on: {
+              _COMPLETE: 'pomo',
+              STOP: 'pomo',
             },
-          ],
-          BUMP: { actions: ['addMinute'] },
-          PAUSE: 'paused',
+          },
+          long: {
+            entry: 'resetTimerLong',
+            on: {
+              _COMPLETE: 'pomo',
+              STOP: 'pomo',
+            },
+          },
         },
       },
-      paused: {
-        on: {
-          PLAY: 'counting',
+      timer: {
+        initial: 'ready',
+        states: {
+          ready: {
+            on: {
+              START: 'playing',
+            },
+          },
+          playing: {
+            invoke: {
+              id: 'second-timer',
+              src: 'countOneSecond',
+            },
+            on: {
+              _TICK: [
+                {
+                  cond: 'isTimerFinished',
+                  actions: send(model.events._COMPLETE()),
+                  target: 'ready',
+                },
+                { actions: 'updateTimer', target: 'playing' },
+              ],
+              PAUSE: 'paused',
+              STOP: 'ready',
+            },
+          },
+          paused: {
+            on: {
+              PLAY: 'playing',
+              STOP: 'ready',
+            },
+          },
         },
-      },
-      finished: {
-        type: 'final',
       },
     },
   },
   {
     services: {
       countOneSecond: () => (sendBack) => {
-        const interval = setInterval(() => {
-          sendBack(timerModel.events.TICK());
-        }, 1000);
-        return () => {
-          clearInterval(interval);
-        };
+        const id = setInterval(() => sendBack(model.events._TICK()), 1000);
+        return () => clearInterval(id);
       },
     },
     guards: {
-      isTimerFinished: ({ minutes, seconds }) => minutes === 0 && seconds === 0,
+      isTimerFinished: ({ active: { minutes, seconds } }) => minutes === 0 && seconds === 1,
+      isLongBreak: ({ completed: { pomo } }) => pomo !== 0 && pomo % 4 === 0,
     },
     actions: {
-      decrementOneSecond: timerModel.assign(({ seconds, minutes }) => {
-        if (seconds === 0) {
-          return { minutes: minutes - 1, seconds: 59 };
-        }
-        return { minutes, seconds: seconds - 1 };
-      }),
-      addMinute: timerModel.assign({
-        minutes: ({ minutes }) => minutes + 1,
-      }),
-      updateParent: sendParent(({ minutes, seconds }) => model.events.TIMER_TICK(minutes, seconds)),
-    },
-  }
-);
-
-const pomodoroMachine = model.createMachine(
-  {
-    context: model.initialContext,
-    type: 'parallel',
-    states: {
-      timer: {
-        initial: 'inactive',
-        states: {
-          inactive: {
-            entry: [send('RESET')],
-            on: {
-              POMO_START: {
-                actions: ['onStartHooks'],
-                target: 'active',
-              },
-              RESET: {
-                actions: ['resetTimerDisplay'],
-              },
-            },
-          },
-          paused: {
-            on: {
-              POMO_START: {
-                actions: [send(timerModel.events.PLAY, { to: 'timer' }), 'onPlayHooks'],
-                target: 'active',
-              },
-              POMO_STOP: {
-                target: 'inactive',
-                actions: ['onStopHooks'],
-              },
-            },
-          },
-          active: {
-            on: {
-              POMO_PAUSE: {
-                target: 'paused',
-                actions: [send(timerModel.events.PAUSE, { to: 'timer' }), 'onPauseHooks'],
-              },
-              POMO_STOP: {
-                target: 'inactive',
-                actions: ['onStopHooks'],
-              },
-              TIMER_TICK: {
-                actions: ['updateTimer', 'onTickHooks'],
-              },
-            },
-          },
-        },
-      },
-      current: {
-        initial: 'inactive',
-        states: {
-          inactive: {
-            on: {
-              POMO_START: 'pomo',
-            },
-          },
-          pomo: {
-            invoke: {
-              id: 'timer',
-              src: timerMachine,
-              data: ({ pomodoro: { active } }) => ({ ...active }),
-            },
-            on: {
-              POMO_STOP: 'inactive',
-            },
-          },
-          shortBreak: {},
-          longBreak: {},
-        },
-      },
-    },
-  },
-  {
-    actions: {
-      resetTimerDisplay: model.assign({
-        pomodoro: ({ pomodoro, timers }) =>
-          override(pomodoro, {
-            active: {
-              minutes: timers.pomo,
-              seconds: 0,
-            },
-          }),
-      }),
       updateTimer: model.assign({
-        pomodoro: ({ pomodoro }, e) => {
-          if (e.type !== 'TIMER_TICK') return pomodoro;
-
-          return override(pomodoro, {
-            active: {
-              minutes: e.minutes,
-              seconds: e.seconds,
-            },
-          });
-        },
+        active: ({ active: { minutes, seconds } }) =>
+          seconds === 0 ? { minutes: minutes - 1, seconds: 59 } : { minutes, seconds: seconds - 1 },
+      }),
+      increaseCompletedCount: model.assign({
+        completed: ({ completed }) => override(completed, { pomo: completed.pomo + 1 }),
+      }),
+      resetTimerPomo: model.assign({
+        active: ({ timers: { pomo } }) => ({ seconds: 0, minutes: pomo }),
+      }),
+      resetTimerShort: model.assign({
+        active: ({ timers: { short } }) => ({ seconds: 0, minutes: short }),
+      }),
+      resetTimerLong: model.assign({
+        active: ({ timers: { long } }) => ({ seconds: 0, minutes: long }),
       }),
     },
   }

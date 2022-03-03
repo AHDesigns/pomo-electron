@@ -1,6 +1,7 @@
 import { useInterpret, useSelector } from '@xstate/react';
 import T from '@client/copy';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { displayNum } from '@shared/format';
 import { useConfig } from './contexts';
 import { PomodoroMachine, pomodoroMachine } from './machines';
 
@@ -23,57 +24,35 @@ export function App({ hooks }: IApp): JSX.Element {
   const service = useInterpret(
     pomodoroMachine({
       context: {
-        pomodoro: {
-          active: {
-            minutes: config.timers.pomo,
-          },
-        },
-      },
-    }).withConfig({
-      actions: {
-        onStartHooks: (c) => {
-          const { seconds, minutes, type } = c.pomodoro.active;
-          hooks?.start({
-            timer: type,
-            mins: minutes,
-            seconds,
-          });
-        },
-        onTickHooks: (c) => {
-          const { seconds, minutes, type } = c.pomodoro.active;
-          hooks?.tick({
-            timer: type,
-            mins: minutes,
-            seconds,
-          });
-        },
-        onPauseHooks: (c) => {
-          const { seconds, minutes, type } = c.pomodoro.active;
-          hooks?.pause({
-            timer: type,
-            mins: minutes,
-            seconds,
-          });
-        },
-        onPlayHooks: (c) => {
-          const { seconds, minutes, type } = c.pomodoro.active;
-          hooks?.play({
-            timer: type,
-            mins: minutes,
-            seconds,
-          });
-        },
-        onStopHooks: (c, e) => {
-          const { seconds, minutes, type } = c.pomodoro.active;
-          hooks?.stop({
-            timer: type,
-            mins: minutes,
-            seconds,
-          });
-        },
+        timers: config.timers,
+        autoStart: config.autoStart,
       },
     })
   );
+
+  useEffect(() => {
+    service.onTransition((c, e) => {
+      const { minutes: mins, seconds } = c.context.active;
+      // eslint-disable-next-line
+      const timer: string = (c.value as any)?.pomodoro ?? 'pomo';
+
+      type X = keyof Required<IApp>['hooks'];
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      const event = e.type.toLowerCase().replace('_', '') as X;
+      if (hooks && event in hooks) {
+        // console.log({ timer, mins, seconds, e });
+        hooks[event]({ mins, seconds, timer });
+      }
+      // switch (e.type) {
+      //   case 'START':
+      //     hooks?.start({ mins, seconds, timer });
+      //     break;
+      //   default:
+      //     break;
+      // }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return <Pomodoro service={service} />;
 }
@@ -83,24 +62,24 @@ interface IPomodoro {
 }
 
 function Pomodoro({ service }: IPomodoro): JSX.Element {
-  const { seconds, minutes } = useSelector(service, (c) => c.context.pomodoro.active);
-  const { pomos, long } = useSelector(service, (c) => c.context.pomodoro.completed);
+  const { seconds, minutes } = useSelector(service, (c) => c.context.active);
+  const { pomo, long } = useSelector(service, (c) => c.context.completed);
   const state = useSelector(service, (c) => c);
 
-  const timerRunning = useSelector(service, (c) => c.matches('timer.active'));
+  const timerRunning = useSelector(service, (c) => c.matches('timer.playing'));
   const timerPaused = useSelector(service, (c) => c.matches('timer.paused'));
-  const timerInactive = useSelector(service, (c) => c.matches('timer.inactive'));
+  const timerReady = useSelector(service, (c) => c.matches('timer.ready'));
 
   return (
     <div>
       <p>
-        {minutes} : {seconds || '00'}
+        {displayNum(minutes)} : {displayNum(seconds)}
       </p>
-      {timerInactive && (
+      {timerReady && (
         <button
           type="button"
           onClick={() => {
-            service.send('POMO_START');
+            service.send('START');
           }}
         >
           {T.pomoTimer.start}
@@ -110,7 +89,7 @@ function Pomodoro({ service }: IPomodoro): JSX.Element {
         <button
           type="button"
           onClick={() => {
-            service.send('POMO_PAUSE');
+            service.send('PAUSE');
           }}
         >
           {T.pomoTimer.pause}
@@ -120,23 +99,23 @@ function Pomodoro({ service }: IPomodoro): JSX.Element {
         <button
           type="button"
           onClick={() => {
-            service.send('POMO_START');
+            service.send('PLAY');
           }}
         >
           {T.pomoTimer.play}
         </button>
       )}
-      {state.can('POMO_STOP') && (
+      {state.can('STOP') && (
         <button
           type="button"
           onClick={() => {
-            service.send('POMO_STOP');
+            service.send('STOP');
           }}
         >
           {T.pomoTimer.stop}
         </button>
       )}
-      <p>completed pomos: {pomos}</p>
+      <p>completed pomos: {pomo}</p>
       <p>completed breaks: {long}</p>
     </div>
   );

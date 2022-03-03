@@ -12,8 +12,8 @@ export type IClientLogger = Pick<ILogger, 'error' | 'info'>;
 export const emptyConfig: UserConfig = {
   timers: {
     pomo: 10,
-    shortBreak: 5,
-    longBreak: 15,
+    short: 5,
+    long: 15,
   },
   autoStart: {
     beforeShortBreak: true,
@@ -26,8 +26,8 @@ export const emptyConfig: UserConfig = {
 export interface UserConfig {
   timers: {
     pomo: number;
-    shortBreak: number;
-    longBreak: number;
+    short: number;
+    long: number;
   };
   autoStart: {
     beforeShortBreak: boolean;

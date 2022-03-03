@@ -39,11 +39,11 @@ export const Timer: FC = () => {
           min={0}
           max={120}
           placeholder="xocx-..."
-          value={timers.shortBreak}
+          value={timers.short}
           onChange={({ target: { value } }) => {
             storeUpdate({
               timers: {
-                shortBreak: Number(value),
+                short: Number(value),
               },
             });
           }}
@@ -56,11 +56,11 @@ export const Timer: FC = () => {
           min={0}
           max={120}
           placeholder="xocx-..."
-          value={timers.longBreak}
+          value={timers.long}
           onChange={({ target: { value } }) => {
             storeUpdate({
               timers: {
-                longBreak: Number(value),
+                long: Number(value),
               },
             });
           }}

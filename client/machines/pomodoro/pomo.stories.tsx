@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useMachine, useSelector, useInterpret } from '@xstate/react';
 import { Story, Meta } from '@storybook/react/types-6-0';
 import { inspect } from '@xstate/inspect';
-import machine, { timerMachine, TimerContext } from './machine';
+import machine from './machine';
 
 inspect({
   iframe: false,
@@ -19,23 +19,32 @@ function Child({ service }: { service: any }): JSX.Element {
   return <code>{JSON.stringify(context, null, 2)}</code>;
 }
 
-export function TimerMachine(): JSX.Element {
-  const service = useInterpret(timerMachine.withContext({ minutes: 2, seconds: 0 }), {
+export function PomoMachine(): JSX.Element {
+  const service = useInterpret(machine({ context: { timers: { pomo: 2 } } }), {
     devTools: true,
   });
 
-  return <Child service={service} />;
-}
-export function PomoMachine(): JSX.Element {
-  const service = useInterpret(machine({ context: { pomodoro: { active: { minutes: 3 } } } }), {
-    devTools: true,
-  });
-  // matches('counting');
   useEffect(() => {
     service.onTransition((c, e) => {
-      console.log({ c, e });
+      switch (e.type) {
+        case 'PLAY':
+          console.log('play', c.value);
+          break;
+        case 'STOP':
+          console.log('stop', c.value);
+          break;
+        default:
+          break;
+      }
     });
-  }, []);
+  }, [service]);
+
+  // matches('counting');
+  // useEffect(() => {
+  //   service.onTransition((c, e) => {
+  //     // console.log({ c, e });
+  //   });
+  // }, []);
 
   return <Child service={service} />;
 }

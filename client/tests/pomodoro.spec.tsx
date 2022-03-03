@@ -36,8 +36,8 @@ afterEach(() => {
 describe('Pomodoro tests', () => {
   const settingsNoAutoStarts = {
     pomo: 10,
-    shortBreak: 5,
-    longBreak: 8,
+    short: 5,
+    long: 8,
   };
 
   const hooks: IApp['hooks'] = {
@@ -129,9 +129,7 @@ describe('Pomodoro tests', () => {
       tick(5);
 
       expect(hooks.stop).toHaveBeenCalledTimes(1);
-      expect(hooks.stop).toHaveBeenCalledWith(
-        expect.objectContaining({ mins: 9, seconds: 40, timer: 'pomo' })
-      );
+      expect(hooks.stop).toHaveBeenCalledWith(expect.objectContaining({ timer: 'pomo' }));
 
       expect(screen.getByText(/completed pomos: 0/)).toBeInTheDocument();
       expect(screen.getByText(/completed breaks: 0/)).toBeInTheDocument();
