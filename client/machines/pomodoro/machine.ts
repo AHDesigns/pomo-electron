@@ -1,11 +1,7 @@
 import { override } from '@shared/merge';
 import { DeepPartial } from '@shared/types';
 import { InterpreterFrom, send } from 'xstate';
-// import timerMachine from '../timer/machine';
-// import timerModel from '../timer/model';
 import model, { PomodoroModel } from './model';
-
-// import { createMachine, send, sendParent, forwardTo, assign } from 'xstate';
 
 const pomodoroMachine = model.createMachine(
   {
@@ -17,17 +13,14 @@ const pomodoroMachine = model.createMachine(
         initial: 'pomo',
         states: {
           pomo: {
-            entry: 'resetTimerPomo',
+            entry: ['resetTimerPomo'],
             on: {
-              STOP: 'pomo',
               _COMPLETE: [
                 {
                   cond: 'isLongBreak',
-                  actions: ['increaseCompletedCount'],
                   target: 'long',
                 },
                 {
-                  actions: ['increaseCompletedCount'],
                   target: 'short',
                 },
               ],
@@ -37,16 +30,25 @@ const pomodoroMachine = model.createMachine(
             entry: 'resetTimerShort',
             on: {
               _COMPLETE: 'pomo',
-              STOP: 'pomo',
             },
           },
           long: {
             entry: 'resetTimerLong',
             on: {
               _COMPLETE: 'pomo',
-              STOP: 'pomo',
             },
           },
+          stopping: {
+            meta: {
+              description:
+                'transition state to work get access to context before the timer is reset, fix in v5',
+            },
+            entry: ['onStopHook', send('_STOPPED')],
+            on: { _STOPPED: 'pomo' },
+          },
+        },
+        on: {
+          STOP: { target: '.stopping' },
         },
       },
       timer: {
@@ -54,7 +56,7 @@ const pomodoroMachine = model.createMachine(
         states: {
           ready: {
             on: {
-              START: 'playing',
+              START: { target: 'playing', actions: ['onStartHook'] },
             },
           },
           playing: {
@@ -66,18 +68,23 @@ const pomodoroMachine = model.createMachine(
               _TICK: [
                 {
                   cond: 'isTimerFinished',
-                  actions: send(model.events._COMPLETE()),
+                  actions: [
+                    send(model.events._COMPLETE()),
+                    'increaseCompletedCount',
+                    'onCompleteHook',
+                  ],
                   target: 'ready',
                 },
-                { actions: 'updateTimer', target: 'playing' },
+                { actions: ['updateTimer', 'onTickHook'], target: 'playing' },
               ],
               PAUSE: 'paused',
               STOP: 'ready',
             },
           },
           paused: {
+            entry: ['onPauseHook'],
             on: {
-              PLAY: 'playing',
+              PLAY: { target: 'playing', actions: ['onPlayHook'] },
               STOP: 'ready',
             },
           },
@@ -98,20 +105,22 @@ const pomodoroMachine = model.createMachine(
     },
     actions: {
       updateTimer: model.assign({
-        active: ({ active: { minutes, seconds } }) =>
-          seconds === 0 ? { minutes: minutes - 1, seconds: 59 } : { minutes, seconds: seconds - 1 },
+        active: ({ active: { minutes, seconds, type } }) =>
+          seconds === 0
+            ? { minutes: minutes - 1, seconds: 59, type }
+            : { minutes, seconds: seconds - 1, type },
       }),
       increaseCompletedCount: model.assign({
-        completed: ({ completed }) => override(completed, { pomo: completed.pomo + 1 }),
+        completed: ({ completed }) => ({ ...completed, pomo: completed.pomo + 1 }),
       }),
       resetTimerPomo: model.assign({
-        active: ({ timers: { pomo } }) => ({ seconds: 0, minutes: pomo }),
+        active: ({ timers: { pomo } }) => ({ seconds: 0, minutes: pomo, type: 'pomo' }),
       }),
       resetTimerShort: model.assign({
-        active: ({ timers: { short } }) => ({ seconds: 0, minutes: short }),
+        active: ({ timers: { short } }) => ({ seconds: 0, minutes: short, type: 'short' }),
       }),
       resetTimerLong: model.assign({
-        active: ({ timers: { long } }) => ({ seconds: 0, minutes: long }),
+        active: ({ timers: { long } }) => ({ seconds: 0, minutes: long, type: 'long' }),
       }),
     },
   }
@@ -119,12 +128,45 @@ const pomodoroMachine = model.createMachine(
 
 export type PomodoroMachine = InterpreterFrom<typeof pomodoroMachine>;
 
-interface IPomodoro {
-  context?: DeepPartial<PomodoroModel>;
+interface Hook {
+  (info: { minutes: number; seconds: number; type: 'long' | 'pomo' | 'short' }): void;
 }
 
-function pomodoroMachineFactory(props?: IPomodoro): typeof pomodoroMachine {
-  return pomodoroMachine.withContext(override(model.initialContext, props?.context));
+export interface IPomodoroMachine {
+  context?: DeepPartial<PomodoroModel>;
+  actions: {
+    onStartHook: Hook;
+    onTickHook: Hook;
+    onPauseHook: Hook;
+    onPlayHook: Hook;
+    onStopHook: Hook;
+    onCompleteHook: Hook;
+  };
+}
+
+function pomodoroMachineFactory({ context, actions }: IPomodoroMachine): typeof pomodoroMachine {
+  return pomodoroMachine.withContext(override(model.initialContext, context)).withConfig({
+    actions: {
+      onStartHook: ({ active }) => {
+        actions.onStartHook({ ...active });
+      },
+      onTickHook: ({ active }) => {
+        actions.onTickHook({ ...active });
+      },
+      onPauseHook: ({ active }) => {
+        actions.onPauseHook({ ...active });
+      },
+      onPlayHook: ({ active }) => {
+        actions.onPlayHook({ ...active });
+      },
+      onStopHook: ({ active }) => {
+        actions.onStopHook({ ...active });
+      },
+      onCompleteHook: ({ active }) => {
+        actions.onCompleteHook({ ...active });
+      },
+    },
+  });
 }
 
 export default pomodoroMachineFactory;

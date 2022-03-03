@@ -15,6 +15,7 @@ const pomodoroModel = createModel(
       long: 0,
     },
     active: {
+      type: 'pomo' as 'long' | 'pomo' | 'short',
       minutes: 0,
       seconds: 0,
     },

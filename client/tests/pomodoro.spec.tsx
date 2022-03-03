@@ -41,12 +41,12 @@ describe('Pomodoro tests', () => {
   };
 
   const hooks: IApp['hooks'] = {
-    start: jest.fn(),
-    tick: jest.fn(),
-    pause: jest.fn(),
-    play: jest.fn(),
-    stop: jest.fn(),
-    // complete: jest.fn(),
+    onStartHook: jest.fn(),
+    onTickHook: jest.fn(),
+    onPauseHook: jest.fn(),
+    onPlayHook: jest.fn(),
+    onStopHook: jest.fn(),
+    onCompleteHook: jest.fn(),
   };
 
   describe.only(`given a timer has not been run and has settings`, () => {
@@ -70,17 +70,17 @@ describe('Pomodoro tests', () => {
       /* ******************************************************************* */
       userEvent.click(screen.getByRole('button', { name: T.pomoTimer.start }));
 
-      expect(hooks.start).toHaveBeenCalledTimes(1);
-      expect(hooks.start).toHaveBeenCalledWith(
-        expect.objectContaining({ mins: 10, seconds: 0, timer: 'pomo' })
+      expect(hooks.onStartHook).toHaveBeenCalledTimes(1);
+      expect(hooks.onStartHook).toHaveBeenCalledWith(
+        expect.objectContaining({ minutes: 10, seconds: 0, type: 'pomo' })
       );
 
       tick(11);
 
-      expect(hooks.tick).toHaveBeenCalledTimes(11);
-      expect(hooks.tick).toHaveBeenNthCalledWith(
+      expect(hooks.onTickHook).toHaveBeenCalledTimes(11);
+      expect(hooks.onTickHook).toHaveBeenNthCalledWith(
         11,
-        expect.objectContaining({ mins: 9, seconds: 49, timer: 'pomo' })
+        expect.objectContaining({ minutes: 9, seconds: 49, type: 'pomo' })
       );
 
       expect(screen.getByText(/9 : 49/)).toBeInTheDocument();
@@ -97,9 +97,9 @@ describe('Pomodoro tests', () => {
 
       tick(11);
 
-      expect(hooks.pause).toHaveBeenCalledTimes(1);
-      expect(hooks.pause).toHaveBeenCalledWith(
-        expect.objectContaining({ mins: 9, seconds: 49, timer: 'pomo' })
+      expect(hooks.onPauseHook).toHaveBeenCalledTimes(1);
+      expect(hooks.onPauseHook).toHaveBeenCalledWith(
+        expect.objectContaining({ minutes: 9, seconds: 49, type: 'pomo' })
       );
 
       expect(screen.getByText(/9 : 49/)).toBeInTheDocument();
@@ -112,11 +112,11 @@ describe('Pomodoro tests', () => {
 
       tick(9);
 
-      expect(hooks.play).toHaveBeenCalledTimes(1);
-      expect(hooks.play).toHaveBeenCalledWith(
-        expect.objectContaining({ mins: 9, seconds: 49, timer: 'pomo' })
+      expect(hooks.onPlayHook).toHaveBeenCalledTimes(1);
+      expect(hooks.onPlayHook).toHaveBeenCalledWith(
+        expect.objectContaining({ minutes: 9, seconds: 49, type: 'pomo' })
       );
-      expect(hooks.tick).toHaveBeenCalledTimes(20);
+      expect(hooks.onTickHook).toHaveBeenCalledTimes(20);
 
       expect(screen.getByText(/9 : 40/)).toBeInTheDocument();
       // it.todo('should show the time in the menu bar');
@@ -128,8 +128,10 @@ describe('Pomodoro tests', () => {
 
       tick(5);
 
-      expect(hooks.stop).toHaveBeenCalledTimes(1);
-      expect(hooks.stop).toHaveBeenCalledWith(expect.objectContaining({ timer: 'pomo' }));
+      expect(hooks.onStopHook).toHaveBeenCalledTimes(1);
+      expect(hooks.onStopHook).toHaveBeenCalledWith(
+        expect.objectContaining({ minutes: 9, seconds: 40, type: 'pomo' })
+      );
 
       expect(screen.getByText(/completed pomos: 0/)).toBeInTheDocument();
       expect(screen.getByText(/completed breaks: 0/)).toBeInTheDocument();
@@ -145,15 +147,15 @@ describe('Pomodoro tests', () => {
 
       tick(5);
 
-      expect(hooks.start).toHaveBeenCalledTimes(2);
-      expect(hooks.start).toHaveBeenNthCalledWith(
+      expect(hooks.onStartHook).toHaveBeenCalledTimes(2);
+      expect(hooks.onStartHook).toHaveBeenNthCalledWith(
         2,
-        expect.objectContaining({ mins: 10, seconds: 0, timer: 'pomo' })
+        expect.objectContaining({ minutes: 10, seconds: 0, type: 'pomo' })
       );
 
       expect(screen.getByText(/9 : 55/)).toBeInTheDocument();
-      expect(hooks.tick).toHaveBeenLastCalledWith(
-        expect.objectContaining({ mins: 9, seconds: 55, timer: 'pomo' })
+      expect(hooks.onTickHook).toHaveBeenLastCalledWith(
+        expect.objectContaining({ minutes: 9, seconds: 55, type: 'pomo' })
       );
       // it.todo('should show the time in the menu bar');
       // it.todo('should show the active icon in the menu bar');
@@ -189,8 +191,8 @@ describe('Pomodoro tests', () => {
 
       tick(1);
 
-      // expect(hooks.complete).toHaveBeenCalledTimes(1);
-      // expect(hooks.complete).toHaveBeenCalledWith(expect.objectContaining({ timer: 'pomo' }));
+      expect(hooks.onCompleteHook).toHaveBeenCalledTimes(1);
+      expect(hooks.onCompleteHook).toHaveBeenCalledWith(expect.objectContaining({ type: 'pomo' }));
 
       expect(screen.getByText(/5 : 00/)).toBeInTheDocument();
 
