@@ -6,12 +6,23 @@ import { BridgeProvider, ConfigProvider } from '@client/contexts';
 
 import { IBridge, ILogger } from '@shared/types';
 import { GlobalStyle } from './styles/GlobalStyle';
-import { App } from './App';
+import { App, IApp } from './App';
 
 interface IProviders {
   bridge: IBridge;
   logger: ILogger;
 }
+
+const appProps: IApp = {
+  hooks: {
+    onStartHook: () => {},
+    onTickHook: () => {},
+    onPauseHook: () => {},
+    onPlayHook: () => {},
+    onStopHook: () => {},
+    onCompleteHook: () => {},
+  },
+};
 
 export function Providers({ bridge, logger }: IProviders): JSX.Element {
   return (
@@ -21,7 +32,7 @@ export function Providers({ bridge, logger }: IProviders): JSX.Element {
           <GlobalStyle />
           <ScrollBar />
           <ConfigProvider logger={logger}>
-            <App />
+            <App {...appProps} />
           </ConfigProvider>
         </BridgeProvider>
       </ThemeProvider>

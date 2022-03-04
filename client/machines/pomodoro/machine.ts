@@ -3,6 +3,8 @@ import { DeepPartial } from '@shared/types';
 import { InterpreterFrom, send } from 'xstate';
 import model, { PomodoroModel } from './model';
 
+const ONE_SECOND = 1000;
+
 const pomodoroMachine = model.createMachine(
   {
     id: 'pomodoroMachine',
@@ -24,18 +26,21 @@ const pomodoroMachine = model.createMachine(
                   target: 'short',
                 },
               ],
+              STOP: 'stopping',
             },
           },
           short: {
             entry: 'resetTimerShort',
             on: {
               _COMPLETE: 'pomo',
+              STOP: 'stopping',
             },
           },
           long: {
             entry: 'resetTimerLong',
             on: {
               _COMPLETE: 'pomo',
+              STOP: { target: 'stopping', actions: 'increaseCompletedCount' },
             },
           },
           stopping: {
@@ -46,9 +51,6 @@ const pomodoroMachine = model.createMachine(
             entry: ['onStopHook', send('_STOPPED')],
             on: { _STOPPED: 'pomo' },
           },
-        },
-        on: {
-          STOP: { target: '.stopping' },
         },
       },
       timer: {
@@ -95,7 +97,7 @@ const pomodoroMachine = model.createMachine(
   {
     services: {
       countOneSecond: () => (sendBack) => {
-        const id = setInterval(() => sendBack(model.events._TICK()), 1000);
+        const id = setInterval(() => sendBack(model.events._TICK()), ONE_SECOND);
         return () => clearInterval(id);
       },
     },
@@ -111,7 +113,10 @@ const pomodoroMachine = model.createMachine(
             : { minutes, seconds: seconds - 1, type },
       }),
       increaseCompletedCount: model.assign({
-        completed: ({ completed }) => ({ ...completed, pomo: completed.pomo + 1 }),
+        completed: ({ completed, active: { type } }) => ({
+          ...completed,
+          [type]: completed[type] + 1,
+        }),
       }),
       resetTimerPomo: model.assign({
         active: ({ timers: { pomo } }) => ({ seconds: 0, minutes: pomo, type: 'pomo' }),
