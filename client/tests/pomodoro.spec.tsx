@@ -297,6 +297,7 @@ describe('Pomodoro tests', () => {
       expect(screen.getByText(/completed pomos: 8/)).toBeInTheDocument();
       expect(screen.getByText(/completed breaks: 2/)).toBeInTheDocument();
     });
+
     test('stopping a short break takes you back to a pomo timer', async () => {
       await render(<App hooks={hooks} />, {
         overrides: {

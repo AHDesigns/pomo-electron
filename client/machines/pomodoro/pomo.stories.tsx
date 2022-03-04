@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
-import { useMachine, useSelector, useInterpret } from '@xstate/react';
+import { useMachine, useSelector, useInterpret, useActor } from '@xstate/react';
 import { Story, Meta } from '@storybook/react/types-6-0';
 import { inspect } from '@xstate/inspect';
-import machine from './machine';
+import machine, { TimerActorRef } from './machine';
 
 inspect({
   iframe: false,
@@ -14,37 +14,49 @@ export default {
 
 function Child({ service }: { service: any }): JSX.Element {
   const context = useSelector(service, (s) => s.context);
-  const matches = useSelector(service, (s) => s.matches);
+  const timerRef = useSelector(service, (c) => c.children['timer-actor'] as TimerActorRef);
 
-  return <code>{JSON.stringify(context, null, 2)}</code>;
+  return (
+    <>
+      <p>parent</p>
+      <code>{JSON.stringify(context, null, 2)}</code>
+      {timerRef && <Actor actorRef={timerRef} />}
+    </>
+  );
+}
+
+function Actor({ actorRef }: { actorRef: TimerActorRef }): JSX.Element {
+  const [state] = useActor(actorRef);
+
+  return (
+    <>
+      <p>child</p>
+      <code>{JSON.stringify({ value: state.value, context: state.context }, null, 2)}</code>
+    </>
+  );
 }
 
 export function PomoMachine(): JSX.Element {
-  const service = useInterpret(machine({ context: { timers: { pomo: 2 } } }), {
-    devTools: true,
-  });
-
-  useEffect(() => {
-    service.onTransition((c, e) => {
-      switch (e.type) {
-        case 'PLAY':
-          console.log('play', c.value);
-          break;
-        case 'STOP':
-          console.log('stop', c.value);
-          break;
-        default:
-          break;
-      }
-    });
-  }, [service]);
-
-  // matches('counting');
-  // useEffect(() => {
-  //   service.onTransition((c, e) => {
-  //     // console.log({ c, e });
-  //   });
-  // }, []);
+  const service = useInterpret(
+    machine({
+      context: {
+        timers: {
+          pomo: 1,
+        },
+      },
+      actions: {
+        onStartHook: () => {},
+        onTickHook: () => {},
+        onPauseHook: () => {},
+        onPlayHook: () => {},
+        onStopHook: () => {},
+        onCompleteHook: () => {},
+      },
+    }),
+    {
+      devTools: true,
+    }
+  );
 
   return <Child service={service} />;
 }

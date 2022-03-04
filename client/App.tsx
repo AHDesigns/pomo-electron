@@ -1,10 +1,10 @@
-import { useInterpret, useSelector } from '@xstate/react';
+import { useActor, useInterpret, useSelector } from '@xstate/react';
 import T from '@client/copy';
 import React, { useEffect, useState } from 'react';
 import { displayNum } from '@shared/format';
 import { useConfig } from './contexts';
 import { PomodoroMachine, pomodoroMachine } from './machines';
-import { IPomodoroMachine } from './machines/pomodoro/machine';
+import { IPomodoroMachine, TimerActorRef } from './machines/pomodoro/machine';
 
 export interface IApp {
   hooks: IPomodoroMachine['actions'];
@@ -27,18 +27,20 @@ export function App({ hooks }: IApp): JSX.Element {
   return <Pomodoro service={service} />;
 }
 
-interface IPomodoro {
+function Timer({
+  timerRef,
+  service,
+}: {
+  timerRef: TimerActorRef;
   service: PomodoroMachine;
-}
-
-function Pomodoro({ service }: IPomodoro): JSX.Element {
-  const { seconds, minutes } = useSelector(service, (c) => c.context.active);
+}): JSX.Element {
+  const [state, send] = useActor(timerRef);
   const { pomo, long } = useSelector(service, (c) => c.context.completed);
-  const state = useSelector(service, (c) => c);
+  const { minutes, seconds } = state.context;
 
-  const timerRunning = useSelector(service, (c) => c.matches('timer.playing'));
-  const timerPaused = useSelector(service, (c) => c.matches('timer.paused'));
-  const timerReady = useSelector(service, (c) => c.matches('timer.ready'));
+  const timerRunning = state.matches('playing');
+  const timerPaused = state.matches('paused');
+  const timerReady = state.matches('ready');
 
   return (
     <div>
@@ -49,7 +51,7 @@ function Pomodoro({ service }: IPomodoro): JSX.Element {
         <button
           type="button"
           onClick={() => {
-            service.send('START');
+            send('START');
           }}
         >
           {T.pomoTimer.start}
@@ -59,7 +61,7 @@ function Pomodoro({ service }: IPomodoro): JSX.Element {
         <button
           type="button"
           onClick={() => {
-            service.send('PAUSE');
+            send('PAUSE');
           }}
         >
           {T.pomoTimer.pause}
@@ -69,17 +71,17 @@ function Pomodoro({ service }: IPomodoro): JSX.Element {
         <button
           type="button"
           onClick={() => {
-            service.send('PLAY');
+            send('PLAY');
           }}
         >
           {T.pomoTimer.play}
         </button>
       )}
-      {(timerRunning || timerPaused) && (
+      {state.can('STOP') && (
         <button
           type="button"
           onClick={() => {
-            service.send('STOP');
+            send('STOP');
           }}
         >
           {T.pomoTimer.stop}
@@ -89,4 +91,14 @@ function Pomodoro({ service }: IPomodoro): JSX.Element {
       <p>completed breaks: {long}</p>
     </div>
   );
+}
+
+interface IPomodoro {
+  service: PomodoroMachine;
+}
+
+function Pomodoro({ service }: IPomodoro): JSX.Element | null {
+  const timerRef = useSelector(service, (c) => c.children['timer-actor'] as TimerActorRef | null);
+
+  return timerRef ? <Timer timerRef={timerRef} service={service} /> : null;
 }
