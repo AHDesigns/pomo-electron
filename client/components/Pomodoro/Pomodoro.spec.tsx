@@ -4,7 +4,8 @@ import { tick } from '@test/tick';
 import { screen, render, act } from '@test/rtl';
 import T from '@client/copy';
 import { ok } from '@shared/Result';
-import { emptyConfig, TimerHooks } from '@shared/types';
+import { emptyConfig, TimerHooks, UserConfig } from '@shared/types';
+import { override } from '@shared/merge';
 import { Pomodoro } from './Pomodoro';
 
 beforeEach(() => {
@@ -12,57 +13,44 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  // eslint-disable-next-line prefer-const
-  let testFailed = false;
-
-  // XXX: uncomment if error, for better test output
-  testFailed = true;
-
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  if (testFailed) {
-    const button = screen.queryByRole('button', { name: T.pomoTimer.stop });
-    if (button) userEvent.click(button);
-    act(() => {
-      jest.runOnlyPendingTimers();
-      jest.useRealTimers();
-    });
-  } else {
-    // deliberately not wrapping this in act. If anything throws errors, make sure to clean it up in the test
+  const button = screen.queryByRole('button', { name: T.pomoTimer.stop });
+  if (button) userEvent.click(button);
+  act(() => {
     jest.runOnlyPendingTimers();
     jest.useRealTimers();
-  }
+  });
 });
 
+const hooks: TimerHooks = {
+  onStartHook: jest.fn(),
+  onTickHook: jest.fn(),
+  onPauseHook: jest.fn(),
+  onPlayHook: jest.fn(),
+  onStopHook: jest.fn(),
+  onCompleteHook: jest.fn(),
+};
+
+const defaultTestConfig: UserConfig = {
+  ...emptyConfig,
+  timers: { pomo: 10, short: 5, long: 8 },
+  autoStart: { beforeShortBreak: false, beforePomo: false, beforeLongBreak: false },
+};
+
 describe('Pomodoro tests', () => {
-  const settingsNoAutoStarts = {
-    pomo: 10,
-    short: 5,
-    long: 8,
-  };
-
-  const hooks: TimerHooks = {
-    onStartHook: jest.fn(),
-    onTickHook: jest.fn(),
-    onPauseHook: jest.fn(),
-    onPlayHook: jest.fn(),
-    onStopHook: jest.fn(),
-    onCompleteHook: jest.fn(),
-  };
-
-  describe.only(`given a timer has not been run and has settings`, () => {
-    test('the timer can be played, paused and stopped', async () => {
+  describe(`given a timer has not been run and has no autoStarts`, () => {
+    async function initTest() {
       await render(<Pomodoro />, {
         overrides: {
           bridge: {
-            storeRead: async () =>
-              ok({
-                ...emptyConfig,
-                timers: settingsNoAutoStarts,
-              }),
+            storeRead: async () => ok(defaultTestConfig),
           },
           hooks,
         },
       });
+    }
+
+    test('the timer can be played, paused and stopped', async () => {
+      await initTest();
 
       expect(screen.getByText(/10 : 00/)).toBeInTheDocument();
 
@@ -171,18 +159,7 @@ describe('Pomodoro tests', () => {
     });
 
     test('the timer transitions to a short break, after a completed pomo', async () => {
-      await render(<Pomodoro />, {
-        overrides: {
-          bridge: {
-            storeRead: async () =>
-              ok({
-                ...emptyConfig,
-                timers: settingsNoAutoStarts,
-              }),
-          },
-          hooks,
-        },
-      });
+      await initTest();
 
       /* ******************************************************************* */
       /* START
@@ -212,18 +189,7 @@ describe('Pomodoro tests', () => {
     });
 
     test('a long break is scheduled every 4 breaks', async () => {
-      await render(<Pomodoro />, {
-        overrides: {
-          bridge: {
-            storeRead: async () =>
-              ok({
-                ...emptyConfig,
-                timers: settingsNoAutoStarts,
-              }),
-          },
-          hooks,
-        },
-      });
+      await initTest();
 
       /* ******************************************************************* */
       /* Run one timer
@@ -302,18 +268,7 @@ describe('Pomodoro tests', () => {
     });
 
     test('stopping a short break takes you back to a pomo timer', async () => {
-      await render(<Pomodoro />, {
-        overrides: {
-          bridge: {
-            storeRead: async () =>
-              ok({
-                ...emptyConfig,
-                timers: settingsNoAutoStarts,
-              }),
-          },
-          hooks,
-        },
-      });
+      await initTest();
 
       /* ******************************************************************* */
       /* START BREAK
@@ -350,18 +305,7 @@ describe('Pomodoro tests', () => {
     });
 
     test('stopping a long break takes you back to a pomo timer, but still increases completed break count', async () => {
-      await render(<Pomodoro />, {
-        overrides: {
-          bridge: {
-            storeRead: async () =>
-              ok({
-                ...emptyConfig,
-                timers: settingsNoAutoStarts,
-              }),
-          },
-          hooks,
-        },
-      });
+      await initTest();
 
       runOnePomoAndShortBreak();
       runOnePomoAndShortBreak();
@@ -406,67 +350,192 @@ describe('Pomodoro tests', () => {
       expect(screen.getByText(/completed breaks: 2/)).toBeInTheDocument();
     });
   });
-});
 
-// describe('# auto start tests', () => {
-//   const settingsShortAutoStart = {};
-//
-//   describe(`given a timer has not been run and has settings "${JSON.stringify(
-//     settingsShortAutoStart
-//   )}"`, () => {
-//     describe('when the pomo timer is started and finishes', () => {
-//       it.todo('should transition to the short timer and start immediately');
-//       it.todo('should show a single pomo timer has been completed');
-//       it.todo('should invoke the onCompleteHooks with pomo argument');
-//       it.todo('should invoke the onStartHooks with short break argument');
-//
-//       describe('when the short break is paused', () => {
-//         it.todo('should pause the timer');
-//         it.todo('should invoke the onPauseHooks with short break argument');
-//
-//         describe('when break is resumed', () => {
-//           it.todo('should continue the timer');
-//           it.todo('should invoke the onResumeHooks with short break argument');
-//         });
-//
-//         describe('when the break is stopped', () => {
-//           it.todo('should stop the timer and display the pomo timer');
-//           // TODO: there is no difference between onStop and onComplete for a short break,
-//           // so need something more elegant to handle this to prevent dev error
-//           it.todo('should invoke the onStopHooks with short break argument');
-//         });
-//       });
-//
-//       describe('when the short break finishes', () => {
-//         it.todo('should stop the timer and display the pomo timer');
-//         // TODO on stop hook for break
-//         it.todo('should invoke the onCompleteHooks with short break argument');
-//       });
-//     });
-//   });
-//
-//   const settingsShortAndPomoAutoStart = {};
-//
-//   describe(`given a timer has not be run and has settings "${JSON.stringify(
-//     settingsShortAndPomoAutoStart
-//   )}"`, () => {
-//     describe('when the pomo and short break timer finishes', () => {
-//       it.todo('should transition to the pomo timer and start immediately');
-//       it.todo('should invoke the onStartHooks with pomo argument');
-//     });
-//   });
-//
-//   const settingsAllAutoStarts = {};
-//
-//   describe(`given a timer has not be run and has settings "${JSON.stringify(
-//     settingsAllAutoStarts
-//   )}"`, () => {
-//     describe('when the final pomo timer before a long break finishes', () => {
-//       it.todo('should transition to the long break and start immediately');
-//       it.todo('should invoke the onStartHooks with long break argument');
-//     });
-//   });
-// });
+  describe(`given a timer is set to autoStart short breaks`, () => {
+    async function initTest() {
+      await render(<Pomodoro />, {
+        overrides: {
+          bridge: {
+            storeRead: async () =>
+              ok(override(defaultTestConfig, { autoStart: { beforeShortBreak: true } })),
+          },
+          hooks,
+        },
+      });
+    }
+
+    test('should transition to the short timer and start immediately', async () => {
+      await initTest();
+      runOnePomoTimer();
+
+      expect(screen.getByText(/completed pomos: 1/)).toBeInTheDocument();
+
+      /* ******************************************************************* */
+      /* Check break has started
+      /* ******************************************************************* */
+      expect(screen.queryByRole('button', { name: T.pomoTimer.start })).not.toBeInTheDocument();
+      expect(screen.getByText(/5 : 00/)).toBeInTheDocument();
+      expect(hooks.onStartHook).toHaveBeenCalledTimes(2);
+      expect(hooks.onStartHook).toHaveBeenLastCalledWith(
+        expect.objectContaining({ type: 'short' })
+      );
+
+      tick(3);
+
+      /* ******************************************************************* */
+      /* Break progresses as normal
+      /* ******************************************************************* */
+      expect(screen.getByText(/4 : 57/)).toBeInTheDocument();
+      expect(hooks.onTickHook).toHaveBeenLastCalledWith(
+        expect.objectContaining({ type: 'short', minutes: 4, seconds: 57 })
+      );
+
+      /* ******************************************************************* */
+      /* After running, the pomo timer should be ready to start, but does not start
+      /* ******************************************************************* */
+      tick(4 * 60 + 57);
+
+      expect(hooks.onCompleteHook).toHaveBeenCalledTimes(2);
+      expect(hooks.onCompleteHook).toHaveBeenLastCalledWith(
+        expect.objectContaining({ type: 'short' })
+      );
+
+      expect(screen.getByText(/10 : 00/)).toBeInTheDocument();
+
+      tick(100);
+
+      expect(screen.getByText(/10 : 00/)).toBeInTheDocument();
+
+      /* ******************************************************************* */
+      /* Pomo timer runs as normal
+      /* ******************************************************************* */
+      runOnePomoTimer();
+      expect(hooks.onCompleteHook).toHaveBeenLastCalledWith(
+        expect.objectContaining({ type: 'pomo' })
+      );
+    });
+  });
+
+  describe(`given a timer is set to autoStart pomos`, () => {
+    async function initTest() {
+      await render(<Pomodoro />, {
+        overrides: {
+          bridge: {
+            storeRead: async () =>
+              ok(override(defaultTestConfig, { autoStart: { beforePomo: true } })),
+          },
+          hooks,
+        },
+      });
+    }
+
+    it('should start immediately', async () => {
+      await initTest();
+
+      tick(3);
+      expect(screen.queryByRole('button', { name: T.pomoTimer.start })).not.toBeInTheDocument();
+      expect(hooks.onStartHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'pomo' }));
+      expect(screen.getByText(/9 : 57/)).toBeInTheDocument();
+      expect(hooks.onTickHook).toHaveBeenCalledTimes(3);
+    });
+  });
+
+  describe(`given a timer is set to autoStart longBreaks`, () => {
+    async function initTest() {
+      await render(<Pomodoro />, {
+        overrides: {
+          bridge: {
+            storeRead: async () =>
+              ok(override(defaultTestConfig, { autoStart: { beforeLongBreak: true } })),
+          },
+          hooks,
+        },
+      });
+    }
+
+    it('should start long break immediately', async () => {
+      await initTest();
+      runOnePomoAndShortBreak();
+      runOnePomoAndShortBreak();
+      runOnePomoAndShortBreak();
+      runOnePomoTimer();
+
+      expect(screen.queryByRole('button', { name: T.pomoTimer.start })).not.toBeInTheDocument();
+      expect(hooks.onStartHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'long' }));
+
+      tick(3);
+
+      expect(screen.getByText(/7 : 57/)).toBeInTheDocument();
+    });
+  });
+
+  describe(`given a timer is set to autoStart everything`, () => {
+    async function initTest() {
+      await render(<Pomodoro />, {
+        overrides: {
+          bridge: {
+            storeRead: async () =>
+              ok(
+                override(defaultTestConfig, {
+                  autoStart: { beforeLongBreak: true, beforeShortBreak: true, beforePomo: true },
+                })
+              ),
+          },
+          hooks,
+        },
+      });
+    }
+
+    it('should start all timers immediately', async () => {
+      await initTest();
+
+      expect(screen.queryByRole('button', { name: T.pomoTimer.start })).not.toBeInTheDocument();
+      expect(hooks.onStartHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'pomo' }));
+
+      tick(10 * 60);
+
+      expect(screen.getByText(/completed pomos: 1/)).toBeInTheDocument();
+      expect(hooks.onCompleteHook).toHaveBeenLastCalledWith(
+        expect.objectContaining({ type: 'pomo' })
+      );
+      expect(hooks.onStartHook).toHaveBeenLastCalledWith(
+        expect.objectContaining({ type: 'short' })
+      );
+
+      tick(5 * 60);
+
+      expect(hooks.onCompleteHook).toHaveBeenLastCalledWith(
+        expect.objectContaining({ type: 'short' })
+      );
+      expect(hooks.onStartHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'pomo' }));
+
+      userEvent.click(screen.getByRole('button', { name: T.pomoTimer.pause }));
+      expect(hooks.onPauseHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'pomo' }));
+      userEvent.click(screen.getByRole('button', { name: T.pomoTimer.play }));
+      expect(hooks.onPlayHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'pomo' }));
+
+      tick(10 * 60); // pomo 2
+      expect(screen.getByText(/completed pomos: 2/)).toBeInTheDocument();
+
+      tick(5 * 60); // break 2
+      tick(10 * 60); // pomo 3
+      expect(screen.getByText(/completed pomos: 3/)).toBeInTheDocument();
+
+      tick(5 * 60); // break 3
+      tick(10 * 60); // pomo 4
+      expect(screen.getByText(/completed pomos: 4/)).toBeInTheDocument();
+
+      expect(hooks.onStartHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'long' }));
+      tick(8 * 60); // longBreak
+
+      expect(screen.getByText(/completed pomos: 4/)).toBeInTheDocument();
+      expect(screen.getByText(/completed breaks: 1/)).toBeInTheDocument();
+      expect(hooks.onCompleteHook).toHaveBeenLastCalledWith(
+        expect.objectContaining({ type: 'long' })
+      );
+    });
+  });
+});
 
 // settings interaction
 // describe('given the user starts a 10 minute timer', () => {

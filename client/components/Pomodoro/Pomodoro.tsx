@@ -26,16 +26,12 @@ function Timer({ timerRef, long, pomo }: ITimer): JSX.Element {
   const [state, send] = useActor(timerRef);
   const { minutes, seconds } = state.context;
 
-  const timerRunning = state.matches('playing');
-  const timerPaused = state.matches('paused');
-  const timerReady = state.matches('ready');
-
   return (
     <div>
       <p>
         {displayNum(minutes)} : {displayNum(seconds)}
       </p>
-      {timerReady && (
+      {state.can('START') && (
         <button
           type="button"
           onClick={() => {
@@ -45,7 +41,7 @@ function Timer({ timerRef, long, pomo }: ITimer): JSX.Element {
           {T.pomoTimer.start}
         </button>
       )}
-      {timerRunning && (
+      {state.can('PAUSE') && (
         <button
           type="button"
           onClick={() => {
@@ -55,7 +51,7 @@ function Timer({ timerRef, long, pomo }: ITimer): JSX.Element {
           {T.pomoTimer.pause}
         </button>
       )}
-      {timerPaused && (
+      {state.can('PLAY') && (
         <button
           type="button"
           onClick={() => {

@@ -6,6 +6,7 @@ const timerModel = createModel(
     minutes: 0,
     seconds: 0,
     type: 'pomo' as 'long' | 'pomo' | 'short',
+    autoStart: false,
   },
   {
     events: {

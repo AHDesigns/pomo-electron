@@ -1,7 +1,8 @@
 import { override } from '@shared/merge';
 import { DeepPartial, TimerHooks } from '@shared/types';
-import { ActorRefFrom, ContextFrom, InterpreterFrom } from 'xstate';
+import { ActorRefFrom, ContextFrom, InterpreterFrom, send } from 'xstate';
 import timerMachine from '../timer/machine';
+import timerModel, { TimerContext } from '../timer/model';
 import model from './model';
 
 function pomodoroMachine({ actions, context }: IPomodoroMachine) {
@@ -46,7 +47,8 @@ function pomodoroMachine({ actions, context }: IPomodoroMachine) {
           invoke: {
             id: 'timer-actor',
             src: timerMachine.withConfig({ actions: { ...mappedActions } }),
-            data: ({ timers: { pomo } }) => ({ minutes: pomo, seconds: 0, type: 'pomo' }),
+            data: ({ timers: { pomo }, autoStart: { beforePomo } }) =>
+              ({ minutes: pomo, seconds: 0, type: 'pomo', autoStart: beforePomo } as TimerContext),
             onDone: [
               { cond: 'isTimerStopped', target: 'pomo' },
               { target: 'breakDecision', actions: ['increasePomoCount'] },
@@ -60,7 +62,13 @@ function pomodoroMachine({ actions, context }: IPomodoroMachine) {
           invoke: {
             id: 'timer-actor',
             src: timerMachine.withConfig({ actions: { ...mappedActions } }),
-            data: ({ timers: { short } }) => ({ minutes: short, seconds: 0, type: 'short' }),
+            data: ({ timers: { short }, autoStart: { beforeShortBreak } }) =>
+              ({
+                minutes: short,
+                seconds: 0,
+                type: 'short',
+                autoStart: beforeShortBreak,
+              } as TimerContext),
             onDone: { target: 'pomo' },
           },
         },
@@ -68,7 +76,13 @@ function pomodoroMachine({ actions, context }: IPomodoroMachine) {
           invoke: {
             id: 'timer-actor',
             src: timerMachine.withConfig({ actions: { ...mappedActions } }),
-            data: ({ timers: { long } }) => ({ minutes: long, seconds: 0, type: 'long' }),
+            data: ({ timers: { long }, autoStart: { beforeLongBreak } }) =>
+              ({
+                minutes: long,
+                seconds: 0,
+                type: 'long',
+                autoStart: beforeLongBreak,
+              } as TimerContext),
             onDone: { target: 'pomo' },
           },
           exit: 'increaseBreakCount',

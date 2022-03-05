@@ -10,9 +10,11 @@ const timerMachine = model.createMachine(
     context: model.initialContext,
     states: {
       ready: {
+        always: [{ cond: 'shouldAutoStart', target: 'playing' }],
         on: {
-          START: { target: 'playing', actions: ['onStartHook'] },
+          START: { target: 'playing' },
         },
+        exit: 'onStartHook',
       },
       playing: {
         invoke: {
@@ -56,6 +58,7 @@ const timerMachine = model.createMachine(
     },
     guards: {
       isTimerFinished: ({ minutes, seconds }) => minutes === 0 && seconds === 1,
+      shouldAutoStart: ({ autoStart }) => autoStart,
     },
     actions: {
       updateTimer: model.assign(({ minutes, seconds }) =>
