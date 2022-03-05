@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { useConfig, useBridge } from '@client/contexts';
+import { useConfig, useBridge } from '@client/hooks';
 import styled, { useTheme } from 'styled-components';
 import { Setting } from './Setting';
 import { Form, InputPassword, Label } from './Form';

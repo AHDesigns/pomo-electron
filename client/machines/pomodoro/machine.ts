@@ -1,124 +1,51 @@
 import { override } from '@shared/merge';
-import { DeepPartial } from '@shared/types';
-// import model, { PomodoroModel } from './model';
-import {
-  InterpreterFrom,
-  send,
-  sendParent,
-  createMachine,
-  forwardTo,
-  assign,
-  ContextFrom,
-  ActorRefFrom,
-} from 'xstate';
-import { createModel } from 'xstate/lib/model';
+import { DeepPartial, TimerHooks } from '@shared/types';
+import { ActorRefFrom, ContextFrom, InterpreterFrom } from 'xstate';
+import timerMachine from '../timer/machine';
+import model from './model';
 
-const ONE_SECOND = 1000;
+function pomodoroMachine({ actions, context }: IPomodoroMachine) {
+  const mappedActions: TimerHooks = {
+    onStartHook(c) {
+      actions.onStartHook(c);
+    },
+    onTickHook(c) {
+      actions.onTickHook(c);
+    },
+    onPauseHook(c) {
+      actions.onPauseHook(c);
+    },
+    onPlayHook(c) {
+      actions.onPlayHook(c);
+    },
+    onStopHook(c) {
+      actions.onStopHook(c);
+    },
+    onCompleteHook(c) {
+      actions.onCompleteHook(c);
+    },
+  };
 
-const timerMachine = createMachine(
-  {
-    id: 'timer',
-    initial: 'ready',
-    context: {
-      minutes: 0,
-      seconds: 0,
-      type: 'pomo' as 'long' | 'pomo' | 'short',
-    },
-    states: {
-      ready: {
-        on: {
-          START: { target: 'playing', actions: ['onStartHook'] },
-        },
-      },
-      playing: {
-        invoke: {
-          id: 'second-timer',
-          src: 'countOneSecond',
-        },
-        on: {
-          _TICK: [
-            { cond: 'isTimerFinished', target: 'complete' },
-            { actions: ['updateTimer', 'onTickHook'], target: 'playing' },
-          ],
-          PAUSE: 'paused',
-          STOP: 'stopped',
-        },
-      },
-      paused: {
-        entry: ['onPauseHook'],
-        on: {
-          PLAY: { target: 'playing', actions: ['onPlayHook'] },
-          STOP: 'stopped',
-        },
-      },
-      complete: {
-        entry: ['onCompleteHook'],
-        data: { complete: true },
-        type: 'final',
-      },
-      stopped: {
-        entry: ['onStopHook'],
-        data: { complete: false },
-        type: 'final',
-      },
-    },
-  },
-  {
-    services: {
-      countOneSecond: () => (sendBack) => {
-        const id = setInterval(() => sendBack('_TICK'), ONE_SECOND);
-        return () => clearInterval(id);
-      },
-    },
-    guards: {
-      isTimerFinished: ({ minutes, seconds }) => minutes === 0 && seconds === 1,
-    },
-    actions: {
-      updateTimer: assign(({ minutes, seconds }) =>
-        seconds === 0 ? { minutes: minutes - 1, seconds: 59 } : { minutes, seconds: seconds - 1 }
-      ),
-    },
-  }
-);
+  const initialContext = override(model.initialContext, context);
 
-export type TimerActorRef = ActorRefFrom<typeof timerMachine>;
-
-const model = createModel(
-  {
-    completed: {
-      pomo: 0,
-      short: 0,
-      long: 0,
-    },
-    timers: {
-      pomo: 1,
-      short: 1,
-      long: 1,
-    },
-    autoStart: {
-      beforeShortBreak: true,
-      beforeLongBreak: true,
-      beforePomo: false,
-    },
-  },
-  {
-    events: {
-      'done.invoke.timer-actor': (complete: boolean) => ({ data: { complete } }),
-    },
-  }
-);
-
-const pomodoroMachine = (actions: IPomodoroMachine['actions']) =>
-  model.createMachine(
+  return model.createMachine(
     {
       id: 'pomodoroMachine',
-      context: model.initialContext,
-      initial: 'pomo',
+      context: initialContext,
+      initial: 'loading',
       states: {
+        loading: {
+          on: {
+            CONFIG_LOADED: {
+              actions: 'updateTimerConfig',
+              target: 'pomo',
+            },
+          },
+        },
         pomo: {
           invoke: {
             id: 'timer-actor',
-            src: timerMachine.withConfig({ actions }),
+            src: timerMachine.withConfig({ actions: { ...mappedActions } }),
             data: ({ timers: { pomo } }) => ({ minutes: pomo, seconds: 0, type: 'pomo' }),
             onDone: [
               { cond: 'isTimerStopped', target: 'pomo' },
@@ -132,7 +59,7 @@ const pomodoroMachine = (actions: IPomodoroMachine['actions']) =>
         short: {
           invoke: {
             id: 'timer-actor',
-            src: timerMachine.withConfig({ actions }),
+            src: timerMachine.withConfig({ actions: { ...mappedActions } }),
             data: ({ timers: { short } }) => ({ minutes: short, seconds: 0, type: 'short' }),
             onDone: { target: 'pomo' },
           },
@@ -140,7 +67,7 @@ const pomodoroMachine = (actions: IPomodoroMachine['actions']) =>
         long: {
           invoke: {
             id: 'timer-actor',
-            src: timerMachine.withConfig({ actions }),
+            src: timerMachine.withConfig({ actions: { ...mappedActions } }),
             data: ({ timers: { long } }) => ({ minutes: long, seconds: 0, type: 'long' }),
             onDone: { target: 'pomo' },
           },
@@ -152,11 +79,17 @@ const pomodoroMachine = (actions: IPomodoroMachine['actions']) =>
       guards: {
         isLongBreak: ({ completed: { pomo } }) => pomo !== 0 && pomo % 4 === 0,
         isTimerStopped: (_, e) => {
-          if (e.type !== 'done.invoke.timer-actor') throw new Error('ah');
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          if (e.type !== 'done.invoke.timer-actor') throw new Error('guard used for wrong event');
           return !e.data.complete;
         },
       },
       actions: {
+        updateTimerConfig: model.assign((ctx, e) => {
+          if (e.type !== 'CONFIG_LOADED') return ctx;
+          const { timers, autoStart } = e.data;
+          return { ...ctx, timers, autoStart };
+        }),
         increasePomoCount: model.assign({
           completed: ({ completed }) => ({ ...completed, pomo: completed.pomo + 1 }),
         }),
@@ -166,49 +99,17 @@ const pomodoroMachine = (actions: IPomodoroMachine['actions']) =>
       },
     }
   );
-
-type PomodoroMachineType = ReturnType<typeof pomodoroMachine>;
-export type PomodoroMachine = InterpreterFrom<PomodoroMachineType>;
-
-interface Hook {
-  (info: { minutes: number; seconds: number; type: 'long' | 'pomo' | 'short' }): void;
 }
+
+type PomodoroMachine = ReturnType<typeof pomodoroMachine>;
+
+export type PomodoroService = InterpreterFrom<PomodoroMachine>;
+
+export type PomodoroActorRef = ActorRefFrom<PomodoroMachine>;
 
 export interface IPomodoroMachine {
   context?: DeepPartial<ContextFrom<typeof model>>;
-  actions: {
-    onStartHook: Hook;
-    onTickHook: Hook;
-    onPauseHook: Hook;
-    onPlayHook: Hook;
-    onStopHook: Hook;
-    onCompleteHook: Hook;
-  };
+  actions: TimerHooks;
 }
 
-function pomodoroMachineFactory({ context, actions }: IPomodoroMachine): PomodoroMachineType {
-  const actionsStuff: IPomodoroMachine['actions'] = {
-    onStartHook: (active) => {
-      actions.onStartHook({ ...active });
-    },
-    onTickHook: (active) => {
-      actions.onTickHook({ ...active });
-    },
-    onPauseHook: (active) => {
-      actions.onPauseHook({ ...active });
-    },
-    onPlayHook: (active) => {
-      actions.onPlayHook({ ...active });
-    },
-    onStopHook: (active) => {
-      actions.onStopHook({ ...active });
-    },
-    onCompleteHook: (active) => {
-      actions.onCompleteHook({ ...active });
-    },
-  };
-
-  return pomodoroMachine(actionsStuff).withContext(override(model.initialContext, context));
-}
-
-export default pomodoroMachineFactory;
+export default pomodoroMachine;

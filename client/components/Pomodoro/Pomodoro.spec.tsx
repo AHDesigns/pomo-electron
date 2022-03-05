@@ -1,11 +1,11 @@
 import React from 'react';
-import { screen, render, act } from '@test/rtl';
-import { App, IApp } from '@client/App';
-import T from '@client/copy';
-import { ok } from '@shared/Result';
-import { emptyConfig } from '@shared/types';
 import userEvent from '@testing-library/user-event';
 import { tick } from '@test/tick';
+import { screen, render, act } from '@test/rtl';
+import T from '@client/copy';
+import { ok } from '@shared/Result';
+import { emptyConfig, TimerHooks } from '@shared/types';
+import { Pomodoro } from './Pomodoro';
 
 beforeEach(() => {
   jest.useFakeTimers();
@@ -40,7 +40,7 @@ describe('Pomodoro tests', () => {
     long: 8,
   };
 
-  const hooks: IApp['hooks'] = {
+  const hooks: TimerHooks = {
     onStartHook: jest.fn(),
     onTickHook: jest.fn(),
     onPauseHook: jest.fn(),
@@ -51,7 +51,7 @@ describe('Pomodoro tests', () => {
 
   describe.only(`given a timer has not been run and has settings`, () => {
     test('the timer can be played, paused and stopped', async () => {
-      await render(<App hooks={hooks} />, {
+      await render(<Pomodoro />, {
         overrides: {
           bridge: {
             storeRead: async () =>
@@ -60,6 +60,7 @@ describe('Pomodoro tests', () => {
                 timers: settingsNoAutoStarts,
               }),
           },
+          hooks,
         },
       });
 
@@ -170,7 +171,7 @@ describe('Pomodoro tests', () => {
     });
 
     test('the timer transitions to a short break, after a completed pomo', async () => {
-      await render(<App hooks={hooks} />, {
+      await render(<Pomodoro />, {
         overrides: {
           bridge: {
             storeRead: async () =>
@@ -179,6 +180,7 @@ describe('Pomodoro tests', () => {
                 timers: settingsNoAutoStarts,
               }),
           },
+          hooks,
         },
       });
 
@@ -210,7 +212,7 @@ describe('Pomodoro tests', () => {
     });
 
     test('a long break is scheduled every 4 breaks', async () => {
-      await render(<App hooks={hooks} />, {
+      await render(<Pomodoro />, {
         overrides: {
           bridge: {
             storeRead: async () =>
@@ -219,6 +221,7 @@ describe('Pomodoro tests', () => {
                 timers: settingsNoAutoStarts,
               }),
           },
+          hooks,
         },
       });
 
@@ -266,7 +269,7 @@ describe('Pomodoro tests', () => {
       userEvent.click(screen.getByRole('button', { name: T.pomoTimer.start }));
       tick(1);
       expect(hooks.onStartHook).toHaveBeenCalledWith(expect.objectContaining({ type: 'long' }));
-      expect(hooks.onTickHook).toHaveBeenCalledWith(
+      expect(hooks.onTickHook).toHaveBeenLastCalledWith(
         expect.objectContaining({ type: 'long', minutes: 7, seconds: 59 })
       );
 
@@ -299,7 +302,7 @@ describe('Pomodoro tests', () => {
     });
 
     test('stopping a short break takes you back to a pomo timer', async () => {
-      await render(<App hooks={hooks} />, {
+      await render(<Pomodoro />, {
         overrides: {
           bridge: {
             storeRead: async () =>
@@ -308,6 +311,7 @@ describe('Pomodoro tests', () => {
                 timers: settingsNoAutoStarts,
               }),
           },
+          hooks,
         },
       });
 
@@ -346,7 +350,7 @@ describe('Pomodoro tests', () => {
     });
 
     test('stopping a long break takes you back to a pomo timer, but still increases completed break count', async () => {
-      await render(<App hooks={hooks} />, {
+      await render(<Pomodoro />, {
         overrides: {
           bridge: {
             storeRead: async () =>
@@ -355,6 +359,7 @@ describe('Pomodoro tests', () => {
                 timers: settingsNoAutoStarts,
               }),
           },
+          hooks,
         },
       });
 

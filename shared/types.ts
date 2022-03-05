@@ -97,3 +97,16 @@ export interface AnyObject {
 
 type CssSizeUnits = '%' | 'em' | 'px';
 export type CssSize = `${string}${CssSizeUnits}`;
+
+interface Hook {
+  (info: { minutes: number; seconds: number; type: 'long' | 'pomo' | 'short' }): void;
+}
+
+export interface TimerHooks {
+  onStartHook: Hook;
+  onTickHook: Hook;
+  onPauseHook: Hook;
+  onPlayHook: Hook;
+  onStopHook: Hook;
+  onCompleteHook: Hook;
+}

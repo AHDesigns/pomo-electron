@@ -59,6 +59,7 @@ module.exports = {
         'no-void': 'off',
         'react/destructuring-assignment': 'off',
         'react/jsx-props-no-spreading': 'off',
+        'react/require-default-props': 'off',
         '@typescript-eslint/no-floating-promises': 'off',
         '@typescript-eslint/no-unused-vars': 'off',
         '@typescript-eslint/no-unused-params': 'off',
@@ -149,6 +150,8 @@ module.exports = {
       files: ['client/machines/**'],
       rules: {
         '@typescript-eslint/consistent-type-assertions': 'off',
+        '@typescript-eslint/explicit-function-return-type': 'off',
+        '@typescript-eslint/explicit-module-boundary-types': 'off',
       },
     },
     {

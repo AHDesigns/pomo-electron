@@ -1,39 +1,48 @@
-import { sendParent } from 'xstate';
-import timerModel from './model';
-import pomoModel from '../pomodoro/model';
+import { ActorRefFrom } from 'xstate';
+import model from './model';
 
-const timerMachine = timerModel.createMachine(
+const ONE_SECOND = 1000;
+
+const timerMachine = model.createMachine(
   {
-    context: timerModel.initialContext,
-    initial: 'counting',
+    id: 'timer',
+    initial: 'ready',
+    context: model.initialContext,
     states: {
-      counting: {
-        meta: {
-          description: 'spawns a machine to count a second',
+      ready: {
+        on: {
+          START: { target: 'playing', actions: ['onStartHook'] },
         },
+      },
+      playing: {
         invoke: {
+          id: 'second-timer',
           src: 'countOneSecond',
         },
         on: {
-          TICK: [
-            {
-              cond: 'isTimerFinished',
-              target: 'finished',
-            },
-            {
-              actions: ['decrementOneSecond', 'updateParent'],
-            },
+          _TICK: [
+            { cond: 'isTimerFinished', target: 'complete' },
+            { actions: ['updateTimer', 'onTickHook'], target: 'playing' },
           ],
-          BUMP: { actions: ['addMinute'] },
           PAUSE: 'paused',
+          STOP: 'stopped',
         },
       },
       paused: {
+        entry: ['onPauseHook'],
         on: {
-          PLAY: 'counting',
+          PLAY: { target: 'playing', actions: ['onPlayHook'] },
+          STOP: 'stopped',
         },
       },
-      finished: {
+      complete: {
+        entry: ['onCompleteHook'],
+        data: { complete: true },
+        type: 'final',
+      },
+      stopped: {
+        entry: ['onStopHook'],
+        data: { complete: false },
         type: 'final',
       },
     },
@@ -41,32 +50,21 @@ const timerMachine = timerModel.createMachine(
   {
     services: {
       countOneSecond: () => (sendBack) => {
-        const interval = setInterval(() => {
-          sendBack(timerModel.events.TICK());
-        }, 1000);
-        return () => {
-          clearInterval(interval);
-        };
+        const id = setInterval(() => sendBack('_TICK'), ONE_SECOND);
+        return () => clearInterval(id);
       },
     },
     guards: {
-      isTimerFinished: ({ minutes, seconds }) => minutes === 0 && seconds === 0,
+      isTimerFinished: ({ minutes, seconds }) => minutes === 0 && seconds === 1,
     },
     actions: {
-      decrementOneSecond: timerModel.assign(({ seconds, minutes }) => {
-        if (seconds === 0) {
-          return { minutes: minutes - 1, seconds: 59 };
-        }
-        return { minutes, seconds: seconds - 1 };
-      }),
-      addMinute: timerModel.assign({
-        minutes: ({ minutes }) => minutes + 1,
-      }),
-      updateParent: sendParent(({ minutes, seconds }) =>
-        pomoModel.events.TIMER_TICK(minutes, seconds)
+      updateTimer: model.assign(({ minutes, seconds }) =>
+        seconds === 0 ? { minutes: minutes - 1, seconds: 59 } : { minutes, seconds: seconds - 1 }
       ),
     },
   }
 );
+
+export type TimerActorRef = ActorRefFrom<typeof timerMachine>;
 
 export default timerMachine;

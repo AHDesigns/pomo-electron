@@ -1,39 +1,43 @@
-import React, { FC, ReactElement } from 'react';
-import { render, RenderOptions, waitForElementToBeRemoved } from '@testing-library/react';
+import React, { ReactElement } from 'react';
 import { ThemeProvider } from 'styled-components';
-
-import { theme } from '@client/styles/theme';
 import { ErrorBoundary } from '@client/components';
-import { BridgeProvider, ConfigProvider, useConfig } from '@client/contexts';
+import { useConfig } from '@client/hooks';
+import { createFakeHooks, IMachinesProvider } from '@client/hooks/machines';
+import { BridgeProvider, ConfigProvider, MachinesProvider } from '@client/hooks/providers';
+import { theme } from '@client/styles/theme';
 import { createFakeBridge } from '@electron/ipc/createFakeBridge';
-
-import { IBridge } from '@shared/types';
 import { createFakeLogger } from '@electron/services';
+import { IBridge } from '@shared/types';
+import { render, RenderOptions, waitForElementToBeRemoved } from '@testing-library/react';
 
 interface Overrides {
   bridge?: Partial<IBridge>;
+  hooks?: Partial<IMachinesProvider['hooks']>;
+  children?: React.ReactNode;
 }
 
-const Providers: FC<Overrides> = ({ children, bridge }) => (
-  <ErrorBoundary logger={createFakeLogger()}>
-    <ThemeProvider theme={theme}>
-      <BridgeProvider
-        bridge={{
-          ...createFakeBridge(),
-          ...bridge,
-        }}
-      >
-        <ConfigProvider logger={createFakeLogger()}>{children}</ConfigProvider>
-      </BridgeProvider>
-    </ThemeProvider>
-  </ErrorBoundary>
-);
+function Providers({ children, bridge, hooks }: Overrides): JSX.Element {
+  const bridgeX = { ...createFakeBridge(), ...bridge };
+  return (
+    <ErrorBoundary logger={createFakeLogger()}>
+      <ThemeProvider theme={theme}>
+        <BridgeProvider bridge={bridgeX}>
+          <ConfigProvider logger={createFakeLogger()}>
+            <MachinesProvider hooks={{ ...createFakeHooks(), ...hooks }} bridge={bridgeX}>
+              {children}
+            </MachinesProvider>
+          </ConfigProvider>
+        </BridgeProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
+  );
+}
 
-const WaitForLoading: FC = ({ children }) => {
+function WaitForLoading({ children }: { children: React.ReactNode }): JSX.Element {
   const { loading } = useConfig();
   if (loading) return <div data-testid="providers-loading">LOADING</div>;
-  return <>{children}</>;
-};
+  return <span>{children}</span>;
+}
 
 interface Options {
   renderOptions?: Omit<RenderOptions, 'queries'>;
@@ -68,5 +72,4 @@ const renderAsync = async (ui: ReactElement, { renderOptions, overrides } = {} a
 };
 
 export * from '@testing-library/react';
-
 export { renderAsync as render, render as renderNoProviders };

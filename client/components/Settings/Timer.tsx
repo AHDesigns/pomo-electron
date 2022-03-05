@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { useConfig } from '@client/contexts';
+import { useConfig } from '@client/hooks';
 import { useTheme } from 'styled-components';
 import { Setting } from './Setting';
 import { Form, InputText, Label } from './Form';

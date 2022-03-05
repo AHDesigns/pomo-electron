@@ -5,13 +5,15 @@ const timerModel = createModel(
   {
     minutes: 0,
     seconds: 0,
+    type: 'pomo' as 'long' | 'pomo' | 'short',
   },
   {
     events: {
-      TICK: () => ({}),
-      BUMP: () => ({}),
-      PAUSE: () => ({}),
+      START: () => ({}),
       PLAY: () => ({}),
+      PAUSE: () => ({}),
+      STOP: () => ({}),
+      _TICK: () => ({}),
     },
   }
 );
