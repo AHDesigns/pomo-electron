@@ -12,3 +12,4 @@ export * from './Pomodoro/Pomodoro';
 export * from './ScrollBar';
 export * from './Settings/Settings';
 export * from './TimerProgress';
+export * from './Timer/Timer';

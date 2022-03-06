@@ -1,7 +1,7 @@
 import React from 'react';
 import { usePomodoro, useTimer } from '@client/hooks';
 import { useActor } from '@xstate/react';
-import { Timer } from './Timer';
+import { Timer } from '@client/components';
 
 export function Pomodoro(): JSX.Element | null {
   const pomodoro = usePomodoro();
@@ -18,8 +18,10 @@ export function Pomodoro(): JSX.Element | null {
   return timerRef ? (
     <>
       <Timer timerRef={timerRef} title={title} duration={duration} />
-      <p>completed pomos: {pomo}</p>
-      <p>completed breaks: {long}</p>
+      <div style={{ display: 'none' }}>
+        <p>completed pomos: {pomo}</p>
+        <p>completed breaks: {long}</p>
+      </div>
     </>
   ) : null;
 }

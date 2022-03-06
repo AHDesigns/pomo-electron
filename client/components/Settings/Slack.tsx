@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { useState } from 'react';
 import { useConfig, useBridge } from '@client/hooks';
 import styled, { useTheme } from 'styled-components';
 import { Setting } from './Setting';
@@ -10,13 +10,14 @@ interface IButton {
 
 const Button = styled.button<IButton>``;
 
-export const Slack: FC = () => {
-  const {
-    config: { slack },
-    storeUpdate,
-  } = useConfig();
+export function Slack(): JSX.Element | null {
+  const config = useConfig();
+  const { storeUpdate } = config;
   const theme = useTheme();
   const bridge = useBridge();
+
+  // TODO: fix this up to handle loading
+  const slack = config.config?.slack ?? { enabled: false };
 
   const initialToken = slack.enabled ? slack.slackToken : '';
   const initialCookie = slack.enabled ? slack.slackDCookie : '';
@@ -25,6 +26,9 @@ export const Slack: FC = () => {
   const [token, setToken] = useState(initialToken);
   const [cookie, setCookie] = useState(initialCookie);
   const [sCookie, setSCookie] = useState(initialSCookie);
+
+  // TODO: upgrade Typescript to get this to work as just loading
+  if (config.loading) return null;
 
   const canSubmit =
     [token, cookie].includes('') ||
@@ -132,4 +136,4 @@ export const Slack: FC = () => {
       )}
     </Setting>
   );
-};
+}
