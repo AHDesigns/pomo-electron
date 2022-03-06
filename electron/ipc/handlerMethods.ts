@@ -12,4 +12,7 @@ export const handlerMethods: IpcSetup = {
   slackSetPresence: { main: 'handle', renderer: 'invoke' },
   slackSetProfile: { main: 'handle', renderer: 'invoke' },
   slackSetSnooze: { main: 'handle', renderer: 'invoke' },
+  info: { main: 'on', renderer: 'send' },
+  warn: { main: 'on', renderer: 'send' },
+  error: { main: 'on', renderer: 'send' },
 };

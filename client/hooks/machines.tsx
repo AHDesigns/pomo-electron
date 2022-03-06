@@ -1,8 +1,8 @@
-import React, { createContext, useContext } from 'react';
-import { useInterpret, useSelector } from '@xstate/react';
 import { mainMachine, MainService, PomodoroActorRef, TimerActorRef } from '@client/machines';
-import { IBridge, TimerHooks } from '@shared/types';
-import { ActorRef } from 'xstate';
+import { TimerHooks } from '@shared/types';
+import { useInterpret, useSelector } from '@xstate/react';
+import React, { createContext, useContext } from 'react';
+import { useBridge } from './bridge';
 
 const machinesConfig = createContext<MainService | null>(null);
 
@@ -19,10 +19,10 @@ export const useMachines = (): MainService => {
 export interface IMachinesProvider {
   children: React.ReactNode;
   hooks: TimerHooks;
-  bridge: IBridge;
 }
 
-export function MachinesProvider({ children, hooks, bridge }: IMachinesProvider): JSX.Element {
+export function MachinesProvider({ children, hooks }: IMachinesProvider): JSX.Element {
+  const bridge = useBridge();
   const main = useInterpret(
     mainMachine({
       pomodoro: {
@@ -56,17 +56,6 @@ export const usePomodoro = (): PomodoroActorRef => {
     );
   }
   return pomodoro;
-};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const nullActor: ActorRef<any, any> = {
-  id: 'null',
-  send: () => {},
-  subscribe: () => ({ unsubscribe: () => {} }),
-  getSnapshot: () => {},
-  [Symbol.observable]: () => ({
-    subscribe: () => ({ unsubscribe: () => {} }),
-  }),
 };
 
 export const useTimer = (): TimerActorRef | null => {

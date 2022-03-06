@@ -1,11 +1,12 @@
-import { emptyConfig, ILogger, UserConfig } from '@shared/types';
+import { emptyConfig, IClientLogger, ILogger, UserConfig } from '@shared/types';
 import { Menubar } from 'menubar';
 import { menuBarRepository, MenuBarRepository } from './menuBar';
 import { shellRepository, ShellRepository } from './shell';
 import { slackRepository, SlackRepository } from './slack';
 import { storeRepository, StoreRepository } from './store';
 
-export type Repositories = MenuBarRepository &
+export type Repositories = IClientLogger &
+  MenuBarRepository &
   ShellRepository &
   SlackRepository &
   StoreRepository<UserConfig>;
@@ -26,6 +27,7 @@ export const productionRepositories = ({ logger, mb }: RepoArgs): Repositories =
     logger,
   }),
   ...menuBarRepository({ logger, mb }),
+  ...logger,
 });
 
 export type RepositoryOverrides = Partial<Repositories>;

@@ -1,8 +1,10 @@
-import { render, screen } from '@testing-library/react';
 import React from 'react';
-import { ForceError } from '@test/ForceError';
 import { mocked } from 'ts-jest/utils';
-import { ErrorBoundary } from './ErrorBoundary';
+import { render, screen } from '@testing-library/react';
+import { ForceError } from '@test/ForceError';
+import { LoggerProvider, BridgeProvider } from '@client/hooks/providers';
+import { createFakeBridge } from '@electron/ipc/createFakeBridge';
+import ErrorBoundary from './ErrorBoundary';
 
 interface IRender {
   shouldError?: boolean;
@@ -13,15 +15,14 @@ function renderW({ shouldError = false }: IRender = {}) {
   const spyInfo = jest.fn();
 
   render(
-    <ErrorBoundary
-      logger={{
-        error: spyError,
-        info: spyInfo,
-      }}
-    >
-      {shouldError && <ForceError errorMessage="error message" />}
-      <div>hello</div>
-    </ErrorBoundary>
+    <BridgeProvider bridge={createFakeBridge({ info: spyInfo, error: spyError })}>
+      <LoggerProvider>
+        <ErrorBoundary>
+          {shouldError && <ForceError errorMessage="error message" />}
+          <div>hello</div>
+        </ErrorBoundary>
+      </LoggerProvider>
+    </BridgeProvider>
   );
 
   return { spyError, spyInfo };

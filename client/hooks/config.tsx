@@ -1,7 +1,8 @@
 import { StoreRepository } from '@electron/repositories/store';
-import { emptyConfig, IClientLogger, UserConfig } from '@shared/types';
-import React, { createContext, FC, useContext, useEffect, useState } from 'react';
+import { emptyConfig, UserConfig } from '@shared/types';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useBridge } from './bridge';
+import { useLogger } from './logger';
 
 interface Config {
   config: UserConfig;
@@ -26,15 +27,11 @@ const { Provider } = configContext;
 export const useConfig = (): Config => useContext(configContext);
 
 interface IConfigProvider extends Partial<Config> {
-  logger: IClientLogger;
   children: React.ReactNode;
 }
 
-export function ConfigProvider({
-  children,
-  logger,
-  config: configOverride,
-}: IConfigProvider): JSX.Element {
+export function ConfigProvider({ children, config: configOverride }: IConfigProvider): JSX.Element {
+  const logger = useLogger();
   const [config, setConfig] = useState(configOverride ?? emptyConfig);
   const [loading, setLoading] = useState(true);
   const bridge = useBridge();

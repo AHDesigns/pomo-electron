@@ -1,5 +1,6 @@
 import { merge } from '@shared/merge';
 import { emptyConfig } from '@shared/types';
+import { createFakeClientLogger } from '@electron/services/logger/createFakeLogger';
 import { fakeMenuBarRepository } from './menuBar/fake';
 import { fakeShell } from './shell/fakeShell';
 import { fakeSlackRepository } from './slack/fake';
@@ -16,6 +17,7 @@ export const fakeRepositories = (overrides?: RepositoryOverrides): Repositories 
         defaults: emptyConfig,
       }),
       ...fakeMenuBarRepository,
+      ...createFakeClientLogger(),
     },
     overrides
   );

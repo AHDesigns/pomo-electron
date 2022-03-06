@@ -1,4 +1,4 @@
-import { createFakeLogger } from '@electron/services';
+import { createFakeLogger } from '@electron/services/logger/createFakeLogger';
 import { err, ok } from '@shared/Result';
 import * as fs from 'fs';
 
@@ -35,7 +35,8 @@ describe('StoreRepository', () => {
 
   afterEach((done) => {
     fs.rmdir(storeFilePath, { recursive: true }, (e) => {
-      e && console.error(e); // eslint-disable-line
+      // eslint-disable-next-line no-console
+      if (e) console.error(e);
       done();
     });
   });

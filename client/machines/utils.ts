@@ -1,5 +1,4 @@
-import { ContextFrom, EventFrom, EventObject, MachineOptions } from 'xstate';
-import { Model, ModelActionsFrom, ModelEventsFrom, ModelContextFrom } from 'xstate/lib/model.types';
+import { ActorRef, EventObject } from 'xstate';
 
 // export type OptionsFromModel<A extends Model<any, any, any, any>> = Partial<
 //   MachineOptions<ContextFrom<A>, EventFrom<A>, ModelActionsFrom<A>>
@@ -17,3 +16,14 @@ export function assertEventType<TE extends EventObject, TType extends TE['type']
     throw new Error(`Invalid event: expected "${eventType}", got "${event.type}"`);
   }
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const nullActor: ActorRef<any, any> = {
+  id: 'null',
+  send: () => {},
+  subscribe: () => ({ unsubscribe: () => {} }),
+  getSnapshot: () => {},
+  [Symbol.observable]: () => ({
+    subscribe: () => ({ unsubscribe: () => {} }),
+  }),
+};

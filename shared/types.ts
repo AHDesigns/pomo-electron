@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ElectronLog } from 'electron-log';
 import { IpcMainEvent, IpcMainInvokeEvent } from '@electron/electron';
 import { Repositories } from '@electron/repositories';
@@ -58,16 +59,9 @@ type IpcBridge = {
   };
 };
 
-type IBridgeMeta = {
+export type IBridge = {
   [key in keyof IpcBridge]: (...args: IpcBridge[key]['param']) => IpcBridge[key]['response'];
 };
-
-// TODO: make a repo for this
-export interface IBridge extends IBridgeMeta {
-  logInfo: (...msg: any[]) => void;
-  logWarn: (...msg: any[]) => void;
-  logError: (...msg: any[]) => void;
-}
 
 export type IpcHandlers = {
   [key in keyof IpcBridge]: (

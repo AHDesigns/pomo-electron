@@ -2,7 +2,7 @@ import _installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-inst
 import { mocked } from 'ts-jest/utils';
 import * as _constants from '@shared/constants';
 import { setUpDevtools } from './devTools';
-import { createFakeLogger } from '../logger';
+import { createFakeLogger } from '../logger/createFakeLogger';
 
 jest.mock('@shared/constants');
 const constants = mocked(_constants, true);

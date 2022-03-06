@@ -15,3 +15,7 @@ export const ipcMain = {
 export const nativeImage = {
   createFromPath: jest.fn(),
 };
+
+export const contextBridge = {
+  exposeInMainWorld: jest.fn(),
+};

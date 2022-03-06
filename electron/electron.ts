@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 export {
   BrowserWindow,
   IpcRenderer,
@@ -12,4 +13,4 @@ export {
   session,
   nativeImage,
   dialog,
-} from 'electron'; // eslint-disable-line import/no-extraneous-dependencies
+} from 'electron';
