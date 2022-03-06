@@ -5,13 +5,13 @@ import { theme } from '@client/styles/theme';
 import { ErrorBoundary, ScrollBar } from '@client/components';
 import { BridgeProvider, ConfigProvider, MachinesProvider } from '@client/hooks/providers';
 
-import { IBridge, ILogger } from '@shared/types';
+import { IBridge, IClientLogger } from '@shared/types';
 import { GlobalStyle } from './styles/GlobalStyle';
 import { App } from './App';
 
 interface IProviders {
   bridge: IBridge;
-  logger: ILogger;
+  logger: IClientLogger;
 }
 
 const hooks = {

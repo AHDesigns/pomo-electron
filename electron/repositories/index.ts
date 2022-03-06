@@ -1,10 +1,9 @@
+import { emptyConfig, ILogger, UserConfig } from '@shared/types';
 import { Menubar } from 'menubar';
-import { merge } from '@shared/merge';
-import { emptyConfig, UserConfig, ILogger } from '@shared/types';
-import { fakeSlackRepository, slackRepository, SlackRepository } from './slack';
-import { fakeShell, shellRepository, ShellRepository } from './shell';
-import { fakeStoreRepoFactory, storeRepository, StoreRepository } from './store';
-import { menuBarRepository, MenuBarRepository, fakeMenuBarRepository } from './menuBar';
+import { menuBarRepository, MenuBarRepository } from './menuBar';
+import { shellRepository, ShellRepository } from './shell';
+import { slackRepository, SlackRepository } from './slack';
+import { storeRepository, StoreRepository } from './store';
 
 export type Repositories = MenuBarRepository &
   ShellRepository &
@@ -30,17 +29,3 @@ export const productionRepositories = ({ logger, mb }: RepoArgs): Repositories =
 });
 
 export type RepositoryOverrides = Partial<Repositories>;
-
-export const fakeRepositories = (overrides?: RepositoryOverrides): Repositories =>
-  merge(
-    {
-      ...fakeSlackRepository(),
-      ...fakeShell(overrides),
-      ...fakeStoreRepoFactory({
-        name: 'client',
-        defaults: emptyConfig,
-      }),
-      ...fakeMenuBarRepository,
-    },
-    overrides
-  );

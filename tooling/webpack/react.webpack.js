@@ -14,7 +14,7 @@ module.exports = (_, options = {}) => ({
     },
   },
   entry: path.resolve(rootPath, 'client', 'index.tsx'),
-  target: 'electron-renderer',
+  target: 'web',
   devtool: 'source-map',
   module: {
     rules: [

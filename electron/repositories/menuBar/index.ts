@@ -30,8 +30,8 @@ export const menuBarRepository = ({
       case 'active':
         mb.tray.setImage(trayActiveIcon);
         break;
-      default:
       case 'inactive':
+      default:
         mb.tray.setImage(trayIcon);
         break;
     }
@@ -40,9 +40,3 @@ export const menuBarRepository = ({
     mb.tray.setTitle(msg);
   },
 });
-
-export const fakeMenuBarRepository: MenuBarRepository = {
-  windowFocus() {},
-  setTrayIcon() {},
-  setTrayTitle() {},
-};

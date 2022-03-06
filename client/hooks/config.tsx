@@ -1,5 +1,5 @@
 import { StoreRepository } from '@electron/repositories/store';
-import { emptyConfig, ILogger, UserConfig } from '@shared/types';
+import { emptyConfig, IClientLogger, UserConfig } from '@shared/types';
 import React, { createContext, FC, useContext, useEffect, useState } from 'react';
 import { useBridge } from './bridge';
 
@@ -26,7 +26,7 @@ const { Provider } = configContext;
 export const useConfig = (): Config => useContext(configContext);
 
 interface IConfigProvider extends Partial<Config> {
-  logger: ILogger;
+  logger: IClientLogger;
   children: React.ReactNode;
 }
 

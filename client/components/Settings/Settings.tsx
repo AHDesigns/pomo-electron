@@ -1,10 +1,12 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { Timer } from './Timer';
 import { Slack } from './Slack';
 
-export const Settings: FC = () => (
-  <>
-    <Timer />
-    <Slack />
-  </>
-);
+export function Settings(): JSX.Element {
+  return (
+    <>
+      <Timer />
+      <Slack />
+    </>
+  );
+}

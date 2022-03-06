@@ -24,3 +24,21 @@ describe('when the user navigates to settings', () => {
     });
   });
 });
+
+// settings interaction
+// describe('given the user starts a 10 minute timer', () => {
+//   describe('when they naviagte to settings and then back to the timer', () => {
+//     // it.todo('should continue to tick down every second');
+//   });
+// });
+
+// describe('given the user starts a 10 minute timer', () => {
+//   describe('when the user navigates to settings and changes the timer to 20 minutes, and then navigates back to the timer', () => {
+//     // it.todo('should still be counting down on the orginal timer');
+//
+//     describe('when stop is pressed', () => {
+//       // it.todo('should stop the timer');
+//       // it.todo('should reset the timer to 20 minutes');
+//     });
+//   });
+// });

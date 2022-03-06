@@ -1,6 +1,6 @@
 import { ok } from '@shared/Result';
 import merge from 'lodash.merge';
-import { StoreConfig, StoreRepository } from './store';
+import type { StoreConfig, StoreRepository } from './store';
 
 export const fakeStoreRepoFactory = <T>(storeConfig: StoreConfig<T>): StoreRepository<T> => {
   let store = storeConfig.defaults;

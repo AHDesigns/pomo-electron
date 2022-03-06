@@ -1,4 +1,5 @@
-import { fakeRepositories, RepositoryOverrides } from '@electron/repositories';
+import type { RepositoryOverrides } from '@electron/repositories';
+import { fakeRepositories } from '@electron/repositories/fakes';
 import { IBridge } from '@shared/types';
 import { FakeIpcMain } from '@test/FakeIpcMain';
 import { FakeIpcRenderer } from '@test/FakeIpcRenderer';

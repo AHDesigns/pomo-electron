@@ -1,2 +1,2 @@
-export { slackRepository, fakeSlackRepository } from './slack';
+export { slackRepository } from './slack';
 export type { SlackRepository } from './slack';

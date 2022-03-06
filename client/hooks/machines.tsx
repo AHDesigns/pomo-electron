@@ -31,7 +31,10 @@ export function MachinesProvider({ children, hooks, bridge }: IMachinesProvider)
         },
       },
       bridge,
-    })
+    }),
+    {
+      devTools: true,
+    }
   );
 
   return <Provider value={main}>{children}</Provider>;

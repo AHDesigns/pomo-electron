@@ -7,7 +7,7 @@ export interface ILogger extends ElectronLog {
   errorWithContext(context: string): (err: Error | string) => void;
 }
 
-export type IClientLogger = Pick<ILogger, 'error' | 'info'>;
+export type IClientLogger = Pick<ILogger, 'error' | 'info' | 'warn'>;
 
 export const emptyConfig: UserConfig = {
   timers: {
@@ -58,9 +58,16 @@ type IpcBridge = {
   };
 };
 
-export type IBridge = {
+type IBridgeMeta = {
   [key in keyof IpcBridge]: (...args: IpcBridge[key]['param']) => IpcBridge[key]['response'];
 };
+
+// TODO: make a repo for this
+export interface IBridge extends IBridgeMeta {
+  logInfo: (...msg: any[]) => void;
+  logWarn: (...msg: any[]) => void;
+  logError: (...msg: any[]) => void;
+}
 
 export type IpcHandlers = {
   [key in keyof IpcBridge]: (

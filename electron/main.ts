@@ -7,7 +7,8 @@ import path from 'path';
 import log from 'electron-log';
 import { checkForUpdates, createLogger, setUpDevtools } from '@electron/services';
 import { ipcMain } from '@electron/electron';
-import { fakeRepositories, productionRepositories } from '@electron/repositories';
+import { productionRepositories } from '@electron/repositories';
+import { fakeRepositories } from '@electron/repositories/fakes';
 import { handlers, setupIpcHandlers } from '@electron/ipc';
 
 const logger = createLogger(log);
@@ -25,9 +26,12 @@ const mb = menubar({
     height: 300,
     width: 300,
     webPreferences: {
-      nodeIntegration: true,
+      enableRemoteModule: false,
+      contextIsolation: true,
+      nodeIntegration: false,
       backgroundThrottling: false, // needed to keep timers smooth
       plugins: true,
+      preload: path.join(__dirname, './preload.js'),
     },
     ...(isDev && { alwaysOnTop: true }),
   },

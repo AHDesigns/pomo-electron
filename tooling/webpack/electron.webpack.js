@@ -46,7 +46,7 @@ const common = {
   },
 };
 
-module.exports = {
+const main = {
   ...common,
   plugins: [
     new CopyPlugin({
@@ -59,3 +59,15 @@ module.exports = {
     filename: '[name].js',
   },
 };
+
+const preload = {
+  ...common,
+  devtool: false,
+  entry: path.resolve(rootPath, 'electron/windows/main/preload.ts'),
+  output: {
+    path: path.resolve(rootPath, 'build'),
+    filename: 'preload.js',
+  },
+};
+
+module.exports = [main, preload];

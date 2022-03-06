@@ -1,5 +1,5 @@
-import { IpcRenderer } from '@electron/electron';
-import { IBridge } from '@shared/types';
+import type { IpcRenderer } from '@electron/electron';
+import type { IBridge } from '@shared/types';
 import { reBuild } from '@shared/Result';
 import { handlerMethods } from './handlerMethods';
 
