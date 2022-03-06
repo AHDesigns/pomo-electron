@@ -1,19 +1,21 @@
-import { emptyConfig, IBridge, UserConfig } from '@shared/types';
-import { sendParent } from 'xstate';
+import { DeepPartial, emptyConfig, IBridge, UserConfig } from '@shared/types';
+import { ActorRefFrom, InterpreterFrom, sendParent } from 'xstate';
 import { createModel } from 'xstate/lib/model';
 import mainModel from '../main/model';
 
 export const configModel = createModel(emptyConfig, {
   events: {
     'done.invoke.loadConfig': (config: UserConfig) => ({ data: config }),
+    RESET: () => ({}),
+    UPDATE: (data: DeepPartial<UserConfig>) => ({ data }),
   },
 });
 
-export interface ConfigMachine {
+export interface IConfigMachine {
   bridge: IBridge;
 }
 
-export default function configMachine({ bridge }: ConfigMachine) {
+export default function configMachine({ bridge }: IConfigMachine) {
   return configModel.createMachine(
     {
       id: 'config',
@@ -22,13 +24,13 @@ export default function configMachine({ bridge }: ConfigMachine) {
       states: {
         loading: {
           invoke: {
+            id: 'loadConfig',
             src: 'loadConfig',
             onDone: {
               actions: 'storeConfig',
               target: 'loaded',
             },
             onError: {
-              // TODO: maybe some user prompt to let them know?
               target: 'loaded',
             },
           },
@@ -45,16 +47,23 @@ export default function configMachine({ bridge }: ConfigMachine) {
             r.match({
               Ok: (config) => config,
               Err: (e) => {
-                // eslint-disable-next-line no-console
-                console.warn(e);
+                bridge.warn(e);
                 throw new Error();
               },
             })
           ),
       },
       actions: {
-        storeConfig: configModel.assign((_, { data }) => data),
+        storeConfig: configModel.assign((c, e) =>
+          e.type === 'done.invoke.loadConfig' ? e.data : c
+        ),
       },
     }
   );
 }
+
+type ConfigMachine = ReturnType<typeof configMachine>;
+
+export type ConfigService = InterpreterFrom<ConfigMachine>;
+
+export type ConfigActorRef = ActorRefFrom<ConfigMachine>;

@@ -18,12 +18,15 @@ export function assertEventType<TE extends EventObject, TType extends TE['type']
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const nullActor: ActorRef<any, any> = {
-  id: 'null',
-  send: () => {},
-  subscribe: () => ({ unsubscribe: () => {} }),
-  getSnapshot: () => {},
-  [Symbol.observable]: () => ({
+export function nullActor(overrides?: Partial<ActorRef<any, any>>): ActorRef<any, any> {
+  return {
+    id: 'null',
+    send: () => {},
     subscribe: () => ({ unsubscribe: () => {} }),
-  }),
-};
+    getSnapshot: () => {},
+    [Symbol.observable]: () => ({
+      subscribe: () => ({ unsubscribe: () => {} }),
+    }),
+    ...overrides,
+  };
+}

@@ -1,4 +1,4 @@
-import React, { FC, useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { inspect } from '@xstate/inspect';
 import styled from 'styled-components';
 
@@ -8,7 +8,7 @@ export interface IInspector {
   toggleable?: boolean;
 }
 
-export const Inspector: FC<IInspector> = ({ toggleable }) => {
+export function Inspector({ toggleable }: IInspector): JSX.Element {
   const [inspecting, setInspecting] = useState(!toggleable);
 
   // required to run before render cycle so as that listeners are present when machine is mounted
@@ -45,4 +45,4 @@ export const Inspector: FC<IInspector> = ({ toggleable }) => {
       />
     </>
   );
-};
+}

@@ -3,12 +3,7 @@ import { ThemeProvider } from 'styled-components';
 import { ErrorBoundary } from '@client/components';
 import { useConfig } from '@client/hooks';
 import { createFakeHooks, IMachinesProvider } from '@client/hooks/machines';
-import {
-  BridgeProvider,
-  ConfigProvider,
-  LoggerProvider,
-  MachinesProvider,
-} from '@client/hooks/providers';
+import { BridgeProvider, LoggerProvider, MachinesProvider } from '@client/hooks/providers';
 import { theme } from '@client/styles/theme';
 import { createFakeBridge } from '@electron/ipc/createFakeBridge';
 import { IBridge } from '@shared/types';
@@ -62,17 +57,15 @@ interface Overrides {
   children?: React.ReactNode;
 }
 
-function Providers({ children, bridge, hooks }: Overrides): JSX.Element {
+export function Providers({ children, bridge, hooks }: Overrides): JSX.Element {
   return (
     <BridgeProvider bridge={{ ...createFakeBridge(), ...bridge }}>
       <LoggerProvider>
         <ErrorBoundary>
           <ThemeProvider theme={theme}>
-            <ConfigProvider>
-              <MachinesProvider hooks={{ ...createFakeHooks(), ...hooks }}>
-                {children}
-              </MachinesProvider>
-            </ConfigProvider>
+            <MachinesProvider hooks={{ ...createFakeHooks(), ...hooks }}>
+              {children}
+            </MachinesProvider>
           </ThemeProvider>
         </ErrorBoundary>
       </LoggerProvider>

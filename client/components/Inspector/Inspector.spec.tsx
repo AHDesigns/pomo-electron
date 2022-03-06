@@ -1,7 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/consistent-type-assertions */
-import { screen, render } from '@test/rtl';
+import { nullActor } from '@client/machines/utils';
+import { screen, renderNoProviders } from '@test/rtl';
 import { inspect as _inspect } from '@xstate/inspect';
 import React, { useState } from 'react';
 import { mocked } from 'ts-jest/utils';
@@ -15,7 +13,7 @@ const inspect = mocked(_inspect);
 
 describe('Inspector', () => {
   const renderW = async (props?: IInspector) =>
-    render(<InspectorWrapper toggleable={props?.toggleable} />);
+    renderNoProviders(<InspectorWrapper toggleable={props?.toggleable} />);
 
   const disconnectSpy = jest.fn();
   let inspectorReturnsInstance = true;
@@ -26,15 +24,7 @@ describe('Inspector', () => {
       if (!el) {
         throw new Error('no xstate iframe');
       }
-      return inspectorReturnsInstance
-        ? undefined
-        : ({
-            disconnect: disconnectSpy,
-            send: () => {},
-            subscribe: () => ({ unsubscribe: () => {} }),
-            id: '',
-            getSnapshot: () => {},
-          } as any);
+      return inspectorReturnsInstance ? undefined : { ...nullActor(), disconnect: disconnectSpy };
     });
   });
 

@@ -3,14 +3,9 @@ import React from 'react';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@client/styles/theme';
 import { ErrorBoundary, ScrollBar } from '@client/components';
-import {
-  BridgeProvider,
-  ConfigProvider,
-  MachinesProvider,
-  LoggerProvider,
-} from '@client/hooks/providers';
+import { BridgeProvider, MachinesProvider, LoggerProvider } from '@client/hooks/providers';
 
-import { IBridge, IClientLogger } from '@shared/types';
+import { IBridge } from '@shared/types';
 import { GlobalStyle } from './styles/GlobalStyle';
 import { App } from './App';
 
@@ -35,11 +30,9 @@ export function Providers({ bridge }: IProviders): JSX.Element {
           <ThemeProvider theme={theme}>
             <GlobalStyle />
             <ScrollBar />
-            <ConfigProvider>
-              <MachinesProvider hooks={hooks}>
-                <App />
-              </MachinesProvider>
-            </ConfigProvider>
+            <MachinesProvider hooks={hooks}>
+              <App />
+            </MachinesProvider>
           </ThemeProvider>
         </ErrorBoundary>
       </LoggerProvider>
