@@ -7,7 +7,7 @@ export * from './LineBreak';
 export * from './MenuButton';
 export * from './testWrap/testComp';
 export * from './Page';
-// export * from './PageManager/PageManager';
+export * from './PageManager/PageManager';
 export * from './Pomodoro/Pomodoro';
 export * from './ScrollBar';
 export * from './Settings/Settings';

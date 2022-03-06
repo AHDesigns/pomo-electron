@@ -15,10 +15,10 @@ describe('when the user navigates to settings', () => {
         // it.todo('should show the active icon in the menu bar');
 
         describe('when stop is pressed', () => {
-          // it.todo('should stop the timer');
-          // it.todo('should reset the timer to 10 mins');
-          // it.todo('should clear the time in the menu bar');
-          // it.todo('should show the inactive icon in the menu bar');
+          it.todo('should stop the timer');
+          it.todo('should reset the timer to 10 mins');
+          it.todo('should clear the time in the menu bar');
+          it.todo('should show the inactive icon in the menu bar');
         });
       });
     });

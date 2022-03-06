@@ -1,9 +1,6 @@
-import React from 'react';
-import { useInterpret } from '@xstate/react';
-import { Pomodoro } from '@client/components';
-import { useConfig } from '@client/hooks';
-import { IPomodoroMachine, pomodoroMachine } from '@client/machines';
+import { PageManager } from '@client/components';
 import { inspect } from '@xstate/inspect';
+import React from 'react';
 
 inspect({
   url: 'https://statecharts.io/inspect',
@@ -11,9 +8,5 @@ inspect({
 });
 
 export function App(): JSX.Element {
-  return (
-    <span>
-      <Pomodoro />
-    </span>
-  );
+  return <PageManager />;
 }

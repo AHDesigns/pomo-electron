@@ -188,7 +188,7 @@ describe('Pomodoro tests', () => {
       expect(screen.getByText(/completed breaks: 0/)).toBeInTheDocument();
     });
 
-    test.only('a long break is scheduled every 4 breaks', async () => {
+    test('a long break is scheduled every 4 breaks', async () => {
       await initTest();
 
       /* ******************************************************************* */
