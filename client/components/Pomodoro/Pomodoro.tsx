@@ -2,6 +2,7 @@ import React from 'react';
 import { usePomodoro, useTimer } from '@client/hooks';
 import { useActor } from '@xstate/react';
 import { Timer } from '@client/components';
+import { StateValue } from 'xstate';
 
 export function Pomodoro(): JSX.Element | null {
   const pomodoro = usePomodoro();
@@ -10,10 +11,10 @@ export function Pomodoro(): JSX.Element | null {
   const [state] = useActor(pomodoro);
 
   const { pomo, long } = state.context.completed;
-  const duration = state.context.timers[state.value as 'long' | 'pomo' | 'short'];
+  const value = getValue(state.value);
+  const duration = state.context.timers[value];
 
-  const title =
-    state.value === 'pomo' ? 'Pomodoro' : state.value === 'short' ? 'Short Break' : 'Long Break';
+  const title = getTitle(value);
 
   return timerRef ? (
     <>
@@ -24,4 +25,23 @@ export function Pomodoro(): JSX.Element | null {
       </div>
     </>
   ) : null;
+}
+
+function getTitle(state: 'long' | 'pomo' | 'short'): string {
+  switch (state) {
+    case 'pomo':
+      return 'Pomodoro';
+    case 'short':
+      return 'Short Break';
+    case 'long':
+    default:
+      return 'Long Break';
+  }
+}
+
+function getValue(value: StateValue): 'long' | 'pomo' | 'short' {
+  if (value === 'pomo' || value === 'short' || value === 'long') {
+    return value;
+  }
+  throw new Error(`state.value is not expected timer state: got ${value.toString()}`);
 }
