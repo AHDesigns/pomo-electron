@@ -11,7 +11,7 @@ module.exports = {
     tsconfigRootDir: __dirname,
     project: ['./tsconfig.json'],
   },
-  extends: ['airbnb', 'airbnb-typescript', 'airbnb/hooks'],
+  extends: ['airbnb', 'airbnb-typescript', 'airbnb/hooks', 'plugin:storybook/recommended'],
   plugins: ['@typescript-eslint'],
   rules: {
     'no-console': 'error',
@@ -82,7 +82,11 @@ module.exports = {
         '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
         '@typescript-eslint/explicit-member-accessibility': [
           'error',
-          { overrides: { constructors: 'no-public' } },
+          {
+            overrides: {
+              constructors: 'no-public',
+            },
+          },
         ],
         '@typescript-eslint/member-ordering': 'error',
         '@typescript-eslint/no-confusing-non-null-assertion': 'error',
@@ -129,8 +133,10 @@ module.exports = {
         browser: true,
       },
       rules: {
-        'react/no-array-index-key': 'off', // we all know what we're doing here
-        'react/no-unescaped-entities': 'off', // things like "don't" need the apostrophe escaped
+        // we all know what we're doing here
+        'react/no-array-index-key': 'off',
+        // things like "don't" need the apostrophe escaped
+        'react/no-unescaped-entities': 'off',
         'jsx-a11y/label-has-associated-control': [
           2,
           {
@@ -164,7 +170,8 @@ module.exports = {
       },
       rules: {
         // '@typescript-eslint/no-unsafe-call': 'off',
-        '@typescript-eslint/require-await': 'off', // very common to create simple promise returns, and this saves on boilerplate
+        // very common to create simple promise returns, and this saves on boilerplate
+        '@typescript-eslint/require-await': 'off',
         'import/no-extraneous-dependencies': [
           'error',
           {
