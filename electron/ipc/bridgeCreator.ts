@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import type { IpcRenderer } from '@electron/electron';
 import type { IBridge } from '@shared/types';
 import { reBuild } from '@shared/Result';

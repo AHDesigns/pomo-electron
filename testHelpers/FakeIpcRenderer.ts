@@ -12,6 +12,7 @@ export class FakeIpcRenderer extends EventEmitter implements IpcRenderer {
   public send(channel: string, ...args: any[]): void {
     // a little massaging to use the builtin eventEmitter to send the message to our mock
     const ipcMainEvent = null;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     this.mockIpcMain.emit(channel, ipcMainEvent, ...args);
   }
 
@@ -29,6 +30,7 @@ export class FakeIpcRenderer extends EventEmitter implements IpcRenderer {
         reject(e);
       });
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       this.mockIpcMain.emit(channel, ...args);
     });
   }

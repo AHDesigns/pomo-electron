@@ -1,10 +1,12 @@
 import styled from 'styled-components';
-import React, { ChangeEventHandler, CSSProperties, FC } from 'react';
+import React, { ChangeEventHandler, CSSProperties } from 'react';
 import { Box } from '@client/components';
 
+/**
+ * Hide checkbox visually but remain accessible to screen readers.
+ * Source: https://polished.js.org/docs/#hidevisually
+ */
 const HiddenCheckbox = styled.input.attrs({ type: 'checkbox' })`
-  // Hide checkbox visually but remain accessible to screen readers.
-  // Source: https://polished.js.org/docs/#hidevisually
   border: 0;
   clip: rect(0 0 0 0);
   clippath: inset(50%);
@@ -51,20 +53,25 @@ const Label = styled.label`
   justify-content: space-between;
 `;
 
-export const Checkbox: FC<{
+interface ICheckbox {
   checked: boolean;
   onChange: ChangeEventHandler<HTMLInputElement>;
   styles?: CSSProperties;
-}> = ({ checked, onChange, styles, children }) => (
-  <Label style={styles}>
-    {children}
-    <Box>
-      <HiddenCheckbox checked={checked} onChange={onChange} />
-      <StyledCheckbox checked={checked}>
-        <Icon viewBox="0 0 24 24">
-          <polyline points="20 6 9 17 4 12" />
-        </Icon>
-      </StyledCheckbox>
-    </Box>
-  </Label>
-);
+  children: React.ReactNode;
+}
+
+export function Checkbox({ checked, onChange, styles, children }: ICheckbox): JSX.Element {
+  return (
+    <Label style={styles}>
+      {children}
+      <Box>
+        <HiddenCheckbox checked={checked} onChange={onChange} />
+        <StyledCheckbox checked={checked}>
+          <Icon viewBox="0 0 24 24">
+            <polyline points="20 6 9 17 4 12" />
+          </Icon>
+        </StyledCheckbox>
+      </Box>
+    </Label>
+  );
+}

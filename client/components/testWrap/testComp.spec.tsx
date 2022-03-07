@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React from 'react';
 import { mocked } from 'ts-jest/utils';
 import { renderNoProviders, screen } from '@test/rtl';
 import * as _constants from '@shared/constants';
@@ -9,10 +9,6 @@ jest.mock('@shared/constants');
 const constants = mocked(_constants);
 
 describe('nullComp', () => {
-  const RealComp: FC<{ text: string }> = ({ text }) => (
-    <div data-testid="real-component">{text}</div>
-  );
-
   beforeEach(() => {
     const Wrapped = testWrap(RealComp, 'test-component');
     renderNoProviders(<Wrapped text="some info" />);
@@ -40,3 +36,7 @@ describe('nullComp', () => {
     });
   });
 });
+
+function RealComp({ text }: { text: string }) {
+  return <div data-testid="real-component">{text}</div>;
+}
