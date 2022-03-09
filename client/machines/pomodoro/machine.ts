@@ -1,8 +1,9 @@
 import { override } from '@shared/merge';
 import { DeepPartial, TimerHooks } from '@shared/types';
-import { ActorRefFrom, ContextFrom, InterpreterFrom, send } from 'xstate';
+import { ActorRefFrom, ContextFrom, InterpreterFrom } from 'xstate';
 import timerMachine from '../timer/machine';
-import timerModel, { TimerContext } from '../timer/model';
+import { TimerContext } from '../timer/model';
+import { assertEventType } from '../utils';
 import model from './model';
 
 function pomodoroMachine({ actions, context }: IPomodoroMachine) {
@@ -93,15 +94,17 @@ function pomodoroMachine({ actions, context }: IPomodoroMachine) {
       guards: {
         isLongBreak: ({ completed: { pomo } }) => pomo !== 0 && pomo % 4 === 0,
         isTimerStopped: (_, e) => {
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          if (e.type !== 'done.invoke.timer-actor') throw new Error('guard used for wrong event');
+          assertEventType(e, 'done.invoke.timer-actor');
+
           return !e.data.complete;
         },
       },
       actions: {
         updateTimerConfig: model.assign((ctx, e) => {
-          if (e.type !== 'CONFIG_LOADED') return ctx;
+          assertEventType(e, 'CONFIG_LOADED');
+
           const { timers, autoStart } = e.data;
+
           return { ...ctx, timers, autoStart };
         }),
         increasePomoCount: model.assign({

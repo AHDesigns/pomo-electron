@@ -1,4 +1,3 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
 import type { IpcMain } from 'electron';
 import type { IpcHandlers } from '@shared/types';
 import { Result, strip } from '@shared/Result';

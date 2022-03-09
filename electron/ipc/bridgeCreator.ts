@@ -22,6 +22,6 @@ export function bridgeCreator(ipcR: IpcRenderer): IBridge {
       default:
         throw new Error('impossible missing method for ipc handler methods');
     }
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions,@typescript-eslint/prefer-reduce-type-parameter
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   }, {} as IBridge);
 }

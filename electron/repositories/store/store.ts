@@ -37,7 +37,6 @@ export const storeRepository = <T = UserConfig>({
 }: StoreRepo<T>): StoreRepository<T> => {
   const { name, cwd } = storeConfig;
 
-  // eslint-disable-next-line no-console
   logger.info(`setting up Store Repo: name ${name}${cwd ? `cwd ${cwd}` : ''}`);
 
   const store = new Store<T>(storeConfig);

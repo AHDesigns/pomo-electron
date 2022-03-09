@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { contextBridge, ipcRenderer } from '@electron/electron';
 import { isIntegration } from '@shared/constants';
 import { bridgeCreator } from '@electron/ipc/bridgeCreator';

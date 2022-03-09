@@ -31,7 +31,6 @@ describe('createLogger', () => {
     { nodenv: 'development', fileLevel: false, consoleLevel: 'silly' },
     { nodenv: 'test', fileLevel: false, consoleLevel: 'silly' },
     { nodenv: 'production', fileLevel: 'info', consoleLevel: false },
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     { nodenv: 'impossible' as Nodenv, fileLevel: 'info', consoleLevel: 'info' },
   ];
 

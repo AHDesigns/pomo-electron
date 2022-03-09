@@ -14,7 +14,6 @@ export class FakeIpcMain extends EventEmitter implements IpcMain {
     channel: string,
     listener: (event: IpcMainInvokeEvent, ...args: any[]) => Promise<any>
   ): void {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     const mainInvokeEvent = {} as IpcMainInvokeEvent;
 
     this.on(channel, (...args) => {

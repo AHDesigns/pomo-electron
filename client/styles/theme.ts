@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { DefaultTheme } from 'styled-components';
 import { IFont, Palette } from './styled';
 
