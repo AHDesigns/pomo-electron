@@ -26,7 +26,6 @@ const mb = menubar({
     height: 300,
     width: 300,
     webPreferences: {
-      enableRemoteModule: false,
       contextIsolation: true,
       nodeIntegration: false,
       backgroundThrottling: false, // needed to keep timers smooth

@@ -1,7 +1,7 @@
 import { mainMachine, MainService, PomodoroActorRef, TimerActorRef } from '@client/machines';
 import { TimerHooks } from '@shared/types';
 import { useInterpret, useSelector } from '@xstate/react';
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
 import { useBridge } from './bridge';
 
 const machinesConfig = createContext<MainService | null>(null);
@@ -23,6 +23,11 @@ export interface IMachinesProvider {
 
 export function MachinesProvider({ children, hooks }: IMachinesProvider): JSX.Element {
   const bridge = useBridge();
+
+  useEffect(() => {
+    bridge.info('client starting');
+  }, [bridge]);
+
   const main = useInterpret(
     mainMachine({
       pomodoro: {
