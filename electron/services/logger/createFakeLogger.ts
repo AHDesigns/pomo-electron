@@ -22,8 +22,8 @@ export function createFakeLogger(overrides?: Partial<ILogger>): ILogger {
 
 export function createFakeClientLogger(): IClientLogger {
   return {
-    error: console.error,
-    warn: console.warn,
-    info: console.info,
+    error: () => {},
+    warn: () => {},
+    info: () => {},
   };
 }

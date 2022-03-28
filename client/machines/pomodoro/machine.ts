@@ -1,10 +1,10 @@
 import { override } from '@shared/merge';
 import { DeepPartial, TimerHooks } from '@shared/types';
-import { ActorRefFrom, ContextFrom, InterpreterFrom } from 'xstate';
+import { ActorRefFrom, assign, ContextFrom, createMachine, InterpreterFrom } from 'xstate';
+import { actorIds } from '../constants';
 import timerMachine from '../timer/machine';
 import { TimerContext } from '../timer/model';
-import { assertEventType } from '../utils';
-import model from './model';
+import model, { PomodoroEvents, PomodoroModel } from './model';
 
 function pomodoroMachine({ actions, context }: IPomodoroMachine) {
   const mappedActions: TimerHooks = {
@@ -30,9 +30,14 @@ function pomodoroMachine({ actions, context }: IPomodoroMachine) {
 
   const initialContext = override(model.initialContext, context);
 
-  return model.createMachine(
+  return createMachine(
     {
       id: 'pomodoroMachine',
+      tsTypes: {} as import('./machine.typegen').Typegen0,
+      schema: {
+        context: {} as PomodoroModel,
+        events: {} as PomodoroEvents,
+      },
       context: initialContext,
       initial: 'loading',
       states: {
@@ -46,14 +51,14 @@ function pomodoroMachine({ actions, context }: IPomodoroMachine) {
         },
         pomo: {
           invoke: {
-            id: 'timer-actor',
+            id: actorIds.TIMER,
             src: timerMachine.withConfig({ actions: { ...mappedActions } }),
             data: ({ timers: { pomo }, autoStart: { beforePomo } }) =>
               ({ minutes: pomo, seconds: 0, type: 'pomo', autoStart: beforePomo } as TimerContext),
-            onDone: [
-              { cond: 'isTimerStopped', target: 'pomo' },
-              { target: 'breakDecision', actions: ['increasePomoCount'] },
-            ],
+          },
+          on: {
+            TIMER_INCOMPLETE: 'pomo',
+            TIMER_COMPLETE: { target: 'breakDecision', actions: ['increasePomoCount'] },
           },
         },
         breakDecision: {
@@ -61,7 +66,7 @@ function pomodoroMachine({ actions, context }: IPomodoroMachine) {
         },
         short: {
           invoke: {
-            id: 'timer-actor',
+            id: actorIds.TIMER,
             src: timerMachine.withConfig({ actions: { ...mappedActions } }),
             data: ({ timers: { short }, autoStart: { beforeShortBreak } }) =>
               ({
@@ -72,10 +77,14 @@ function pomodoroMachine({ actions, context }: IPomodoroMachine) {
               } as TimerContext),
             onDone: { target: 'pomo' },
           },
+          on: {
+            TIMER_COMPLETE: 'pomo',
+            TIMER_INCOMPLETE: 'pomo',
+          },
         },
         long: {
           invoke: {
-            id: 'timer-actor',
+            id: actorIds.TIMER,
             src: timerMachine.withConfig({ actions: { ...mappedActions } }),
             data: ({ timers: { long }, autoStart: { beforeLongBreak } }) =>
               ({
@@ -86,6 +95,10 @@ function pomodoroMachine({ actions, context }: IPomodoroMachine) {
               } as TimerContext),
             onDone: { target: 'pomo' },
           },
+          on: {
+            TIMER_COMPLETE: 'pomo',
+            TIMER_INCOMPLETE: 'pomo',
+          },
           exit: 'increaseBreakCount',
         },
       },
@@ -93,24 +106,20 @@ function pomodoroMachine({ actions, context }: IPomodoroMachine) {
     {
       guards: {
         isLongBreak: ({ completed: { pomo } }) => pomo !== 0 && pomo % 4 === 0,
-        isTimerStopped: (_, e) => {
-          assertEventType(e, 'done.invoke.timer-actor');
-
-          return !e.data.complete;
-        },
       },
+
       actions: {
-        updateTimerConfig: model.assign((ctx, e) => {
-          assertEventType(e, 'CONFIG_LOADED');
+        updateTimerConfig: assign((ctx, { data: { timers, autoStart } }) => ({
+          ...ctx,
+          timers,
+          autoStart,
+        })),
 
-          const { timers, autoStart } = e.data;
-
-          return { ...ctx, timers, autoStart };
-        }),
-        increasePomoCount: model.assign({
+        increasePomoCount: assign({
           completed: ({ completed }) => ({ ...completed, pomo: completed.pomo + 1 }),
         }),
-        increaseBreakCount: model.assign({
+
+        increaseBreakCount: assign({
           completed: ({ completed }) => ({ ...completed, long: completed.long + 1 }),
         }),
       },

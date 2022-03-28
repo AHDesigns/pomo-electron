@@ -1,4 +1,4 @@
-import { ContextFrom } from 'xstate';
+import { ContextFrom, EventFrom } from 'xstate';
 import { createModel } from 'xstate/lib/model';
 
 const timerModel = createModel(
@@ -20,5 +20,6 @@ const timerModel = createModel(
 );
 
 export type TimerContext = ContextFrom<typeof timerModel>;
+export type TimerEvents = EventFrom<typeof timerModel>;
 
 export default timerModel;

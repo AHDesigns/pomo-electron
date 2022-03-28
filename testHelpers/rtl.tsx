@@ -1,8 +1,9 @@
 import React, { ReactElement } from 'react';
+import { useSelector } from '@xstate/react';
 import { ThemeProvider } from 'styled-components';
 import { ErrorBoundary } from '@client/components';
 import { useConfig } from '@client/hooks';
-import { createFakeHooks, IMachinesProvider } from '@client/hooks/machines';
+import { createFakeHooks, IMachinesProvider, useMachines } from '@client/hooks/machines';
 import { BridgeProvider, LoggerProvider, MachinesProvider } from '@client/hooks/providers';
 import { theme } from '@client/styles/theme';
 import { createFakeBridge } from '@electron/ipc/createFakeBridge';
@@ -42,8 +43,9 @@ async function renderAsync(ui: ReactElement, options?: Options): Promise<Rendere
   return result;
 
   function WaitForLoading({ children }: { children: React.ReactNode }): JSX.Element {
-    const { loading } = useConfig();
-    if (loading) return <div data-testid="providers-loading">LOADING</div>;
+    const main = useMachines();
+    const loaded = useSelector(main, (c) => c.context.loaded);
+    if (!loaded) return <div data-testid="providers-loading">LOADING</div>;
     return <span>{children}</span>;
   }
 }

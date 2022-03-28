@@ -34,7 +34,7 @@ describe('StoreRepository', () => {
   };
 
   afterEach((done) => {
-    fs.rmdir(storeFilePath, { recursive: true }, (e) => {
+    fs.rm(storeFilePath, { recursive: true }, (e) => {
       // eslint-disable-next-line no-console
       if (e) console.error(e);
       done();

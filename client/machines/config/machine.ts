@@ -1,5 +1,5 @@
 import { DeepPartial, emptyConfig, IBridge, UserConfig } from '@shared/types';
-import { ActorRefFrom, InterpreterFrom, sendParent } from 'xstate';
+import { ActorRefFrom, ContextFrom, EventFrom, InterpreterFrom, sendParent } from 'xstate';
 import { createModel } from 'xstate/lib/model';
 import mainModel from '../main/model';
 
@@ -11,6 +11,9 @@ export const configModel = createModel(emptyConfig, {
   },
 });
 
+export type ConfigContext = ContextFrom<typeof configModel>;
+export type ConfitEvents = EventFrom<typeof configModel>;
+
 export interface IConfigMachine {
   bridge: IBridge;
 }
@@ -20,6 +23,10 @@ export default function configMachine({ bridge }: IConfigMachine) {
     {
       id: 'config',
       initial: 'loading',
+      schema: {
+        context: {} as ConfigContext,
+        events: {} as ConfitEvents,
+      },
       context: configModel.initialContext,
       states: {
         loading: {

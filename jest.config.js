@@ -4,7 +4,7 @@ module.exports = {
   preset: 'ts-jest',
   clearMocks: true,
   setupFilesAfterEnv: ['./tooling/setupTests.ts', './testHelpers/jest.setup.ts'],
-  modulePathIgnorePatterns: ['e2e'],
+  modulePathIgnorePatterns: ['e2e', 'temp'],
   moduleNameMapper: {
     '^@shared(.*)$': '<rootDir>/shared/$1',
     '^@client(.*)$': '<rootDir>/client/$1',

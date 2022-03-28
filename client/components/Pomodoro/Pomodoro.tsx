@@ -5,10 +5,8 @@ import { Timer } from '@client/components';
 import { StateValue } from 'xstate';
 
 export function Pomodoro(): JSX.Element | null {
-  const pomodoro = usePomodoro();
+  const [state] = usePomodoro();
   const timerRef = useTimer();
-
-  const [state] = useActor(pomodoro);
 
   const { pomo, long } = state.context.completed;
   const value = getValue(state.value);

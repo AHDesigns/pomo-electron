@@ -2,6 +2,7 @@ import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { tick } from '@test/tick';
 import { screen, render, act } from '@test/rtl';
+import { pageModel, assert } from '@test/pageModels';
 import T from '@client/copy';
 import { ok } from '@shared/Result';
 import { emptyConfig, TimerHooks, UserConfig } from '@shared/types';
@@ -36,6 +37,10 @@ const defaultTestConfig: UserConfig = {
   autoStart: { beforeShortBreak: false, beforePomo: false, beforeLongBreak: false },
 };
 
+const {
+  pomo: { timer, records },
+} = pageModel;
+
 describe('Pomodoro tests', () => {
   describe(`given a timer has not been run and has no autoStarts`, () => {
     async function initTest() {
@@ -52,12 +57,12 @@ describe('Pomodoro tests', () => {
     test('the timer can be played, paused and stopped', async () => {
       await initTest();
 
-      expect(screen.getByText(/10 : 00/)).toBeInTheDocument();
+      expect(timer.current({ mins: 10 })).toBeInTheDocument();
 
       /* ******************************************************************* */
       /* START
       /* ******************************************************************* */
-      userEvent.click(screen.getByRole('button', { name: T.pomoTimer.start }));
+      userEvent.click(timer.startButton());
 
       expect(hooks.onStartHook).toHaveBeenCalledTimes(1);
       expect(hooks.onStartHook).toHaveBeenCalledWith(
@@ -72,17 +77,15 @@ describe('Pomodoro tests', () => {
         expect.objectContaining({ minutes: 9, seconds: 49, type: 'pomo' })
       );
 
-      expect(screen.getByText(/9 : 49/)).toBeInTheDocument();
       // it.todo('should show the time in the menu bar');
       // it.todo('should show the active icon in the menu bar');
 
-      expect(screen.getByText(/completed pomos: 0/)).toBeInTheDocument();
-      expect(screen.getByText(/completed breaks: 0/)).toBeInTheDocument();
+      assert.timerAndProgress({ mins: 9, secs: 49, pomos: 0, long: 0 });
 
       /* ******************************************************************* */
       /* PAUSE
       /* ******************************************************************* */
-      userEvent.click(screen.getByRole('button', { name: T.pomoTimer.pause }));
+      userEvent.click(timer.pauseButton());
 
       tick(11);
 
@@ -91,13 +94,13 @@ describe('Pomodoro tests', () => {
         expect.objectContaining({ minutes: 9, seconds: 49, type: 'pomo' })
       );
 
-      expect(screen.getByText(/9 : 49/)).toBeInTheDocument();
+      expect(timer.current({ mins: 9, secs: 49 })).toBeInTheDocument();
       // // it.todo('should show the paused time in the menu bar');
 
       /* ******************************************************************* */
       /* PLAY
       /* ******************************************************************* */
-      userEvent.click(screen.getByRole('button', { name: T.pomoTimer.play }));
+      userEvent.click(timer.playButton());
 
       tick(9);
 
@@ -107,13 +110,13 @@ describe('Pomodoro tests', () => {
       );
       expect(hooks.onTickHook).toHaveBeenCalledTimes(20);
 
-      expect(screen.getByText(/9 : 40/)).toBeInTheDocument();
+      expect(timer.current({ mins: 9, secs: 40 })).toBeInTheDocument();
       // it.todo('should show the time in the menu bar');
 
       /* ******************************************************************* */
       /* STOP
       /* ******************************************************************* */
-      userEvent.click(screen.getByRole('button', { name: T.pomoTimer.stop }));
+      userEvent.click(timer.stopButton());
 
       tick(5);
 
@@ -122,17 +125,14 @@ describe('Pomodoro tests', () => {
         expect.objectContaining({ minutes: 9, seconds: 40, type: 'pomo' })
       );
 
-      expect(screen.getByText(/completed pomos: 0/)).toBeInTheDocument();
-      expect(screen.getByText(/completed breaks: 0/)).toBeInTheDocument();
-
-      expect(screen.getByText(/10 : 00/)).toBeInTheDocument();
+      assert.timerAndProgress({ mins: 10, secs: 0, pomos: 0, long: 0 });
       // it.todo('should clear the time in the menu bar');
       // it.todo('should show the inactive icon in the menu bar');
 
       /* ******************************************************************* */
       /* RESTART
       /* ******************************************************************* */
-      userEvent.click(screen.getByRole('button', { name: T.pomoTimer.start }));
+      userEvent.click(timer.startButton());
 
       tick(5);
 
@@ -142,7 +142,7 @@ describe('Pomodoro tests', () => {
         expect.objectContaining({ minutes: 10, seconds: 0, type: 'pomo' })
       );
 
-      expect(screen.getByText(/9 : 55/)).toBeInTheDocument();
+      expect(timer.current({ mins: 9, secs: 55 })).toBeInTheDocument();
       expect(hooks.onTickHook).toHaveBeenLastCalledWith(
         expect.objectContaining({ minutes: 9, seconds: 55, type: 'pomo' })
       );
@@ -152,10 +152,9 @@ describe('Pomodoro tests', () => {
       /* ******************************************************************* */
       /* STOP
       /* ******************************************************************* */
-      userEvent.click(screen.getByRole('button', { name: T.pomoTimer.stop }));
+      userEvent.click(timer.stopButton());
 
-      expect(screen.getByText(/completed pomos: 0/)).toBeInTheDocument();
-      expect(screen.getByText(/completed breaks: 0/)).toBeInTheDocument();
+      assert.timerAndProgress({ mins: 10, secs: 0, pomos: 0, long: 0 });
     });
 
     test('the timer transitions to a short break, after a completed pomo', async () => {
@@ -164,15 +163,13 @@ describe('Pomodoro tests', () => {
       /* ******************************************************************* */
       /* START
       /* ******************************************************************* */
-      userEvent.click(screen.getByRole('button', { name: T.pomoTimer.start }));
+      userEvent.click(timer.startButton());
 
-      expect(screen.getByText(/10 : 00/)).toBeInTheDocument();
+      expect(timer.current({ mins: 10, secs: 0 })).toBeInTheDocument();
 
       tick(60 * 9 + 59);
 
-      expect(screen.getByText(/0 : 01/)).toBeInTheDocument();
-      expect(screen.getByText(/completed pomos: 0/)).toBeInTheDocument();
-      expect(screen.getByText(/completed breaks: 0/)).toBeInTheDocument();
+      assert.timerAndProgress({ mins: 0, secs: 1, pomos: 0, long: 0 });
 
       /* ******************************************************************* */
       /* COMPLETE
@@ -182,10 +179,7 @@ describe('Pomodoro tests', () => {
       expect(hooks.onCompleteHook).toHaveBeenCalledTimes(1);
       expect(hooks.onCompleteHook).toHaveBeenCalledWith(expect.objectContaining({ type: 'pomo' }));
 
-      expect(screen.getByText(/5 : 00/)).toBeInTheDocument();
-
-      expect(screen.getByText(/completed pomos: 1/)).toBeInTheDocument();
-      expect(screen.getByText(/completed breaks: 0/)).toBeInTheDocument();
+      assert.timerAndProgress({ mins: 5, secs: 0, pomos: 1, long: 0 });
     });
 
     test('a long break is scheduled every 4 breaks', async () => {
@@ -196,9 +190,7 @@ describe('Pomodoro tests', () => {
       /* ******************************************************************* */
       runOnePomoTimer();
 
-      expect(screen.getByText(/5 : 00/)).toBeInTheDocument();
-      expect(screen.getByText(/completed pomos: 1/)).toBeInTheDocument();
-      expect(screen.getByText(/completed breaks: 0/)).toBeInTheDocument();
+      assert.timerAndProgress({ mins: 5, secs: 0, pomos: 1, long: 0 });
 
       expect(hooks.onCompleteHook).toHaveBeenCalledTimes(1);
 
@@ -206,9 +198,7 @@ describe('Pomodoro tests', () => {
       /* Run a short break
       /* ******************************************************************* */
       runOneShortTimer();
-      expect(screen.getByText(/10 : 00/)).toBeInTheDocument();
-      expect(screen.getByText(/completed pomos: 1/)).toBeInTheDocument();
-      expect(screen.getByText(/completed breaks: 0/)).toBeInTheDocument();
+      assert.timerAndProgress({ mins: 10, secs: 0, pomos: 1, long: 0 });
 
       expect(hooks.onStartHook).toHaveBeenCalledWith(expect.objectContaining({ type: 'short' }));
       expect(hooks.onTickHook).toHaveBeenCalledWith(
@@ -220,26 +210,26 @@ describe('Pomodoro tests', () => {
       /* Run pomos
       /* ******************************************************************* */
       runOnePomoAndShortBreak();
-      expect(screen.getByText(/completed pomos: 2/)).toBeInTheDocument();
+      expect(records.pomos(2)).toBeInTheDocument();
 
       runOnePomoAndShortBreak();
-      expect(screen.getByText(/completed pomos: 3/)).toBeInTheDocument();
+      expect(records.pomos(3)).toBeInTheDocument();
 
       /* ******************************************************************* */
       /* Run pomo 4 and start long break
       /* ******************************************************************* */
 
       runOnePomoTimer();
-      expect(screen.getByText(/completed pomos: 4/)).toBeInTheDocument();
+      expect(records.pomos(4)).toBeInTheDocument();
 
-      userEvent.click(screen.getByRole('button', { name: T.pomoTimer.start }));
+      userEvent.click(timer.startButton());
       tick(1);
       expect(hooks.onStartHook).toHaveBeenCalledWith(expect.objectContaining({ type: 'long' }));
       expect(hooks.onTickHook).toHaveBeenLastCalledWith(
         expect.objectContaining({ type: 'long', minutes: 7, seconds: 59 })
       );
 
-      expect(screen.getByText(/completed breaks: 0/)).toBeInTheDocument();
+      expect(records.long(0)).toBeInTheDocument();
 
       tick(7 * 60 + 59);
 
@@ -248,23 +238,24 @@ describe('Pomodoro tests', () => {
       expect(screen.getByText(/completed breaks: 1/)).toBeInTheDocument();
 
       expect(screen.getByText(/10 : 00/)).toBeInTheDocument();
+      assert.timerAndProgress({ mins: 10, secs: 0, pomos: 4, long: 1 });
 
       /* ******************************************************************* */
       /* Run till second long break
       /* ******************************************************************* */
       runOnePomoAndShortBreak();
-      expect(screen.getByText(/completed pomos: 5/)).toBeInTheDocument();
+      expect(records.pomos(5)).toBeInTheDocument();
 
       runOnePomoAndShortBreak();
-      expect(screen.getByText(/completed pomos: 6/)).toBeInTheDocument();
+      expect(records.pomos(6)).toBeInTheDocument();
 
       runOnePomoAndShortBreak();
-      expect(screen.getByText(/completed pomos: 7/)).toBeInTheDocument();
-      expect(screen.getByText(/completed breaks: 1/)).toBeInTheDocument();
+      expect(records.pomos(7)).toBeInTheDocument();
+      expect(records.long(1)).toBeInTheDocument();
 
       runOnePomoAndLongBreak();
-      expect(screen.getByText(/completed pomos: 8/)).toBeInTheDocument();
-      expect(screen.getByText(/completed breaks: 2/)).toBeInTheDocument();
+      expect(records.pomos(8)).toBeInTheDocument();
+      expect(records.long(2)).toBeInTheDocument();
     });
 
     test('stopping a short break takes you back to a pomo timer', async () => {
@@ -275,30 +266,27 @@ describe('Pomodoro tests', () => {
       /* ******************************************************************* */
       runOnePomoTimer();
 
-      userEvent.click(screen.getByRole('button', { name: T.pomoTimer.start }));
+      userEvent.click(timer.startButton());
 
       tick(23);
 
-      expect(screen.getByText(/completed pomos: 1/)).toBeInTheDocument();
-      expect(screen.getByText(/completed breaks: 0/)).toBeInTheDocument();
+      expect(records.pomos(1)).toBeInTheDocument();
+      expect(records.long(0)).toBeInTheDocument();
 
       /* ******************************************************************* */
       /* STOP
       /* ******************************************************************* */
-      userEvent.click(screen.getByRole('button', { name: T.pomoTimer.stop }));
+      userEvent.click(timer.stopButton());
 
       expect(hooks.onStopHook).toHaveBeenCalledTimes(1);
       expect(hooks.onStopHook).toHaveBeenCalledWith(
         expect.objectContaining({ minutes: 4, seconds: 37, type: 'short' })
       );
 
-      expect(screen.getByText(/completed pomos: 1/)).toBeInTheDocument();
-      expect(screen.getByText(/completed breaks: 0/)).toBeInTheDocument();
-
+      assert.timerAndProgress({ mins: 10, secs: 0, pomos: 1, long: 0 });
       /* ******************************************************************* */
       /* START POMO
       /* ******************************************************************* */
-      expect(screen.getByText(/10 : 00/)).toBeInTheDocument();
 
       userEvent.click(screen.getByRole('button', { name: T.pomoTimer.start }));
       expect(hooks.onStartHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'pomo' }));
@@ -312,8 +300,8 @@ describe('Pomodoro tests', () => {
       runOnePomoAndShortBreak();
       runOnePomoTimer();
 
-      expect(screen.getByText(/completed pomos: 4/)).toBeInTheDocument();
-      expect(screen.getByText(/completed breaks: 0/)).toBeInTheDocument();
+      expect(records.pomos(4)).toBeInTheDocument();
+      expect(records.long(0)).toBeInTheDocument();
 
       userEvent.click(screen.getByRole('button', { name: T.pomoTimer.start }));
 
@@ -331,8 +319,8 @@ describe('Pomodoro tests', () => {
         expect.objectContaining({ minutes: 7, seconds: 37, type: 'long' })
       );
 
-      expect(screen.getByText(/completed pomos: 4/)).toBeInTheDocument();
-      expect(screen.getByText(/completed breaks: 1/)).toBeInTheDocument();
+      expect(records.pomos(4)).toBeInTheDocument();
+      expect(records.long(1)).toBeInTheDocument();
 
       /* ******************************************************************* */
       /* Continue to next long break
@@ -341,13 +329,13 @@ describe('Pomodoro tests', () => {
       runOnePomoAndShortBreak();
       runOnePomoAndShortBreak();
 
-      expect(screen.getByText(/completed pomos: 7/)).toBeInTheDocument();
-      expect(screen.getByText(/completed breaks: 1/)).toBeInTheDocument();
+      expect(records.pomos(7)).toBeInTheDocument();
+      expect(records.long(1)).toBeInTheDocument();
 
       runOnePomoAndLongBreak();
 
-      expect(screen.getByText(/completed pomos: 8/)).toBeInTheDocument();
-      expect(screen.getByText(/completed breaks: 2/)).toBeInTheDocument();
+      expect(records.pomos(8)).toBeInTheDocument();
+      expect(records.long(2)).toBeInTheDocument();
     });
   });
 
@@ -368,13 +356,13 @@ describe('Pomodoro tests', () => {
       await initTest();
       runOnePomoTimer();
 
-      expect(screen.getByText(/completed pomos: 1/)).toBeInTheDocument();
+      expect(records.pomos(1)).toBeInTheDocument();
 
       /* ******************************************************************* */
       /* Check break has started
       /* ******************************************************************* */
-      expect(screen.queryByRole('button', { name: T.pomoTimer.start })).not.toBeInTheDocument();
-      expect(screen.getByText(/5 : 00/)).toBeInTheDocument();
+      expect(timer.startButtonQuery()).not.toBeInTheDocument();
+      expect(timer.current({ mins: 5, secs: 0 })).toBeInTheDocument();
       expect(hooks.onStartHook).toHaveBeenCalledTimes(2);
       expect(hooks.onStartHook).toHaveBeenLastCalledWith(
         expect.objectContaining({ type: 'short' })
@@ -385,7 +373,7 @@ describe('Pomodoro tests', () => {
       /* ******************************************************************* */
       /* Break progresses as normal
       /* ******************************************************************* */
-      expect(screen.getByText(/4 : 57/)).toBeInTheDocument();
+      expect(timer.current({ mins: 4, secs: 57 })).toBeInTheDocument();
       expect(hooks.onTickHook).toHaveBeenLastCalledWith(
         expect.objectContaining({ type: 'short', minutes: 4, seconds: 57 })
       );
@@ -400,11 +388,11 @@ describe('Pomodoro tests', () => {
         expect.objectContaining({ type: 'short' })
       );
 
-      expect(screen.getByText(/10 : 00/)).toBeInTheDocument();
+      expect(timer.current({ mins: 10, secs: 0 })).toBeInTheDocument();
 
       tick(100);
 
-      expect(screen.getByText(/10 : 00/)).toBeInTheDocument();
+      expect(timer.current({ mins: 10, secs: 0 })).toBeInTheDocument();
 
       /* ******************************************************************* */
       /* Pomo timer runs as normal
@@ -433,9 +421,10 @@ describe('Pomodoro tests', () => {
       await initTest();
 
       tick(3);
-      expect(screen.queryByRole('button', { name: T.pomoTimer.start })).not.toBeInTheDocument();
+      expect(timer.startButtonQuery()).not.toBeInTheDocument();
       expect(hooks.onStartHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'pomo' }));
       expect(screen.getByText(/9 : 57/)).toBeInTheDocument();
+      expect(timer.current({ mins: 9, secs: 57 })).toBeInTheDocument();
       expect(hooks.onTickHook).toHaveBeenCalledTimes(3);
     });
   });
@@ -460,12 +449,12 @@ describe('Pomodoro tests', () => {
       runOnePomoAndShortBreak();
       runOnePomoTimer();
 
-      expect(screen.queryByRole('button', { name: T.pomoTimer.start })).not.toBeInTheDocument();
+      expect(timer.startButtonQuery()).not.toBeInTheDocument();
       expect(hooks.onStartHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'long' }));
 
       tick(3);
 
-      expect(screen.getByText(/7 : 57/)).toBeInTheDocument();
+      expect(timer.current({ mins: 7, secs: 57 })).toBeInTheDocument();
     });
   });
 
@@ -489,12 +478,12 @@ describe('Pomodoro tests', () => {
     it('should start all timers immediately', async () => {
       await initTest();
 
-      expect(screen.queryByRole('button', { name: T.pomoTimer.start })).not.toBeInTheDocument();
+      expect(timer.startButtonQuery()).not.toBeInTheDocument();
       expect(hooks.onStartHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'pomo' }));
 
       tick(10 * 60);
 
-      expect(screen.getByText(/completed pomos: 1/)).toBeInTheDocument();
+      expect(records.pomos(1)).toBeInTheDocument();
       expect(hooks.onCompleteHook).toHaveBeenLastCalledWith(
         expect.objectContaining({ type: 'pomo' })
       );
@@ -509,27 +498,27 @@ describe('Pomodoro tests', () => {
       );
       expect(hooks.onStartHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'pomo' }));
 
-      userEvent.click(screen.getByRole('button', { name: T.pomoTimer.pause }));
+      userEvent.click(timer.pauseButton());
       expect(hooks.onPauseHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'pomo' }));
-      userEvent.click(screen.getByRole('button', { name: T.pomoTimer.play }));
+      userEvent.click(timer.playButton());
       expect(hooks.onPlayHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'pomo' }));
 
       tick(10 * 60); // pomo 2
-      expect(screen.getByText(/completed pomos: 2/)).toBeInTheDocument();
+      expect(records.pomos(2)).toBeInTheDocument();
 
       tick(5 * 60); // break 2
       tick(10 * 60); // pomo 3
-      expect(screen.getByText(/completed pomos: 3/)).toBeInTheDocument();
+      expect(records.pomos(3)).toBeInTheDocument();
 
       tick(5 * 60); // break 3
       tick(10 * 60); // pomo 4
-      expect(screen.getByText(/completed pomos: 4/)).toBeInTheDocument();
+      expect(records.pomos(4)).toBeInTheDocument();
 
       expect(hooks.onStartHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'long' }));
       tick(8 * 60); // longBreak
 
-      expect(screen.getByText(/completed pomos: 4/)).toBeInTheDocument();
-      expect(screen.getByText(/completed breaks: 1/)).toBeInTheDocument();
+      expect(records.pomos(4)).toBeInTheDocument();
+      expect(records.long(1)).toBeInTheDocument();
       expect(hooks.onCompleteHook).toHaveBeenLastCalledWith(
         expect.objectContaining({ type: 'long' })
       );
@@ -542,20 +531,20 @@ describe('Pomodoro tests', () => {
 /* ******************************************************************* */
 
 function runOnePomoTimer() {
-  expect(screen.getByText(/10 : 00/)).toBeInTheDocument();
-  userEvent.click(screen.getByRole('button', { name: T.pomoTimer.start }));
+  expect(timer.current({ mins: 10, secs: 0 })).toBeInTheDocument();
+  userEvent.click(timer.startButton());
   tick(60 * 10);
 }
 
 function runOneShortTimer() {
-  expect(screen.getByText(/5 : 00/)).toBeInTheDocument();
-  userEvent.click(screen.getByRole('button', { name: T.pomoTimer.start }));
+  expect(timer.current({ mins: 5, secs: 0 })).toBeInTheDocument();
+  userEvent.click(timer.startButton());
   tick(60 * 5);
 }
 
 function runOneLongTimer() {
-  expect(screen.getByText(/8 : 00/)).toBeInTheDocument();
-  userEvent.click(screen.getByRole('button', { name: T.pomoTimer.start }));
+  expect(timer.current({ mins: 8, secs: 0 })).toBeInTheDocument();
+  userEvent.click(timer.startButton());
   tick(60 * 8);
 }
 
@@ -563,12 +552,12 @@ function runOnePomoAndShortBreak() {
   runOnePomoTimer();
 
   runOneShortTimer();
-  expect(screen.getByText(/10 : 00/)).toBeInTheDocument();
+  expect(timer.current({ mins: 10, secs: 0 })).toBeInTheDocument();
 }
 
 function runOnePomoAndLongBreak() {
   runOnePomoTimer();
 
   runOneLongTimer();
-  expect(screen.getByText(/10 : 00/)).toBeInTheDocument();
+  expect(timer.current({ mins: 10, secs: 0 })).toBeInTheDocument();
 }

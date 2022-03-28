@@ -34,6 +34,7 @@ module.exports = {
     'tooling/backstop_data/bitmaps_test',
     'tooling/graphql',
     'shared/graphql.ts',
+    '**/*.typegen.ts',
   ],
   overrides: [
     {

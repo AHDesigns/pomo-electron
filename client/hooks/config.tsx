@@ -1,4 +1,4 @@
-import { ConfigActorRef, configModel } from '@client/machines';
+import { actorIds, ConfigActorRef, configModel } from '@client/machines';
 import { DeepPartial, emptyConfig, UserConfig } from '@shared/types';
 import { useActor, useSelector } from '@xstate/react';
 import React, { createContext, useEffect, useState } from 'react';
@@ -27,13 +27,13 @@ export const useConfig = (): ConfigMaybe => {
   const config = useSelector(
     main,
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    (c) => c.children['config-actor'] as ConfigActorRef | null
+    (c) => c.children[actorIds.CONFIG] as ConfigActorRef | null
   );
   if (!config) {
     throw new Error(
-      `programmer error, "config-actor" not found in machine. Actor refs found: "${Object.keys(
-        main.children
-      ).join(', ')}"`
+      `programmer error, "config-actor" not found in machine. Actor refs found: "${Array.from(
+        main.children.keys()
+      ).join(',')}"`
     );
   }
 
@@ -51,78 +51,3 @@ export const useConfig = (): ConfigMaybe => {
       : { loading: false, config: state.context }),
   };
 };
-
-// const configContext = createContext<ConfigMaybe>({
-//   config: emptyConfig,
-//   storeUpdate() {
-//     throw new Error('provider not initialised');
-//   },
-//   storeReset() {
-//     throw new Error('provider not initialised');
-//   },
-//   loading: true,
-// });
-
-// const { Provider } = configContext;
-
-// export const useConfig = (): Config => useContext(configContext);
-
-// interface IConfigProvider extends Partial<ConfigUpdaters> {
-//   children: React.ReactNode;
-// }
-
-//   export function ConfigProvider(): JSX.Element {
-//   return null
-// }
-
-// export function ConfigProvider({ children, config: configOverride }: IConfigProvider): JSX.Element {
-//   const logger = useLogger();
-//   const [config, setConfig] = useState(configOverride ?? emptyConfig);
-//   const [loading, setLoading] = useState(true);
-//   const bridge = useBridge();
-
-//   useEffect(() => {
-//     bridge
-//       .storeRead()
-//       .then((data) => {
-//         data.match({
-//           Ok: setConfig,
-//           Err: logger.error,
-//         });
-//       })
-//       .then(() => {
-//         setLoading(false);
-//       });
-//   }, [bridge, setLoading, logger]);
-
-//   return (
-//     <Provider
-//       value={{
-//         loading,
-//         config,
-//         async storeUpdate(data) {
-//           const res = await bridge.storeUpdate(data);
-
-//           res.match({
-//             Ok: setConfig,
-//             Err: logger.error,
-//           });
-
-//           return res;
-//         },
-//         async storeReset() {
-//           const res = await bridge.storeReset();
-
-//           res.match({
-//             Ok: setConfig,
-//             Err: logger.error,
-//           });
-
-//           return res;
-//         },
-//       }}
-//     >
-//       {children}
-//     </Provider>
-//   );
-// }

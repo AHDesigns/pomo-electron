@@ -8,3 +8,5 @@ export type { TimerActorRef } from './timer/machine';
 
 export { default as mainMachine } from './main/machine';
 export type { IMainMachine, MainService } from './main/machine';
+
+export * from './constants';

@@ -1,12 +1,19 @@
-import { ActorRefFrom } from 'xstate';
-import model from './model';
+import { ActorRefFrom, assign, createMachine } from 'xstate';
+import { sendParent } from 'xstate/lib/actions';
+import pomodoroModel from '../pomodoro/model';
+import model, { TimerContext, TimerEvents } from './model';
 
 const ONE_SECOND = 1000;
 
-const timerMachine = model.createMachine(
+const timerMachine = createMachine(
   {
     id: 'timer',
     initial: 'ready',
+    tsTypes: {} as import('./machine.typegen').Typegen0,
+    schema: {
+      events: {} as TimerEvents,
+      context: {} as TimerContext,
+    },
     context: model.initialContext,
     states: {
       ready: {
@@ -38,13 +45,11 @@ const timerMachine = model.createMachine(
         },
       },
       complete: {
-        entry: ['onCompleteHook'],
-        data: { complete: true },
+        entry: ['onCompleteHook', 'notifyParentComplete'],
         type: 'final',
       },
       stopped: {
-        entry: ['onStopHook'],
-        data: { complete: false },
+        entry: ['onStopHook', 'notifyParentInComplete'],
         type: 'final',
       },
     },
@@ -58,12 +63,17 @@ const timerMachine = model.createMachine(
     },
     guards: {
       isTimerFinished: ({ minutes, seconds }) => minutes === 0 && seconds === 1,
+
       shouldAutoStart: ({ autoStart }) => autoStart,
     },
     actions: {
-      updateTimer: model.assign(({ minutes, seconds }) =>
+      updateTimer: assign(({ minutes, seconds }) =>
         seconds === 0 ? { minutes: minutes - 1, seconds: 59 } : { minutes, seconds: seconds - 1 }
       ),
+
+      notifyParentComplete: sendParent(pomodoroModel.events.TIMER_COMPLETE(true)),
+
+      notifyParentInComplete: sendParent(pomodoroModel.events.TIMER_INCOMPLETE(true)),
     },
   }
 );

@@ -19,7 +19,8 @@ const pomodoroModel = createModel(
   },
   {
     events: {
-      'done.invoke.timer-actor': (complete: boolean) => ({ data: { complete } }),
+      TIMER_COMPLETE: (complete: boolean) => ({ data: { complete } }),
+      TIMER_INCOMPLETE: (complete: boolean) => ({ data: { complete } }),
       CONFIG_LOADED: (
         timers: typeof emptyConfig.timers,
         autoStart: typeof emptyConfig.autoStart

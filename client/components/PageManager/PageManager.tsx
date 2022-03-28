@@ -17,10 +17,6 @@ export function PageManager(): JSX.Element {
   const { loading } = useConfig();
   const theme = useTheme();
 
-  if (loading) {
-    return <p>loading...</p>;
-  }
-
   return (
     <Page>
       <h1 style={{ display: 'none' }}>Pomodoro App</h1>

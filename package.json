@@ -6,6 +6,7 @@
   "scripts": {
     "clean": "git clean -dfx && yarn install",
     "dev": "FORCE_COLOR=1 run-p --print-label dev:*",
+    "machine": "xstate typegen \"client/machines/**/machine.ts\"",
     "storybook": "start-storybook -p 6006 -s public -c tooling/storybook",
     "pretty:check": "prettier --check --ignore-path .gitignore .",
     "pretty": "prettier --write --ignore-path .gitignore .",
@@ -85,6 +86,7 @@
     "webpack-dev-server": "3.11.2"
   },
   "dependencies": {
+    "@xstate/cli": "0.1.5",
     "@xstate/inspect": "0.6.2",
     "@xstate/react": "2.0.0",
     "dotenv": "10.0.0",
