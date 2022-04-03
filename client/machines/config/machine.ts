@@ -1,11 +1,11 @@
 import { DeepPartial, emptyConfig, IBridge, UserConfig } from '@shared/types';
-import { ActorRefFrom, ContextFrom, EventFrom, InterpreterFrom, sendParent } from 'xstate';
+import { ActorRefFrom, ContextFrom, EventFrom, InterpreterFrom, sendParent, assign } from 'xstate';
 import { createModel } from 'xstate/lib/model';
 import mainModel from '../main/model';
 
 export const configModel = createModel(emptyConfig, {
   events: {
-    'done.invoke.loadConfig': (config: UserConfig) => ({ data: config }),
+    // 'done.invoke.loadConfig': (config: UserConfig) => ({ data: config }),
     RESET: () => ({}),
     UPDATE: (data: DeepPartial<UserConfig>) => ({ data }),
   },
@@ -23,9 +23,15 @@ export default function configMachine({ bridge }: IConfigMachine) {
     {
       id: 'config',
       initial: 'loading',
+      tsTypes: {} as import('./machine.typegen').Typegen0,
       schema: {
         context: {} as ConfigContext,
         events: {} as ConfitEvents,
+        services: {} as {
+          loadConfig: {
+            data: UserConfig;
+          };
+        },
       },
       context: configModel.initialContext,
       states: {
@@ -49,21 +55,19 @@ export default function configMachine({ bridge }: IConfigMachine) {
     },
     {
       services: {
-        loadConfig: async () =>
-          bridge.storeRead().then((r) =>
-            r.match({
-              Ok: (config) => config,
-              Err: (e) => {
-                bridge.warn(e);
-                throw new Error();
-              },
-            })
-          ),
+        loadConfig: async () => {
+          const r = await bridge.storeRead();
+          return r.match({
+            Ok: (config) => config,
+            Err: (e) => {
+              bridge.warn(e);
+              throw new Error();
+            },
+          });
+        },
       },
       actions: {
-        storeConfig: configModel.assign((c, e) =>
-          e.type === 'done.invoke.loadConfig' ? e.data : c
-        ),
+        storeConfig: assign((_, { data }) => data),
       },
     }
   );
