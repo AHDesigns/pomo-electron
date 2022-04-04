@@ -1,9 +1,6 @@
 import { actorIds, ConfigActorRef, configModel } from '@client/machines';
-import { DeepPartial, emptyConfig, UserConfig } from '@shared/types';
+import { DeepPartial, UserConfig } from '@shared/types';
 import { useActor, useSelector } from '@xstate/react';
-import React, { createContext, useEffect, useState } from 'react';
-import { useBridge } from './bridge';
-import { useLogger } from './logger';
 import { useMachines } from './machines';
 
 interface ConfigUpdaters {

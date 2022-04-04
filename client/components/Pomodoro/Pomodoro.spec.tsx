@@ -6,7 +6,7 @@ import { pageModel, assert } from '@test/pageModels';
 import T from '@client/copy';
 import { ok } from '@shared/Result';
 import { emptyConfig, TimerHooks, UserConfig } from '@shared/types';
-import { override } from '@shared/merge';
+import { merge } from '@shared/merge';
 import { Pomodoro } from './Pomodoro';
 
 beforeEach(() => {
@@ -345,7 +345,7 @@ describe('Pomodoro tests', () => {
         overrides: {
           bridge: {
             storeRead: async () =>
-              ok(override(defaultTestConfig, { autoStart: { beforeShortBreak: true } })),
+              ok(merge(defaultTestConfig, { autoStart: { beforeShortBreak: true } })),
           },
           hooks,
         },
@@ -410,7 +410,7 @@ describe('Pomodoro tests', () => {
         overrides: {
           bridge: {
             storeRead: async () =>
-              ok(override(defaultTestConfig, { autoStart: { beforePomo: true } })),
+              ok(merge(defaultTestConfig, { autoStart: { beforePomo: true } })),
           },
           hooks,
         },
@@ -435,7 +435,7 @@ describe('Pomodoro tests', () => {
         overrides: {
           bridge: {
             storeRead: async () =>
-              ok(override(defaultTestConfig, { autoStart: { beforeLongBreak: true } })),
+              ok(merge(defaultTestConfig, { autoStart: { beforeLongBreak: true } })),
           },
           hooks,
         },
@@ -465,7 +465,7 @@ describe('Pomodoro tests', () => {
           bridge: {
             storeRead: async () =>
               ok(
-                override(defaultTestConfig, {
+                merge(defaultTestConfig, {
                   autoStart: { beforeLongBreak: true, beforeShortBreak: true, beforePomo: true },
                 })
               ),

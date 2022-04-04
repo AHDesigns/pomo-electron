@@ -1,4 +1,4 @@
-import { override } from '@shared/merge';
+import { merge } from '@shared/merge';
 import { DeepPartial, TimerHooks } from '@shared/types';
 import { ActorRefFrom, assign, ContextFrom, createMachine, InterpreterFrom } from 'xstate';
 import { actorIds } from '../constants';
@@ -28,7 +28,7 @@ function pomodoroMachine({ actions, context }: IPomodoroMachine) {
     },
   };
 
-  const initialContext = override(model.initialContext, context);
+  const initialContext = merge(model.initialContext, context);
 
   return createMachine(
     {

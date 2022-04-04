@@ -18,36 +18,20 @@ const mainMachineFactory = ({ pomodoro, bridge }: IMainMachine) =>
         context: {} as MainContext,
         events: {} as MainEvents,
       },
-      context: mainModel.initialContext,
       tsTypes: {} as import('./machine.typegen').Typegen0,
-      type: 'parallel',
+      context: mainModel.initialContext,
+      initial: 'active',
       on: {
         CONFIG_LOADED: {
           actions: [forwardTo(actorIds.POMODORO), 'setLoaded'],
         },
       },
       states: {
-        // booting: {
-        //   initial: 'starting',
-        //   states: {
-        //     starting: { always: 'ready' },
-        //     ready: {
-        //       entry: 'setLoaded',
-        //       type: 'final',
-        //     },
-        //   },
-        // },
-        pomodoro: {
-          invoke: {
-            id: actorIds.POMODORO,
-            src: pomodoroMachine(pomodoro),
-          },
-        },
-        config: {
-          invoke: {
-            id: actorIds.CONFIG,
-            src: configMachine({ bridge }),
-          },
+        active: {
+          invoke: [
+            { id: actorIds.POMODORO, src: pomodoroMachine(pomodoro) },
+            { id: actorIds.CONFIG, src: configMachine({ bridge }) },
+          ],
         },
       },
     },
