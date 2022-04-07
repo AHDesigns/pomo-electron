@@ -1,5 +1,6 @@
 import T from '@client/copy';
 import { displayNum } from '@shared/format';
+import userEvent from '@testing-library/user-event';
 import { screen } from './rtl';
 
 interface Time {
@@ -17,7 +18,7 @@ export const pageModel = {
     toTimer: () => screen.getByRole('button', { name: 'timer' }),
   },
   pomo: {
-    title: () => screen.getByText('Pomodoro'),
+    title: () => screen.getByText('Timer'),
     timer: {
       current: ({ mins, secs }: Time) =>
         !secs && secs !== 0
@@ -47,6 +48,21 @@ interface TimeAndProgress extends Time {
   pomos: number;
   long: number;
 }
+
+const timeouts = {
+  MEDIUM: 500,
+} as const;
+
+export const userActions = {
+  async navigateToSettings() {
+    userEvent.click(pageModel.nav.toSettings());
+    await screen.findByRole('heading', { name: 'Settings' }, { timeout: timeouts.MEDIUM });
+  },
+  async navigateToTimer() {
+    userEvent.click(pageModel.nav.toTimer());
+    await screen.findByRole('heading', { name: 'Timer' }, { timeout: timeouts.MEDIUM });
+  },
+} as const;
 
 export const assert = {
   timerAndProgress({ long, mins, pomos, secs }: TimeAndProgress): void {

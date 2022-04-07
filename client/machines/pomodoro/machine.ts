@@ -1,9 +1,10 @@
 import { merge } from '@shared/merge';
 import { DeepPartial, TimerHooks } from '@shared/types';
-import { ActorRefFrom, assign, ContextFrom, createMachine, InterpreterFrom } from 'xstate';
+import { ActorRefFrom, assign, ContextFrom, createMachine, InterpreterFrom, send } from 'xstate';
+import { forwardTo } from 'xstate/lib/actions';
 import { actorIds } from '../constants';
 import timerMachine from '../timer/machine';
-import { TimerContext } from '../timer/model';
+import timerModel, { TimerContext } from '../timer/model';
 import model, { PomodoroEvents, PomodoroModel } from './model';
 
 function pomodoroMachine({ actions, context }: IPomodoroMachine) {
@@ -59,6 +60,7 @@ function pomodoroMachine({ actions, context }: IPomodoroMachine) {
           on: {
             TIMER_INCOMPLETE: 'pomo',
             TIMER_COMPLETE: { target: 'breakDecision', actions: ['increasePomoCount'] },
+            CONFIG_LOADED: { actions: ['updateTimerConfig', 'updatePomoTimerConfig'] },
           },
         },
         breakDecision: {
@@ -80,6 +82,7 @@ function pomodoroMachine({ actions, context }: IPomodoroMachine) {
           on: {
             TIMER_COMPLETE: 'pomo',
             TIMER_INCOMPLETE: 'pomo',
+            CONFIG_LOADED: { actions: 'updateTimerConfig' },
           },
         },
         long: {
@@ -98,6 +101,7 @@ function pomodoroMachine({ actions, context }: IPomodoroMachine) {
           on: {
             TIMER_COMPLETE: 'pomo',
             TIMER_INCOMPLETE: 'pomo',
+            CONFIG_LOADED: { actions: 'updateTimerConfig' },
           },
           exit: 'increaseBreakCount',
         },
@@ -122,6 +126,11 @@ function pomodoroMachine({ actions, context }: IPomodoroMachine) {
         increaseBreakCount: assign({
           completed: ({ completed }) => ({ ...completed, long: completed.long + 1 }),
         }),
+
+        updatePomoTimerConfig: send(
+          (_, { data: { timers } }) => timerModel.events.UPDATE(timers.pomo),
+          { to: actorIds.TIMER }
+        ),
       },
     }
   );

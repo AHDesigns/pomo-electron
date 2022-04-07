@@ -22,7 +22,7 @@ export function Timer(): JSX.Element | null {
           name="pomo"
           id="pomo"
           type="number"
-          min={0}
+          min={1}
           max={120}
           placeholder="xocx-..."
           value={timers.pomo}
@@ -39,7 +39,7 @@ export function Timer(): JSX.Element | null {
           name="short-break"
           id="short-break"
           type="number"
-          min={0}
+          min={1}
           max={120}
           placeholder="xocx-..."
           value={timers.short}
@@ -56,7 +56,7 @@ export function Timer(): JSX.Element | null {
           name="long-break"
           id="long-break"
           type="number"
-          min={0}
+          min={1}
           max={120}
           placeholder="xocx-..."
           value={timers.long}

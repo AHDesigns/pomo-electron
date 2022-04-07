@@ -20,6 +20,7 @@ const timerMachine = createMachine(
         always: [{ cond: 'shouldAutoStart', target: 'playing' }],
         on: {
           START: { target: 'playing' },
+          UPDATE: { actions: 'updateTimerConfig' },
         },
         exit: 'onStartHook',
       },
@@ -74,6 +75,10 @@ const timerMachine = createMachine(
       notifyParentComplete: sendParent(pomodoroModel.events.TIMER_COMPLETE(true)),
 
       notifyParentInComplete: sendParent(pomodoroModel.events.TIMER_INCOMPLETE(true)),
+
+      updateTimerConfig: assign({
+        minutes: (_, { data }) => data,
+      }),
     },
   }
 );
