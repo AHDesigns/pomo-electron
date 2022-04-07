@@ -111,7 +111,7 @@ interface IMenuButton {
 export function MenuButton({ onClick, showClose }: IMenuButton): JSX.Element {
   return (
     <Button onClick={onClick}>
-      <span style={{ display: 'none' }}>menu</span>
+      <span className="sr-only">{showClose ? 'timer' : 'settings'}</span>
       <Hamburger showClose={showClose} />
     </Button>
   );

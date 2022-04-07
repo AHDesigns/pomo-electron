@@ -1,44 +1,78 @@
-// tests relating to settings controls
-describe('when the user navigates to settings', () => {
-  // it.todo('should display the settings page');
+import { App } from '@client/App';
+import { merge } from '@shared/merge';
+import { ok } from '@shared/Result';
+import T from '@client/copy';
+import { emptyConfig } from '@shared/types';
+import { pageModel } from '@test/pageModels';
+import { act, render, screen } from '@test/rtl';
+import userEvent from '@testing-library/user-event';
+import React from 'react';
+import { tick } from '@test/tick';
 
-  describe('when the user changes the timer duration to 10 minutes', () => {
-    // it.todo('should show 10 minutes as the new duration in the settings page');
-    // it.todo('should update the users config with the new settings');
+jest.mock('@xstate/inspect');
 
-    describe('when the user navigates back to the timer', () => {
-      // it.todo('should show a 10 minute timer');
+beforeEach(() => {
+  jest.useFakeTimers();
+});
 
-      describe('when play is pressed', () => {
-        // it.todo('should tick down every second, starting at 10 minutes');
-        // it.todo('should show the time in the menu bar');
-        // it.todo('should show the active icon in the menu bar');
+async function initTest() {
+  return render(<App />, {
+    overrides: {
+      bridge: {
+        storeRead: async () =>
+          ok(
+            merge(emptyConfig, {
+              timers: { pomo: 10, short: 5, long: 8 },
+            })
+          ),
+      },
+    },
+  });
+}
 
-        describe('when stop is pressed', () => {
-          it.todo('should stop the timer');
-          it.todo('should reset the timer to 10 mins');
-          it.todo('should clear the time in the menu bar');
-          it.todo('should show the inactive icon in the menu bar');
-        });
-      });
-    });
+const {
+  nav,
+  settings,
+  pomo: { timer },
+} = pageModel;
+
+beforeEach(() => {
+  jest.useFakeTimers();
+});
+
+afterEach(() => {
+  const button = screen.queryByRole('button', { name: T.pomoTimer.stop });
+  if (button) userEvent.click(button);
+  act(() => {
+    jest.runOnlyPendingTimers();
+    jest.useRealTimers();
   });
 });
 
-// settings interaction
-// describe('given the user starts a 10 minute timer', () => {
-//   describe('when they naviagte to settings and then back to the timer', () => {
-//     // it.todo('should continue to tick down every second');
-//   });
-// });
+describe(`given no timer is running
+when the user changes the timer duration to 7 minutes and starts the timer`, () => {
+  test('the timer ticks down every second, starting at 7 minutes', async () => {
+    await initTest();
 
-// describe('given the user starts a 10 minute timer', () => {
-//   describe('when the user navigates to settings and changes the timer to 20 minutes, and then navigates back to the timer', () => {
-//     // it.todo('should still be counting down on the orginal timer');
-//
-//     describe('when stop is pressed', () => {
-//       // it.todo('should stop the timer');
-//       // it.todo('should reset the timer to 20 minutes');
-//     });
-//   });
-// });
+    expect(timer.current({ mins: 10 })).toBeInTheDocument();
+    userEvent.click(nav.toSettings());
+
+    userEvent.type(settings.timer.pomo(), '{backspace}7');
+
+    userEvent.click(nav.toTimer());
+
+    expect(timer.current({ mins: 7 })).toBeInTheDocument();
+
+    userEvent.click(timer.startButton());
+
+    tick(60 * 7);
+
+    expect(timer.current({ mins: 5 })).toBeInTheDocument();
+  });
+});
+
+describe(`given a 5 minute timer is running
+when the user changes the timer settings to 12 minutes`, () => {
+  test.todo('the timer keeps ticking down for the original 5 minutes without pause');
+  test.todo('once the timer completes, the timer shows the new time of 12 minutes');
+});

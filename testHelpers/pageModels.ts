@@ -12,10 +12,12 @@ export const pageModel = {
     h1: () => screen.getByRole('h1'),
     status: () => screen.getByText('Beta'),
   },
+  nav: {
+    toSettings: () => screen.getByRole('button', { name: 'settings' }),
+    toTimer: () => screen.getByRole('button', { name: 'timer' }),
+  },
   pomo: {
-    nav: {
-      title: () => screen.getByText('Pomodoro'),
-    },
+    title: () => screen.getByText('Pomodoro'),
     timer: {
       current: ({ mins, secs }: Time) =>
         !secs && secs !== 0
@@ -34,8 +36,9 @@ export const pageModel = {
     },
   },
   settings: {
-    nav: {
-      title: () => screen.getByText('Settings'),
+    title: () => screen.getByText('Settings'),
+    timer: {
+      pomo: () => screen.getByLabelText('Pomodoro'),
     },
   },
 } as const;

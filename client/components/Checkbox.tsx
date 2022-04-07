@@ -6,18 +6,7 @@ import { Box } from '@client/components';
  * Hide checkbox visually but remain accessible to screen readers.
  * Source: https://polished.js.org/docs/#hidevisually
  */
-const HiddenCheckbox = styled.input.attrs({ type: 'checkbox' })`
-  border: 0;
-  clip: rect(0 0 0 0);
-  clippath: inset(50%);
-  height: 1px;
-  margin: -1px;
-  overflow: hidden;
-  padding: 0;
-  position: absolute;
-  white-space: nowrap;
-  width: 1px;
-`;
+const HiddenCheckbox = styled.input``;
 
 const Icon = styled.svg`
   float: left;
@@ -65,7 +54,7 @@ export function Checkbox({ checked, onChange, styles, children }: ICheckbox): JS
     <Label style={styles}>
       {children}
       <Box>
-        <HiddenCheckbox checked={checked} onChange={onChange} />
+        <HiddenCheckbox type="checkbox" className="sr-only" checked={checked} onChange={onChange} />
         <StyledCheckbox checked={checked}>
           <Icon viewBox="0 0 24 24">
             <polyline points="20 6 9 17 4 12" />
