@@ -86,6 +86,7 @@
     "webpack-dev-server": "3.11.2"
   },
   "dependencies": {
+    "@testing-library/dom": "^8.13.0",
     "@xstate/cli": "0.1.5",
     "@xstate/inspect": "0.6.2",
     "@xstate/react": "2.0.0",

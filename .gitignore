@@ -8,8 +8,8 @@ tooling/backstop_data/html_report/
 tooling/backstop_data/ci_report
 tooling/backstop_data/bitmaps_test
 
-.pnp.*
 .yarn/*
+!.yarn/cache
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
