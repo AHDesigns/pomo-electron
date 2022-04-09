@@ -8,7 +8,8 @@ import { BridgeProvider, LoggerProvider, MachinesProvider } from '@client/hooks/
 import { theme } from '@client/styles/theme';
 import { createFakeBridge } from '@electron/ipc/createFakeBridge';
 import { IBridge } from '@shared/types';
-import { render, RenderOptions, waitForElementToBeRemoved } from '@testing-library/react';
+import { render, RenderOptions, waitForElementToBeRemoved, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
 type Rendered = ReturnType<typeof render>;
 
@@ -38,7 +39,7 @@ async function renderAsync(ui: ReactElement, options?: Options): Promise<Rendere
     ...renderOptions,
   });
 
-  await waitForElementToBeRemoved(() => result.getByTestId('providers-loading'));
+  await waitForElementToBeRemoved(() => screen.queryByTestId('providers-loading'));
 
   return result;
 

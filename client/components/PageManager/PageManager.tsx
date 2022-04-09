@@ -23,6 +23,7 @@ export function PageManager(): JSX.Element {
       <Header>
         <MenuButton
           onClick={() => {
+            console.log('click');
             navigatePageTo(page === 'Settings' ? 'Pomodoro' : 'Settings');
           }}
           showClose={page === 'Settings'}

@@ -17,23 +17,23 @@ export function Timer(): JSX.Element | null {
   return (
     <Setting variant="simple" heading="Timer" styles={{ marginTop: spacing.small }}>
       <Form>
-        <Label htmlFor="pomo">Pomodoro</Label>
-        <InputText
-          name="pomo"
-          id="pomo"
-          type="number"
-          min={1}
-          max={120}
-          placeholder="xocx-..."
-          value={timers.pomo}
-          onChange={({ target: { value } }) => {
-            storeUpdate({
-              timers: {
-                pomo: Number(value),
-              },
-            });
-          }}
-        />
+        <label htmlFor="pomo">
+          Pomodoro
+          <input
+            id="pomo"
+            // type="number"
+            placeholder="xocx-..."
+            value={timers.pomo}
+            onChange={(e) => {
+              console.log('called', e.target.value);
+              storeUpdate({
+                timers: {
+                  pomo: Number(e.target.value),
+                },
+              });
+            }}
+          />
+        </label>
         <Label htmlFor="short-break">Short break</Label>
         <InputText
           name="short-break"
