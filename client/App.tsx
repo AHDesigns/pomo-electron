@@ -1,21 +1,29 @@
-import React from 'react';
-import { PageManager } from '@client/components';
+/* eslint-disable react/jsx-no-useless-fragment */
+import React, { useLayoutEffect } from 'react';
 import { inspect } from '@xstate/inspect';
 import { useSelector } from '@xstate/react';
 import { useMachines } from './hooks/machines';
 
-inspect({
-  url: 'https://statecharts.io/inspect',
-  iframe: false,
-});
+interface IApp {
+  children: React.ReactNode;
+  shouldInspect: boolean;
+}
 
-export function App(): JSX.Element {
+export function App({ children, shouldInspect }: IApp): JSX.Element {
+  useLayoutEffect(() => {
+    if (shouldInspect) {
+      inspect({
+        url: 'https://statecharts.io/inspect',
+        iframe: false,
+      });
+    }
+  });
   const main = useMachines();
   const loaded = useSelector(main, (c) => c.context.loaded);
 
   // annoying workaround to make sure all child actors are ready
   if (!loaded) {
-    return <p>...booting</p>;
+    return <p data-testid="providers-loading">...booting</p>;
   }
-  return <PageManager />;
+  return <>{children}</>;
 }

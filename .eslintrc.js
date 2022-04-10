@@ -17,6 +17,7 @@ module.exports = {
     'no-console': 'error',
     'react/prop-types': 'off',
     'import/prefer-default-export': 'off',
+    'spaced-comment': ['error', 'always', { exceptions: ['-'] }],
   },
   settings: {
     react: {

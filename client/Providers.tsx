@@ -1,10 +1,9 @@
 /* eslint-disable no-console */
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@client/styles/theme';
-import { ErrorBoundary, ScrollBar } from '@client/components';
+import { ErrorBoundary, ScrollBar, PageManager } from '@client/components';
 import { BridgeProvider, MachinesProvider, LoggerProvider } from '@client/hooks/providers';
-
 import { IBridge } from '@shared/types';
 import { GlobalStyle } from './styles/GlobalStyle';
 import { App } from './App';
@@ -23,7 +22,18 @@ const hooks = {
 };
 
 export function Providers({ bridge }: IProviders): JSX.Element {
-  return (
+  const [booting, setBooting] = useState(true);
+  const [shouldInspect, setShouldInspect] = useState(false);
+  useEffect(() => {
+    bridge.isDev().then((isDev) => {
+      isDev.map((b) => setShouldInspect(b));
+      setBooting(false);
+    });
+  });
+
+  return booting ? (
+    <p>booting...</p>
+  ) : (
     <BridgeProvider bridge={bridge}>
       <LoggerProvider>
         <ErrorBoundary>
@@ -31,7 +41,9 @@ export function Providers({ bridge }: IProviders): JSX.Element {
             <GlobalStyle />
             <ScrollBar />
             <MachinesProvider hooks={hooks}>
-              <App />
+              <App shouldInspect={shouldInspect}>
+                <PageManager />
+              </App>
             </MachinesProvider>
           </ThemeProvider>
         </ErrorBoundary>

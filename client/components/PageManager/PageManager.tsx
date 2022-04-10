@@ -1,7 +1,6 @@
 import React, { FC, useState } from 'react';
 import { Page, Pomodoro, Settings, Box, MenuButton } from '@client/components';
 import styled, { useTheme } from 'styled-components';
-import { useConfig } from '@client/hooks';
 import pj from 'package.json';
 
 const Header = styled.div`
@@ -14,7 +13,6 @@ export type Pages = 'Pomodoro' | 'Settings';
 
 export function PageManager(): JSX.Element {
   const [page, navigatePageTo] = useState<Pages>('Pomodoro');
-  const { loading } = useConfig();
   const theme = useTheme();
 
   return (
@@ -23,7 +21,6 @@ export function PageManager(): JSX.Element {
       <Header>
         <MenuButton
           onClick={() => {
-            console.log('click');
             navigatePageTo(page === 'Settings' ? 'Pomodoro' : 'Settings');
           }}
           showClose={page === 'Settings'}

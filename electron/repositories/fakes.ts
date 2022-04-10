@@ -6,6 +6,7 @@ import { fakeShell } from './shell/fakeShell';
 import { fakeSlackRepository } from './slack/fake';
 import { fakeStoreRepoFactory } from './store/fakeStore';
 import type { Repositories, RepositoryOverrides } from '.';
+import { metaRepo } from './meta';
 
 export const fakeRepositories = (overrides?: RepositoryOverrides): Repositories =>
   merge(
@@ -18,6 +19,7 @@ export const fakeRepositories = (overrides?: RepositoryOverrides): Repositories 
       }),
       ...fakeMenuBarRepository,
       ...createFakeClientLogger(),
+      ...metaRepo,
     },
     overrides
   );

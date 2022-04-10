@@ -1,41 +1,19 @@
-import { App } from '@client/App';
-import { ThemeProvider } from 'styled-components';
+import { PageManager } from '@client/components';
 import { merge } from '@shared/merge';
 import { ok } from '@shared/Result';
-import { theme } from '@client/styles/theme';
-import T from '@client/copy';
 import { emptyConfig } from '@shared/types';
 import { pageModel, userActions } from '@test/pageModels';
-import { act, render, renderNoProviders, renderWithoutWaiting, screen, waitFor } from '@test/rtl';
+import { act, render, screen, waitFor } from '@test/rtl';
+import { tick } from '@test/tick';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { tick } from '@test/tick';
-import { Timer } from '@client/components/Settings/Timer';
-import { useConfig as _useConfig } from '@client/hooks';
-import { mocked } from 'ts-jest/utils';
-
-const useConfig = mocked(_useConfig);
-
-jest.mock('@xstate/inspect');
-// jest.mock('@client/hooks', () => ({
-//   useConfig: jest.fn().mockReturnValue({
-//     config: {
-//       timers: {
-//         pomo: 10,
-//         short: 10,
-//         long: 10,
-//       },
-//     },
-//     storeUpdate: jest.fn(),
-//   }),
-// }));
 
 beforeEach(() => {
   jest.useFakeTimers();
 });
 
 async function initTest() {
-  return render(<App />, {
+  return render(<PageManager />, {
     overrides: {
       bridge: {
         storeRead: async () =>
@@ -77,56 +55,30 @@ afterEach(() => {
 describe(`given no timer is running
 when the user changes the timer duration to 7 minutes and starts the timer`, () => {
   test('the timer ticks down every second, starting at 7 minutes', async () => {
-    // const storeUpdate = jest.fn();
-    // useConfig.mockReturnValue({
-    //   config: {
-    //     ...emptyConfig,
-    //   },
-    //   loading: false,
-    //   storeReset: jest.fn(),
-    //   storeUpdate,
-    // });
     await initTest();
-    // renderNoProviders(
-    //   <ThemeProvider theme={theme}>
-    //     <Timer />
-    //   </ThemeProvider>
-    // );
-
-    // await waitFor(() => expect(timer.current({ mins: 10 })).toBeInTheDocument());
-
-    // await userActions.navigateToSettings();
-
-    // screen.debug();
     const button = await screen.findByRole('button', { name: 'settings' });
+
     userEvent.click(button);
-    // await screen.findByRole('heading', { name: 'Settings' });
 
-    // userEvent.keyboard('{arrowup}');
     const input = await screen.findByLabelText('Pomodoro');
-    userEvent.type(input, '0');
 
-    expect(await screen.findByDisplayValue('10')).toBeInTheDocument();
+    userEvent.type(input, '7', { delay: 10 });
 
-    // expect(storeUpdate).toHaveBeenCalledWith(12);
+    expect(await screen.findByDisplayValue('17')).toBeInTheDocument();
+    await waitFor(() => {
+      expect(input).toHaveValue('17');
+    });
 
-    // await waitFor(() => {
-    //   expect(input).toHaveValue(12);
-    // });
-    // await screen.findByDisplayValue('12');
-    // user.clear(input);
-    // user.type(input, '12');
-    // expect(input).toHaveValue(12);
-    // userEvent.type(settings.timer.pomo(), '{arrowup}{arrowup}');
+    await userActions.navigateToTimer();
 
-    // await userActions.navigateToTimer();
+    expect(await screen.findByText('17 : 00')).toBeInTheDocument();
     // screen.debug();
 
-    // expect(timer.current({ mins: 107 })).toBeInTheDocument();
-
+    // await waait();
     // userEvent.click(timer.startButton());
+    // await waait();
 
-    // tick(60 * 7);
+    // tick(60 * 17);
 
     // expect(timer.current({ mins: 5 })).toBeInTheDocument();
   });

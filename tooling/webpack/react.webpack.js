@@ -15,7 +15,7 @@ module.exports = (_, options = {}) => ({
   },
   entry: path.resolve(rootPath, 'client', 'index.tsx'),
   target: 'web',
-  devtool: 'source-map',
+  devtool: 'cheap-module-eval-source-map',
   module: {
     rules: [
       {

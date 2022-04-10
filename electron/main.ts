@@ -1,7 +1,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { globalShortcut, nativeImage } from 'electron';
 import { menubar } from 'menubar';
-import { asset, isDev, isIntegration } from '@shared/constants';
+import { asset, isDev, isIntegration, isProd } from '@shared/constants';
 import url from 'url';
 import path from 'path';
 import log from 'electron-log';
@@ -20,7 +20,7 @@ const icon = asset(`IconTemplate${isDev ? 'Dev' : ''}.png`);
 const mb = menubar({
   icon,
   index: getPage(),
-  preloadWindow: false,
+  preloadWindow: true,
   browserWindow: {
     backgroundColor: '#2E3440',
     height: 300,
@@ -44,6 +44,9 @@ const trayIcon = nativeImage.createFromPath(asset(`IconTemplate${isDev ? 'Dev' :
 
 mb.on('after-create-window', () => {
   mb.app.dock.hide();
+  if (isIntegration) {
+    mb.showWindow();
+  }
 });
 
 mb.on('ready', () => {

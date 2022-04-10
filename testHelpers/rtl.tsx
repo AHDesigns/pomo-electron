@@ -1,58 +1,42 @@
 import React, { ReactElement } from 'react';
-import { useSelector } from '@xstate/react';
 import { ThemeProvider } from 'styled-components';
 import { ErrorBoundary } from '@client/components';
-import { useConfig } from '@client/hooks';
-import { createFakeHooks, IMachinesProvider, useMachines } from '@client/hooks/machines';
+import { createFakeHooks, IMachinesProvider } from '@client/hooks/machines';
 import { BridgeProvider, LoggerProvider, MachinesProvider } from '@client/hooks/providers';
 import { theme } from '@client/styles/theme';
 import { createFakeBridge } from '@electron/ipc/createFakeBridge';
 import { IBridge } from '@shared/types';
-import { render, RenderOptions, waitForElementToBeRemoved, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, RenderOptions, screen, waitForElementToBeRemoved } from '@testing-library/react';
+import { App } from '@client/App';
 
-type Rendered = ReturnType<typeof render>;
+jest.mock('@xstate/inspect');
 
 interface Options {
   renderOptions?: Omit<RenderOptions, 'queries'>;
   overrides?: Overrides;
 }
 
-export function renderWithoutWaiting(ui: ReactElement, options?: Options): Rendered {
-  const { overrides, renderOptions } = options ?? {};
-
-  return render(ui, {
-    wrapper: ({ children }) => <Providers {...overrides}>{children}</Providers>,
-    ...renderOptions,
-  });
-}
-
 async function renderAsync(ui: ReactElement, options?: Options): Promise<Rendered> {
   const { overrides, renderOptions } = options ?? {};
 
-  const result = render(ui, {
-    wrapper: ({ children }) => (
-      <Providers {...overrides}>
-        <WaitForLoading>{children}</WaitForLoading>
-      </Providers>
-    ),
+  const view = render(ui, {
+    wrapper: ({ children }) => <Providers {...overrides}>{children}</Providers>,
     ...renderOptions,
   });
 
   await waitForElementToBeRemoved(() => screen.queryByTestId('providers-loading'));
 
-  return result;
-
-  function WaitForLoading({ children }: { children: React.ReactNode }): JSX.Element {
-    const main = useMachines();
-    const loaded = useSelector(main, (c) => c.context.loaded);
-    if (!loaded) return <div data-testid="providers-loading">LOADING</div>;
-    return <span>{children}</span>;
-  }
+  return view;
 }
 
 export * from '@testing-library/react';
 export { renderAsync as render, render as renderNoProviders };
+
+//-----------------------------------------------------------------------------
+// PRIVATES
+//-----------------------------------------------------------------------------
+
+type Rendered = ReturnType<typeof render>;
 
 interface Overrides {
   bridge?: Partial<IBridge>;
@@ -67,7 +51,7 @@ export function Providers({ children, bridge, hooks }: Overrides): JSX.Element {
         <ErrorBoundary>
           <ThemeProvider theme={theme}>
             <MachinesProvider hooks={{ ...createFakeHooks(), ...hooks }}>
-              {children}
+              <App>{children}</App>
             </MachinesProvider>
           </ThemeProvider>
         </ErrorBoundary>
