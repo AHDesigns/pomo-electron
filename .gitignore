@@ -4,10 +4,8 @@ node_modules
 dist
 build
 coverage
-tooling/backstop_data/html_report/
-tooling/backstop_data/ci_report
-tooling/backstop_data/bitmaps_test
-playwright-report/
+reports/playwright-helpers
+reports/playwright-report
 
 .yarn/*
 !.yarn/cache
