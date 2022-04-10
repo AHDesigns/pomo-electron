@@ -16,7 +16,8 @@ test('launch app', async () => {
   // Wait for the first BrowserWindow to open
   // and return its Page object
   const window = await electronApp.firstWindow();
-  await window.screenshot({ path: 'intro.png' });
+  // await window.screenshot({ path: 'intro.png' });
+  expect(await window.screenshot()).toMatchSnapshot();
 
   // close app
   await electronApp.close();

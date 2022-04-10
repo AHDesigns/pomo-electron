@@ -45,6 +45,7 @@ const trayIcon = nativeImage.createFromPath(asset(`IconTemplate${isDev ? 'Dev' :
 mb.on('after-create-window', () => {
   mb.app.dock.hide();
   if (isIntegration) {
+    // we need to bring the window into focus for playwright ot pick it up
     mb.showWindow();
   }
 });
