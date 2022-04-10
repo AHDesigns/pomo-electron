@@ -1,3 +1,5 @@
+const { commonIgnore } = require('./tooling/commonIgnore');
+
 module.exports = {
   root: true,
   env: {
@@ -24,19 +26,7 @@ module.exports = {
       version: 'detect',
     },
   },
-  ignorePatterns: [
-    'node_modules',
-    'dist',
-    'build',
-    'publishingTools',
-    'coverage',
-    'tooling/backstop_data/html_report/',
-    'tooling/backstop_data/ci_report',
-    'tooling/backstop_data/bitmaps_test',
-    'tooling/graphql',
-    'shared/graphql.ts',
-    '**/*.typegen.ts',
-  ],
+  ignorePatterns: commonIgnore.concat(['**/*.typegen.ts']),
   overrides: [
     {
       files: ['*.js'],

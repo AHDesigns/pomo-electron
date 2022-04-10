@@ -3,9 +3,7 @@ node_modules
 *.typegen.ts
 dist
 build
-coverage
-reports/playwright-helpers
-reports/playwright-report
+reports
 
 .yarn/*
 !.yarn/cache

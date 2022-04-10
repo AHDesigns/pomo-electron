@@ -51,7 +51,7 @@ export function Providers({ children, bridge, hooks }: Overrides): JSX.Element {
         <ErrorBoundary>
           <ThemeProvider theme={theme}>
             <MachinesProvider hooks={{ ...createFakeHooks(), ...hooks }}>
-              <App>{children}</App>
+              <App shouldInspect={false}>{children}</App>
             </MachinesProvider>
           </ThemeProvider>
         </ErrorBoundary>

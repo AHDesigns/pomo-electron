@@ -1,7 +1,6 @@
 import React, { ChangeEventHandler, CSSProperties, ReactNode } from 'react';
 import styled, { useTheme } from 'styled-components';
-import { Box , Checkbox } from '@client/components';
-
+import { Box, Checkbox } from '@client/components';
 
 interface ISettingCommon {
   heading: string;
