@@ -76,6 +76,7 @@ export const slackRepository = ({ logger }: SlackParams): SlackRepository => {
 
   async function slackReq<A extends SlackOk>(
     path: string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     payload: any,
     auth: SlackAuth
   ): Promise<Result<A, SlackErr>> {

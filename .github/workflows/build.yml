@@ -23,6 +23,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: yarn install
       - run: yarn machine
+      - run: yarn format:check
       - run: yarn lint
+      - run: yarn types
       - run: yarn test
       - run: yarn build

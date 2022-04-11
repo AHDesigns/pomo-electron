@@ -38,7 +38,6 @@ export const useConfig = (): ConfigMaybe => {
 
   return {
     storeUpdate: (newConfig) => {
-      console.log({ newConfig });
       send(configModel.events.UPDATE(newConfig));
     },
     storeReset: () => {

@@ -21,16 +21,6 @@ module.exports = {
   coverageDirectory: '<rootDir>/reports',
   projects: [
     {
-      displayName: 'format',
-      modulePathIgnorePatterns: commonIgnore,
-      preset: 'jest-runner-prettier',
-    },
-    {
-      displayName: 'lint',
-      runner: 'jest-runner-eslint',
-      testMatch: ['<rootDir>/**/*.ts'],
-    },
-    {
       ...unitTests,
       displayName: 'node',
       testEnvironment: 'node',

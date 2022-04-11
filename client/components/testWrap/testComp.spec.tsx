@@ -9,17 +9,14 @@ jest.mock('@shared/constants');
 const constants = mocked(_constants);
 
 describe('nullComp', () => {
-  beforeEach(() => {
-    const Wrapped = testWrap(RealComp, 'test-component');
-    renderNoProviders(<Wrapped text="some info" />);
-  });
-
   describe('in tests', () => {
     beforeAll(() => {
       constants.isTest = true;
     });
 
     it('returns an empty span to assert on', () => {
+      const Wrapped = testWrap(RealComp, 'test-component');
+      renderNoProviders(<Wrapped text="some info" />);
       expect(screen.getByTestId('test-component')).toBeInTheDocument();
       expect(screen.queryByText('some info')).not.toBeInTheDocument();
     });
@@ -31,7 +28,10 @@ describe('nullComp', () => {
     });
 
     it('returns the real component', () => {
-      expect(screen.queryByTestId('real-component')).toBeInTheDocument();
+      const Wrapped = testWrap(RealComp, 'test-component');
+      renderNoProviders(<Wrapped text="some info" />);
+      expect(screen.getByTestId('real-component')).toBeInTheDocument();
+      expect(screen.queryByTestId('test-component')).not.toBeInTheDocument();
       expect(screen.getByText('some info')).toBeInTheDocument();
     });
   });

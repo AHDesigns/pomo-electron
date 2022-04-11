@@ -6,15 +6,14 @@
   "scripts": {
     "clean": "git clean -dfx && yarn install",
     "dev": "FORCE_COLOR=1 run-p --print-label dev:electron dev:react",
-    "format": "prettier --write --ignore-path .gitignore .",
-    "lint": "eslint . --fix",
+    "fix": "yarn format && yarn lint --fix",
     "machine": "xstate typegen \"client/machines/**/machine.ts\"",
     "storybook": "start-storybook -p 6006 -s public -c tooling/storybook",
+    "format:check": "prettier --check --ignore-path .gitignore .",
+    "format": "prettier --write --ignore-path .gitignore .",
+    "lint": "eslint .",
     "test": "jest",
-    "test:format": "jest --selectProjects format",
-    "test:lint": "jest --selectProjects lint",
-    "test:node": "jest --selectProjects node",
-    "test:ui": "jest --selectProjects ui",
+    "types": "tsc --noEmit",
     "e2e": "INTEGRATION=true playwright test",
     "e2e:approve": "yarn e2e --update-snapshots",
     "docker-e2e": "docker build . -f Dockerfile -t pancake",
@@ -24,7 +23,7 @@
     "build:react": "webpack --config tooling/webpack/react.webpack.js --mode production",
     "dev:electron": "wait-on http-get://localhost:4000/ && cross-env NODE_ENV=development webpack --config tooling/webpack/electron.webpack.js --mode development && yarn start",
     "dev:react": "cross-env NODE_ENV=development webpack-dev-server --config tooling/webpack/react.webpack.js --mode development",
-    "checks": "FORCE_COLOR=1 npm-run-all --print-label --parallel test --serial build e2e",
+    "checks": "run-s --print-name format:check lint types test build e2e",
     "release": "electron-builder --mac",
     "postrelease": "rm -rf dist",
     "postinstall": "electron-builder install-app-deps"
@@ -39,7 +38,6 @@
     "@babel/preset-env": "7.13.9",
     "@babel/preset-react": "7.12.13",
     "@babel/preset-typescript": "7.13.0",
-    "@playwright/test": "^1.20.2",
     "@storybook/addon-actions": "6.4.19",
     "@storybook/addon-essentials": "6.4.19",
     "@storybook/addon-links": "6.4.19",
@@ -78,8 +76,6 @@
     "html-webpack-plugin": "4.5.2",
     "jest": "26.6.3",
     "jest-diff": "26.6.2",
-    "jest-runner-eslint": "^1.0.0",
-    "jest-runner-prettier": "0.3.7",
     "npm-run-all": "4.1.5",
     "playwright": "^1.20.2",
     "prettier": "^2.6.2",
@@ -91,6 +87,7 @@
     "webpack-dev-server": "3.11.2"
   },
   "dependencies": {
+    "@playwright/test": "^1.20.2",
     "@xstate/cli": "0.1.5",
     "@xstate/inspect": "0.6.2",
     "@xstate/react": "2.0.0",
@@ -136,11 +133,6 @@
   "volta": {
     "node": "16.9.1",
     "yarn": "1.22.18"
-  },
-  "jest-runner-eslint": {
-    "cliOptions": {
-      "ignorePath": "./.gitignore"
-    }
   },
   "packageManager": "yarn@3.2.0"
 }

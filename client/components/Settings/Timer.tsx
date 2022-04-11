@@ -21,11 +21,10 @@ export function Timer(): JSX.Element | null {
           Pomodoro
           <input
             id="pomo"
-            // type="number"
+            type="number"
             placeholder="xocx-..."
             value={timers.pomo}
             onChange={(e) => {
-              console.log('called', e.target.value);
               storeUpdate({
                 timers: {
                   pomo: Number(e.target.value),
