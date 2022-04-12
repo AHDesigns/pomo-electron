@@ -1,34 +1,29 @@
-import React, { FC } from 'react';
-import { render } from 'react-dom';
-import { ipcRenderer } from '@electron/electron';
-import { bridgeCreator } from '@electron/ipc/bridgeCreator';
-import { ThemeProvider } from 'styled-components';
-import { theme } from '@client/styles/theme';
-import { ErrorBoundary } from '@client/components/ErrorBoundary/ErrorBoundary';
-import { logger } from '@electron/services/logger';
-import { ConfigProvider } from '@client/components/useConfig';
-import { PageManager } from '@client/components/PageManager';
-import { ScrollBar } from '@client/components/ScrollBar';
-import { GlobalStyle } from './styles/GlobalStyle';
+/* eslint-disable react/jsx-no-useless-fragment */
+import React, { useLayoutEffect } from 'react';
+import { inspect } from '@xstate/inspect';
+import { useSelector } from '@xstate/react';
+import { useMachines } from './hooks/machines';
 
-const mainElement = document.createElement('div');
-mainElement.setAttribute('id', 'root');
-document.body.appendChild(mainElement);
+interface IApp {
+  children: React.ReactNode;
+  shouldInspect: boolean;
+}
 
-window.bridge = bridgeCreator(ipcRenderer);
+export function App({ children, shouldInspect }: IApp): JSX.Element {
+  useLayoutEffect(() => {
+    if (shouldInspect) {
+      inspect({
+        url: 'https://statecharts.io/inspect',
+        iframe: false,
+      });
+    }
+  });
+  const main = useMachines();
+  const loaded = useSelector(main, (c) => c.context.loaded);
 
-const App: FC = () => (
-  <>
-    <ErrorBoundary logger={logger}>
-      <ThemeProvider theme={theme}>
-        <GlobalStyle />
-        <ScrollBar />
-        <ConfigProvider>
-          <PageManager />
-        </ConfigProvider>
-      </ThemeProvider>
-    </ErrorBoundary>
-  </>
-);
-
-render(<App />, mainElement);
+  // annoying workaround to make sure all child actors are ready
+  if (!loaded) {
+    return <p data-testid="providers-loading">...booting</p>;
+  }
+  return <>{children}</>;
+}

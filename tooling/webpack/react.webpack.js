@@ -13,9 +13,9 @@ module.exports = (_, options = {}) => ({
       ...client,
     },
   },
-  entry: path.resolve(rootPath, 'client', 'App.tsx'),
-  target: 'electron-renderer',
-  devtool: 'source-map',
+  entry: path.resolve(rootPath, 'client', 'index.tsx'),
+  target: 'web',
+  devtool: 'cheap-module-eval-source-map',
   module: {
     rules: [
       {

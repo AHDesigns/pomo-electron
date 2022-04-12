@@ -1,15 +1,11 @@
 import { ElectronLog, LevelOption } from 'electron-log';
+import type { ILogger } from '@shared/types';
 import { isIntegration, nodenv } from '@shared/constants';
 import type { Nodenv } from '@shared/asserts';
 import { errorHandler } from './errorHandler';
 
 // eslint-disable-next-line import/no-mutable-exports
 export let loggerErrorHandler: ReturnType<typeof errorHandler>;
-
-export interface ILogger extends ElectronLog {
-  errorWithContext(context: string): (err: Error) => void;
-  info(...msg: any[]): void;
-}
 
 type LogLevels = [Nodenv, LevelOption][];
 
@@ -33,8 +29,8 @@ export function createLogger(log: ElectronLog): ILogger {
 
   const logger: ILogger = {
     ...log,
-    errorWithContext(context: string) {
-      return (err: Error) => {
+    errorWithContext(context) {
+      return (err) => {
         log.error(context, err);
       };
     },

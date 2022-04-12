@@ -1,5 +1,6 @@
-import { IpcRenderer } from '@electron/electron';
-import { IBridge } from '@shared/types';
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+import type { IpcRenderer } from '@electron/electron';
+import type { IBridge } from '@shared/types';
 import { reBuild } from '@shared/Result';
 import { handlerMethods } from './handlerMethods';
 
@@ -21,6 +22,6 @@ export function bridgeCreator(ipcR: IpcRenderer): IBridge {
       default:
         throw new Error('impossible missing method for ipc handler methods');
     }
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions,@typescript-eslint/prefer-reduce-type-parameter
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   }, {} as IBridge);
 }

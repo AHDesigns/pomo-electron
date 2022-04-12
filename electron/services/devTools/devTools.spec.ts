@@ -1,17 +1,23 @@
 import _installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
 import { mocked } from 'ts-jest/utils';
 import * as _constants from '@shared/constants';
-import { logger } from '../logger';
 import { setUpDevtools } from './devTools';
+import { createFakeLogger } from '../logger/createFakeLogger';
 
-jest.mock('../logger');
 jest.mock('@shared/constants');
 const constants = mocked(_constants, true);
 const installExtension = mocked(_installExtension);
 
 describe('Devtools service', () => {
+  const spyInfo = jest.fn();
+  const spyError = jest.fn();
   beforeEach(() => {
-    setUpDevtools(logger)();
+    setUpDevtools(
+      createFakeLogger({
+        info: spyInfo,
+        errorWithContext: () => spyError,
+      })
+    );
   });
 
   describe('when in development', () => {
@@ -24,7 +30,7 @@ describe('Devtools service', () => {
     });
 
     it('logs installation', () => {
-      expect(logger.info).toHaveBeenCalledWith(`Added Extension: "${REACT_DEVELOPER_TOOLS.id}"`);
+      expect(spyInfo).toHaveBeenCalledWith(`Added Extension: "${REACT_DEVELOPER_TOOLS.id}"`);
     });
 
     describe('when there is an error', () => {
@@ -35,7 +41,7 @@ describe('Devtools service', () => {
       });
 
       it('it logs the error', () => {
-        expect(logger.errorWithContext('')).toHaveBeenCalledWith(err);
+        expect(spyError).toHaveBeenCalledWith(err);
       });
     });
   });

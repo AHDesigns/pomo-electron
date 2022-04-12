@@ -1,6 +1,6 @@
 import { isDev } from '@shared/constants';
 import installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
-import { ILogger } from '../logger';
+import type { ILogger } from '@shared/types';
 
 export function setUpDevtools(logger: ILogger): void {
   if (isDev) {

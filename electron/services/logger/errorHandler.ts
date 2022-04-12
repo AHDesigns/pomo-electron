@@ -1,38 +1,34 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { app, dialog } from 'electron';
+import { ILogger } from '@shared/types';
+import { app, dialog } from '@electron/electron';
 import { CatchErrorsOptions } from 'electron-log';
-import type { ILogger } from './createLogger';
 
-export const errorHandler: (logger: ILogger) => CatchErrorsOptions['onError'] = (logger) => (
-  error,
-  versions,
-  submitIssue
-) => {
-  dialog
-    .showMessageBox({
-      title: 'An error occurred',
-      message: error.message,
-      detail: error.stack,
-      type: 'error',
-      buttons: ['Ignore', 'Report', 'Exit'],
-    })
-    .then((result) => {
-      if (result.response === 1) {
-        const body = generateReport(error, versions);
+export const errorHandler: (logger: ILogger) => CatchErrorsOptions['onError'] =
+  (logger) => (error, versions, submitIssue) => {
+    dialog
+      .showMessageBox({
+        title: 'An error occurred',
+        message: error.message,
+        detail: error.stack,
+        type: 'error',
+        buttons: ['Ignore', 'Report', 'Exit'],
+      })
+      .then((result) => {
+        if (result.response === 1) {
+          const body = generateReport(error, versions);
 
-        submitIssue?.('https://github.com/AHDesigns/pancake-electron/issues/new', {
-          title: 'Error report',
-          body,
-          labels: 'to refine, bug',
-        });
-        return;
-      }
-      if (result.response === 2) {
-        app.quit();
-      }
-    })
-    .catch(logger.errorWithContext('error submitting issue'));
-};
+          submitIssue?.('https://github.com/AHDesigns/pancake-electron/issues/new', {
+            title: 'Error report',
+            body,
+            labels: 'to refine, bug',
+          });
+          return;
+        }
+        if (result.response === 2) {
+          app.quit();
+        }
+      })
+      .catch(logger.errorWithContext('error submitting issue'));
+  };
 
 function generateReport(
   error: Error,

@@ -1,10 +1,11 @@
-/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
+const { commonIgnore } = require('./tooling/commonIgnore');
 
-module.exports = {
+/** @type {import('ts-jest/dist/types').InitialOptionsTsJest.projects[number]} */
+const unitTests = {
+  modulePathIgnorePatterns: commonIgnore.concat('e2e'),
   preset: 'ts-jest',
+  testEnvironment: 'node',
   clearMocks: true,
-  setupFilesAfterEnv: ['./tooling/setupTests.ts', './testHelpers/jest.setup.ts'],
-  modulePathIgnorePatterns: ['e2e'],
   moduleNameMapper: {
     '^@shared(.*)$': '<rootDir>/shared/$1',
     '^@client(.*)$': '<rootDir>/client/$1',
@@ -12,4 +13,29 @@ module.exports = {
     '^@test/(.*)$': '<rootDir>/testHelpers/$1',
     'package.json': '<rootDir>/package.json',
   },
+};
+
+/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
+module.exports = {
+  rootDir: process.cwd(),
+  coverageDirectory: '<rootDir>/reports',
+  projects: [
+    {
+      ...unitTests,
+      displayName: 'node',
+      testEnvironment: 'node',
+      testMatch: ['**/?(*.)+(spec|test).ts'],
+      setupFilesAfterEnv: ['<rootDir>/testHelpers/jest.setup.ts'],
+    },
+    {
+      ...unitTests,
+      displayName: 'ui',
+      testEnvironment: 'jsdom',
+      testMatch: ['**/?(*.)+(spec|test).tsx'],
+      setupFilesAfterEnv: [
+        '<rootDir>/testHelpers/setupTests.ts',
+        '<rootDir>/testHelpers/jest.setup.ts',
+      ],
+    },
+  ],
 };

@@ -1,6 +1,8 @@
 import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { EyeOpen, EyeClosed } from '@client/components/Icons';
+import { Icons } from '@client/components';
+
+const { EyeClosed, EyeOpen } = Icons;
 
 export const Form = styled.form`
   display: grid;

@@ -1,5 +1,5 @@
+import { ILogger } from '@shared/types';
 import { autoUpdater } from 'electron-updater';
-import { ILogger } from '../logger';
 
 export function checkForUpdates(logger: ILogger): void {
   autoUpdater.logger = logger;

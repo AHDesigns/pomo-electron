@@ -1,20 +1,20 @@
 import { ok } from '@shared/Result';
 import merge from 'lodash.merge';
-import { StoreConfig, StoreRepository } from './store';
+import type { StoreConfig, StoreRepository } from './store';
 
 export const fakeStoreRepoFactory = <T>(storeConfig: StoreConfig<T>): StoreRepository<T> => {
   let store = storeConfig.defaults;
   return {
-    storeRead() {
-      return ok(store);
+    async storeRead() {
+      return Promise.resolve(ok(store));
     },
-    storeUpdate(updatedStore) {
+    async storeUpdate(updatedStore) {
       merge(store, updatedStore);
-      return ok(store);
+      return Promise.resolve(ok(store));
     },
-    storeReset() {
+    async storeReset() {
       store = storeConfig.defaults;
-      return ok(store);
+      return Promise.resolve(ok(store));
     },
   };
 };

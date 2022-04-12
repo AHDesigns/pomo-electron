@@ -1,3 +1,5 @@
+const { commonIgnore } = require('./tooling/commonIgnore');
+
 module.exports = {
   root: true,
   env: {
@@ -11,34 +13,20 @@ module.exports = {
     tsconfigRootDir: __dirname,
     project: ['./tsconfig.json'],
   },
-  extends: [
-    // airbnb also contains react rules
-    'airbnb-typescript',
-    'airbnb/hooks',
-  ],
+  extends: ['airbnb', 'airbnb-typescript', 'airbnb/hooks', 'plugin:storybook/recommended'],
   plugins: ['@typescript-eslint'],
   rules: {
     'no-console': 'error',
     'react/prop-types': 'off',
     'import/prefer-default-export': 'off',
+    'spaced-comment': ['error', 'always', { exceptions: ['-'] }],
   },
   settings: {
     react: {
       version: 'detect',
     },
   },
-  ignorePatterns: [
-    'node_modules',
-    'dist',
-    'build',
-    'publishingTools',
-    'coverage',
-    'tooling/backstop_data/html_report/',
-    'tooling/backstop_data/ci_report',
-    'tooling/backstop_data/bitmaps_test',
-    'tooling/graphql',
-    'shared/graphql.ts',
-  ],
+  ignorePatterns: commonIgnore.concat(['**/*.typegen.ts']),
   overrides: [
     {
       files: ['*.js'],
@@ -60,8 +48,10 @@ module.exports = {
       ],
       rules: {
         'no-underscore-dangle': 'off',
+        'no-void': 'off',
         'react/destructuring-assignment': 'off',
         'react/jsx-props-no-spreading': 'off',
+        'react/require-default-props': 'off',
         '@typescript-eslint/no-floating-promises': 'off',
         '@typescript-eslint/no-unused-vars': 'off',
         '@typescript-eslint/no-unused-params': 'off',
@@ -73,6 +63,8 @@ module.exports = {
           },
         ],
         '@typescript-eslint/explicit-module-boundary-types': 'error',
+        // unlikely to be a problem as I avoid `this`
+        '@typescript-eslint/unbound-method': 'off',
         '@typescript-eslint/consistent-type-assertions': [
           'error',
           {
@@ -82,7 +74,11 @@ module.exports = {
         '@typescript-eslint/consistent-type-definitions': ['error', 'interface'],
         '@typescript-eslint/explicit-member-accessibility': [
           'error',
-          { overrides: { constructors: 'no-public' } },
+          {
+            overrides: {
+              constructors: 'no-public',
+            },
+          },
         ],
         '@typescript-eslint/member-ordering': 'error',
         '@typescript-eslint/no-confusing-non-null-assertion': 'error',
@@ -129,8 +125,10 @@ module.exports = {
         browser: true,
       },
       rules: {
-        'react/no-array-index-key': 'off', // we all know what we're doing here
-        'react/no-unescaped-entities': 'off', // things like "don't" need the apostrophe escaped
+        // we all know what we're doing here
+        'react/no-array-index-key': 'off',
+        // things like "don't" need the apostrophe escaped
+        'react/no-unescaped-entities': 'off',
         'jsx-a11y/label-has-associated-control': [
           2,
           {
@@ -146,6 +144,15 @@ module.exports = {
       },
     },
     {
+      // Machine only rules
+      files: ['client/machines/**'],
+      rules: {
+        '@typescript-eslint/consistent-type-assertions': 'off',
+        '@typescript-eslint/explicit-function-return-type': 'off',
+        '@typescript-eslint/explicit-module-boundary-types': 'off',
+      },
+    },
+    {
       files: ['*.spec.@(js|jsx|ts|tsx)', 'e2e/**', 'testHelpers/**'],
       plugins: ['testing-library', 'jest-dom'],
       extends: ['plugin:testing-library/react', 'plugin:jest-dom/recommended'],
@@ -155,14 +162,18 @@ module.exports = {
       },
       rules: {
         // '@typescript-eslint/no-unsafe-call': 'off',
-        '@typescript-eslint/require-await': 'off', // very common to create simple promise returns, and this saves on boilerplate
-        '@typescript-eslint/unbound-method': 'off',
+        // very common to create simple promise returns, and this saves on boilerplate
+        '@typescript-eslint/require-await': 'off',
+        // often helpful to force errors
+        '@typescript-eslint/consistent-type-assertions': 'off',
         'import/no-extraneous-dependencies': [
           'error',
           {
             devDependencies: true,
           },
         ],
+        // for simple test utils this is often overkill and makes test updates slow
+        '@typescript-eslint/explicit-function-return-type': 'off',
       },
     },
     {

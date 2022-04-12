@@ -1,14 +1,16 @@
 import { mocked } from 'ts-jest/utils';
 import { autoUpdater as _autoUpdater } from 'electron-updater';
-import { logger as _logger } from '../logger';
+import { createFakeLogger } from '../logger/createFakeLogger';
 import { checkForUpdates } from './updater';
 
 const autoUpdater = mocked(_autoUpdater, true);
 
-jest.mock('../logger');
-const logger = mocked(_logger);
-
 describe('checkForUpdates', () => {
+  const spy = jest.fn();
+  const logger = createFakeLogger({
+    errorWithContext: () => spy,
+  });
+
   beforeEach(() => {
     checkForUpdates(logger);
   });
@@ -29,7 +31,7 @@ describe('checkForUpdates', () => {
     });
 
     it('catches and logs error', () => {
-      expect(logger.errorWithContext('')).toHaveBeenCalledWith(err);
+      expect(spy).toHaveBeenCalledWith(err);
     });
   });
 });

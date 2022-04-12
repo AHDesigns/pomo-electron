@@ -1,4 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-explicit-any,@typescript-eslint/explicit-function-return-type,@typescript-eslint/restrict-template-expressions,@typescript-eslint/no-shadow,@typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // eslint-disable-next-line import/no-extraneous-dependencies
 import diff from 'jest-diff';
 
@@ -56,21 +60,26 @@ expect.extend({
 
     return { pass, message, actual: got, expected };
 
-    function getMessage(pass: boolean, expected: any, got: any, jestThis: any): () => string {
-      return pass
+    function getMessage(
+      didPass: boolean,
+      expectedVal: any,
+      recieved: any,
+      jestThis: any
+    ): () => string {
+      return didPass
         ? () =>
             `${jestThis.utils.matcherHint('toDeepEqual')}\n\n` +
-            `Expected: not ${jestThis.utils.printExpected(expected)}\n` +
-            `Received: ${jestThis.utils.printReceived(got)}`
+            `Expected: not ${jestThis.utils.printExpected(expectedVal)}\n` +
+            `Received: ${jestThis.utils.printReceived(recieved)}`
         : () => {
-            const diffString = diff(expected.val, got.val, {
+            const diffString = diff(expectedVal.val, recieved.val, {
               expand: jestThis.expand,
             });
             return `${jestThis.utils.matcherHint('toDeepEqual')}\n\n${
               diffString?.includes('- Expect')
                 ? `Difference:\n\n${diffString}`
-                : `Expected: ${jestThis.utils.printExpected(expected)}\n` +
-                  `Received: ${jestThis.utils.printReceived(got)}`
+                : `Expected: ${jestThis.utils.printExpected(expectedVal)}\n` +
+                  `Received: ${jestThis.utils.printReceived(recieved)}`
             }`;
           };
     }
