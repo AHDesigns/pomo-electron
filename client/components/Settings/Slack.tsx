@@ -1,14 +1,9 @@
 import React, { useState } from 'react';
 import { useConfig, useBridge } from '@client/hooks';
+import { Button } from '@client/components';
 import styled, { useTheme } from 'styled-components';
 import { Setting } from './Setting';
 import { Form, InputPassword, Label } from './Form';
-
-interface IButton {
-  variant?: 'secondary' | 'tertiary';
-}
-
-const Button = styled.button<IButton>``;
 
 export function Slack(): JSX.Element | null {
   const config = useConfig();

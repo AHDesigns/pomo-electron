@@ -13,3 +13,4 @@ export * from './ScrollBar';
 export * from './Settings/Settings';
 export * from './TimerProgress';
 export * from './Timer/Timer';
+export * from './Button/Button';
