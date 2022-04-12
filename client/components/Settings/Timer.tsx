@@ -17,22 +17,19 @@ export function Timer(): JSX.Element | null {
   return (
     <Setting variant="simple" heading="Timer" styles={{ marginTop: spacing.small }}>
       <Form>
-        <label htmlFor="pomo">
-          Pomodoro
-          <input
-            id="pomo"
-            type="number"
-            placeholder="xocx-..."
-            value={timers.pomo}
-            onChange={(e) => {
-              storeUpdate({
-                timers: {
-                  pomo: Number(e.target.value),
-                },
-              });
-            }}
-          />
-        </label>
+        <Label htmlFor="pomo">Pomodoro</Label>
+        <InputText
+          id="pomo"
+          type="number"
+          value={timers.pomo}
+          onChange={(e) => {
+            storeUpdate({
+              timers: {
+                pomo: Number(e.target.value),
+              },
+            });
+          }}
+        />
         <Label htmlFor="short-break">Short break</Label>
         <InputText
           name="short-break"
@@ -40,7 +37,6 @@ export function Timer(): JSX.Element | null {
           type="number"
           min={1}
           max={120}
-          placeholder="xocx-..."
           value={timers.short}
           onChange={({ target: { value } }) => {
             storeUpdate({

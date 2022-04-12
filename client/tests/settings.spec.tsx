@@ -1,9 +1,9 @@
 import { PageManager } from '@client/components';
 import { merge } from '@shared/merge';
 import { ok } from '@shared/Result';
-import { emptyConfig } from '@shared/types';
+import { emptyConfig, TimerHooks } from '@shared/types';
 import { pageModel, userActions } from '@test/pageModels';
-import { act, render, screen, waitFor } from '@test/rtl';
+import { act, render, screen } from '@test/rtl';
 import { tick } from '@test/tick';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
@@ -12,6 +12,15 @@ beforeEach(() => {
   jest.useFakeTimers();
 });
 
+const hooks: TimerHooks = {
+  onStartHook: jest.fn(),
+  onTickHook: jest.fn(),
+  onPauseHook: jest.fn(),
+  onPlayHook: jest.fn(),
+  onStopHook: jest.fn(),
+  onCompleteHook: jest.fn(),
+};
+
 async function initTest() {
   return render(<PageManager />, {
     overrides: {
@@ -19,7 +28,7 @@ async function initTest() {
         storeRead: async () =>
           ok(
             merge(emptyConfig, {
-              timers: { pomo: 1, short: 5, long: 8 },
+              timers: { pomo: 5, short: 5, long: 8 },
               autoStart: {
                 beforePomo: false,
                 beforeLongBreak: false,
@@ -28,6 +37,7 @@ async function initTest() {
             })
           ),
       },
+      hooks,
     },
   });
 }
@@ -43,49 +53,84 @@ beforeEach(() => {
 });
 
 afterEach(() => {
-  // const button = screen.queryByRole('button', { name: T.pomoTimer.stop });
-  // if (button) userEvent.click(button);
   act(() => {
     jest.runOnlyPendingTimers();
     jest.useRealTimers();
   });
 });
 
-// I give up on getting this input to work correctly, not sure if it's a bug with RTL/user-event, my incorrect use of input or what, but it works fine and I'm bored of wasting time on this
 describe(`given no timer is running
-when the user changes the timer duration to 7 minutes and starts the timer`, () => {
-  test('the timer ticks down every second, starting at 7 minutes', async () => {
+when the user changes the timer duration to 57`, () => {
+  test('the timer updates to new the time', async () => {
     await initTest();
-    const button = await screen.findByRole('button', { name: 'settings' });
+    await userActions.navigateToSettings();
 
-    userEvent.click(button);
+    const input = screen.getByLabelText('Pomodoro');
 
-    const input = await screen.findByLabelText('Pomodoro');
+    userEvent.type(input, '7');
 
-    userEvent.type(input, '7', { delay: 10 });
-
-    expect(await screen.findByDisplayValue('17')).toBeInTheDocument();
-    await waitFor(() => {
-      expect(input).toHaveValue('17');
-    });
+    expect(await screen.findByDisplayValue('57')).toBeInTheDocument();
 
     await userActions.navigateToTimer();
 
-    expect(await screen.findByText('17 : 00')).toBeInTheDocument();
-    // screen.debug();
-
-    // await waait();
-    // userEvent.click(timer.startButton());
-    // await waait();
-
-    // tick(60 * 17);
-
-    // expect(timer.current({ mins: 5 })).toBeInTheDocument();
+    expect(screen.getByText('57 : 00')).toBeInTheDocument();
   });
 });
 
 describe(`given a 5 minute timer is running
-when the user changes the timer settings to 12 minutes`, () => {
-  test.todo('the timer keeps ticking down for the original 5 minutes without pause');
-  test.todo('once the timer completes, the timer shows the new time of 12 minutes');
+when the user changes the timer settings to 57 minutes`, () => {
+  test('the timer keeps ticking down for the original 5 minutes without pause', async () => {
+    await initTest();
+
+    userEvent.click(timer.startButton());
+
+    tick(1);
+
+    expect(hooks.onStartHook).toHaveBeenCalledTimes(1);
+    expect(hooks.onTickHook).toHaveBeenLastCalledWith(
+      expect.objectContaining({ minutes: 4, seconds: 59, type: 'pomo' })
+    );
+
+    await userActions.navigateToSettings();
+
+    const input = screen.getByLabelText('Pomodoro');
+
+    userEvent.type(input, '7');
+
+    await userActions.navigateToTimer();
+    tick(1);
+
+    expect(hooks.onStartHook).toHaveBeenCalledTimes(1);
+    expect(hooks.onTickHook).toHaveBeenLastCalledWith(
+      expect.objectContaining({ minutes: 4, seconds: 58, type: 'pomo' })
+    );
+    expect(hooks.onCompleteHook).toHaveBeenCalledTimes(0);
+    expect(hooks.onPauseHook).toHaveBeenCalledTimes(0);
+    expect(hooks.onStopHook).toHaveBeenCalledTimes(0);
+  });
+
+  test('once the timer completes, the timer shows the new time of 57 minutes', async () => {
+    await initTest();
+
+    userEvent.click(timer.startButton());
+
+    await userActions.navigateToSettings();
+
+    const input = screen.getByLabelText('Pomodoro');
+
+    userEvent.type(input, '7');
+
+    await userActions.navigateToTimer();
+    userEvent.click(timer.stopButton());
+
+    expect(hooks.onStartHook).toHaveBeenCalledTimes(1);
+
+    expect(screen.getByText('57 : 00')).toBeInTheDocument();
+
+    userEvent.click(timer.startButton());
+    tick(1);
+    expect(hooks.onTickHook).toHaveBeenLastCalledWith(
+      expect.objectContaining({ minutes: 56, seconds: 59, type: 'pomo' })
+    );
+  });
 });

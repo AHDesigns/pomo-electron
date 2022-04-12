@@ -1,7 +1,6 @@
 import { merge } from '@shared/merge';
 import { DeepPartial, TimerHooks } from '@shared/types';
 import { ActorRefFrom, assign, ContextFrom, createMachine, InterpreterFrom, send } from 'xstate';
-import { forwardTo } from 'xstate/lib/actions';
 import { actorIds } from '../constants';
 import timerMachine from '../timer/machine';
 import timerModel, { TimerContext } from '../timer/model';

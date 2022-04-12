@@ -1,5 +1,5 @@
-const { _electron: electron } = require('playwright');
-const { test, expect } = require('@playwright/test');
+import { _electron as electron } from 'playwright';
+import { test, expect } from '@playwright/test';
 
 test('launch app', async () => {
   // relative to root

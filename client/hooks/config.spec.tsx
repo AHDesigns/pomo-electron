@@ -52,9 +52,6 @@ describe('useConfig', () => {
         ),
       });
 
-      expect(result.current.loading).toBe(true);
-      expect(result.current.config).toBe(null);
-
       await waitFor(() => expect(result.current.loading).toBe(false));
 
       expect(result.current.config).toStrictEqual(config);
