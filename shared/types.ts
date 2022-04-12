@@ -1,22 +1,20 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { ElectronLog } from 'electron-log';
 import { IpcMainEvent, IpcMainInvokeEvent } from '@electron/electron';
 import { Repositories } from '@electron/repositories';
 
 export interface ILogger extends ElectronLog {
+  info: (...msg: any[]) => void;
   errorWithContext(context: string): (err: Error | string) => void;
-
-  info(...msg: string[]): void;
-
-  error(...msg: string[]): void;
 }
 
-export type IClientLogger = Pick<ILogger, 'error' | 'info'>;
+export type IClientLogger = Pick<ILogger, 'error' | 'info' | 'warn'>;
 
 export const emptyConfig: UserConfig = {
   timers: {
-    pomo: 26,
-    shortBreak: 5,
-    longBreak: 15,
+    pomo: 10,
+    short: 5,
+    long: 15,
   },
   autoStart: {
     beforeShortBreak: true,
@@ -29,8 +27,8 @@ export const emptyConfig: UserConfig = {
 export interface UserConfig {
   timers: {
     pomo: number;
-    shortBreak: number;
-    longBreak: number;
+    short: number;
+    long: number;
   };
   autoStart: {
     beforeShortBreak: boolean;
@@ -100,3 +98,16 @@ export interface AnyObject {
 
 type CssSizeUnits = '%' | 'em' | 'px';
 export type CssSize = `${string}${CssSizeUnits}`;
+
+interface Hook {
+  (info: { minutes: number; seconds: number; type: 'long' | 'pomo' | 'short' }): void;
+}
+
+export interface TimerHooks {
+  onStartHook: Hook;
+  onTickHook: Hook;
+  onPauseHook: Hook;
+  onPlayHook: Hook;
+  onStopHook: Hook;
+  onCompleteHook: Hook;
+}

@@ -50,6 +50,9 @@ interface Palette {
    */
   whiteBrightest: string;
 
+  // TODO: ??
+  accent: string;
+
   /**
    * Used for UI elements that should, next to the primary accent color, stand out and get more visual attention.
    */

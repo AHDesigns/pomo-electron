@@ -1,5 +1,5 @@
 import { IpcHandlers } from '@shared/types';
-import { Repositories } from '@electron/repositories';
+import type { Repositories } from '@electron/repositories';
 import { handlerMethods } from '@electron/ipc/handlerMethods';
 
 export function handlers(repos: Repositories): IpcHandlers {

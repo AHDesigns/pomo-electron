@@ -1,9 +1,11 @@
+import log from 'electron-log';
 import * as electron from 'electron';
 import { mocked } from 'ts-jest/utils';
-import { logger } from './index';
+import { createLogger } from './createLogger';
 import { errorHandler } from './errorHandler';
 
-jest.mock('./index');
+jest.mock('electron-log');
+
 const { app, dialog } = mocked(electron, true);
 
 describe('errorHandler', () => {
@@ -12,6 +14,11 @@ describe('errorHandler', () => {
   const defaultVersions = { os: 'mac', electron: '1', app: 'pancake' };
   let versions: typeof defaultVersions | undefined;
   let submitIssue: jest.Mock | undefined = jest.fn();
+  const errorSpy = jest.fn();
+  const logger = {
+    ...createLogger(log),
+    errorWithContext: () => errorSpy,
+  };
 
   beforeEach(() => {
     const appliedErrorHandler = errorHandler(logger);
@@ -39,7 +46,7 @@ describe('errorHandler', () => {
     it('does nothing', () => {
       expect(submitIssue).not.toHaveBeenCalled();
       expect(app.quit).not.toHaveBeenCalled();
-      expect(logger.errorWithContext('')).not.toHaveBeenCalled();
+      expect(errorSpy).not.toHaveBeenCalled();
     });
   });
 
@@ -53,7 +60,7 @@ describe('errorHandler', () => {
 
     it('does not log a report', () => {
       expect(submitIssue).not.toHaveBeenCalled();
-      expect(logger.errorWithContext('')).not.toHaveBeenCalled();
+      expect(errorSpy).not.toHaveBeenCalled();
     });
 
     it('quits the app', () => {
@@ -70,7 +77,7 @@ describe('errorHandler', () => {
     });
 
     it('does not quit the app', () => {
-      expect(logger.errorWithContext('')).not.toHaveBeenCalled();
+      expect(errorSpy).not.toHaveBeenCalled();
       expect(app.quit).not.toHaveBeenCalled();
     });
 
@@ -142,7 +149,7 @@ describe('errorHandler', () => {
 
       it('does nothing', () => {
         expect(app.quit).not.toHaveBeenCalled();
-        expect(logger.errorWithContext('')).not.toHaveBeenCalled();
+        expect(errorSpy).not.toHaveBeenCalled();
       });
 
       afterAll(() => {
@@ -161,7 +168,7 @@ describe('errorHandler', () => {
       });
 
       it('logs the exception', () => {
-        expect(logger.errorWithContext('')).toHaveBeenCalledWith(err);
+        expect(errorSpy).toHaveBeenCalledWith(err);
       });
     });
   });

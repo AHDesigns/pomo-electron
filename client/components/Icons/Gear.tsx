@@ -1,8 +1,7 @@
-/* eslint-disable react/destructuring-assignment */
-import React, { FC } from 'react';
+import React from 'react';
 import { SvgSize, useIcon } from './useIcon';
 
-export const Gear: FC<SvgSize> = (props) => {
+export function Gear(props: SvgSize): JSX.Element {
   const { color, height, width } = useIcon(props);
   return (
     <svg
@@ -20,4 +19,4 @@ export const Gear: FC<SvgSize> = (props) => {
       />
     </svg>
   );
-};
+}

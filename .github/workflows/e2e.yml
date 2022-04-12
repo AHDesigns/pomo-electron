@@ -2,7 +2,8 @@ name: End to end integration tests
 
 on:
   pull_request:
-    branches: [main]
+    # see https://github.com/codethread/pomo-electron/issues/19
+    branches: [never]
 
 jobs:
   docker:

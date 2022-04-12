@@ -7,18 +7,15 @@ export interface IButton {
 export const Button = styled.button<IButton>`
   min-width: 80px;
   min-height: 20px;
-
   background: none;
   border-radius: 3px;
   cursor: pointer;
   padding: 10px;
-
   &:focus {
     outline: none;
     box-shadow: 0 0 0 0.05em ${({ theme }) => theme.palette.background},
       0 0 0 0.15em ${({ theme }) => theme.palette.bright};
   }
-
   border: none;
   ${({ theme, variant, disabled }) => {
     switch (variant) {

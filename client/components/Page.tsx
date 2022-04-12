@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Box } from '@client/components/Box';
+import { Box } from '@client/components';
 
 export const Page = styled(Box)`
   min-width: 100vw;

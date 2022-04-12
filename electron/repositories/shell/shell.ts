@@ -5,6 +5,8 @@ export interface ShellRepository {
 }
 
 /**
- * using the repository pattern here to create some side effect that we can monitor for in e2e tests, and removing the actual calls to the shell
+ * using the repository pattern here to create some side effect that
+ * we can monitor for in e2e tests, and removing the actual calls to
+ * the shell
  */
 export const shellRepository: ShellRepository = shell;

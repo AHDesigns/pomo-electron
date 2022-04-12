@@ -1,41 +1,53 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { globalShortcut, nativeImage } from 'electron';
 import { menubar } from 'menubar';
-import { asset, isDev, isIntegration } from '@shared/constants';
+import { asset, isDev, isIntegration, isProd } from '@shared/constants';
 import url from 'url';
 import path from 'path';
-import { checkForUpdates, logger, setUpDevtools } from '@electron/services';
+import log from 'electron-log';
+import { checkForUpdates, createLogger, setUpDevtools } from '@electron/services';
 import { ipcMain } from '@electron/electron';
-import { fakeRepositories, productionRepositories } from '@electron/repositories';
+import { productionRepositories } from '@electron/repositories';
+import { fakeRepositories } from '@electron/repositories/fakes';
 import { handlers, setupIpcHandlers } from '@electron/ipc';
+
+const logger = createLogger(log);
 
 checkForUpdates(logger);
 
-const icon = asset('IconTemplate.png');
+const icon = asset(`IconTemplate${isDev ? 'Dev' : ''}.png`);
 
 const mb = menubar({
   icon,
   index: getPage(),
-  preloadWindow: false,
+  preloadWindow: true,
   browserWindow: {
     backgroundColor: '#2E3440',
     height: 300,
     width: 300,
     webPreferences: {
-      nodeIntegration: true,
+      contextIsolation: true,
+      nodeIntegration: false,
+      backgroundThrottling: false, // needed to keep timers smooth
+      plugins: true,
+      preload: path.join(__dirname, './preload.js'),
     },
     ...(isDev && { alwaysOnTop: true }),
   },
   showDockIcon: false,
 });
 
-const repos = isIntegration ? fakeRepositories() : productionRepositories(mb);
+const repos = isIntegration ? fakeRepositories() : productionRepositories({ logger, mb });
 setupIpcHandlers(ipcMain, handlers(repos));
 
-const trayIcon = nativeImage.createFromPath(asset('IconTemplate.png'));
+const trayIcon = nativeImage.createFromPath(asset(`IconTemplate${isDev ? 'Dev' : ''}.png`));
 
 mb.on('after-create-window', () => {
   mb.app.dock.hide();
+  if (isIntegration) {
+    // we need to bring the window into focus for playwright ot pick it up
+    mb.showWindow();
+  }
 });
 
 mb.on('ready', () => {

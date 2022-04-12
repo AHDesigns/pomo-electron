@@ -1,32 +1,31 @@
-import React, { FC } from 'react';
-import { useConfig } from '@client/components/useConfig';
+import React from 'react';
+import { useConfig } from '@client/hooks';
 import { useTheme } from 'styled-components';
-import { Setting } from '@client/components/Settings/Setting';
-import { Form, InputText, Label } from '@client/components/Settings/Form';
+import { Setting } from './Setting';
+import { Form, InputText, Label } from './Form';
 
-export const Timer: FC = () => {
-  const {
-    config: { timers },
-    storeUpdate,
-  } = useConfig();
+export function Timer(): JSX.Element | null {
+  const config = useConfig();
   const { spacing } = useTheme();
+
+  if (config.loading) return null;
+  const {
+    storeUpdate,
+    config: { timers },
+  } = config;
 
   return (
     <Setting variant="simple" heading="Timer" styles={{ marginTop: spacing.small }}>
       <Form>
         <Label htmlFor="pomo">Pomodoro</Label>
         <InputText
-          name="pomo"
           id="pomo"
           type="number"
-          min={0}
-          max={120}
-          placeholder="xocx-..."
           value={timers.pomo}
-          onChange={({ target: { value } }) => {
+          onChange={(e) => {
             storeUpdate({
               timers: {
-                pomo: Number(value),
+                pomo: Number(e.target.value),
               },
             });
           }}
@@ -36,14 +35,13 @@ export const Timer: FC = () => {
           name="short-break"
           id="short-break"
           type="number"
-          min={0}
+          min={1}
           max={120}
-          placeholder="xocx-..."
-          value={timers.shortBreak}
+          value={timers.short}
           onChange={({ target: { value } }) => {
             storeUpdate({
               timers: {
-                shortBreak: Number(value),
+                short: Number(value),
               },
             });
           }}
@@ -53,14 +51,14 @@ export const Timer: FC = () => {
           name="long-break"
           id="long-break"
           type="number"
-          min={0}
+          min={1}
           max={120}
           placeholder="xocx-..."
-          value={timers.longBreak}
+          value={timers.long}
           onChange={({ target: { value } }) => {
             storeUpdate({
               timers: {
-                longBreak: Number(value),
+                long: Number(value),
               },
             });
           }}
@@ -68,4 +66,4 @@ export const Timer: FC = () => {
       </Form>
     </Setting>
   );
-};
+}

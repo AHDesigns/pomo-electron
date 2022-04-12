@@ -1,85 +1,36 @@
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { nativeImage } from 'electron';
-import { merge } from '@shared/merge';
-import { emptyConfig, UserConfig } from '@shared/types';
-import { slackRepository, SlackRepository } from '@electron/repositories/slack';
-import { logger } from '@electron/services';
+import { emptyConfig, IClientLogger, ILogger, UserConfig } from '@shared/types';
 import { Menubar } from 'menubar';
-import { ok, Result } from '@shared/Result';
-import { fakeShell, shellRepository, ShellRepository } from './shell';
-import { fakeStoreRepoFactory, storeRepository, StoreRepository } from './store';
-import { asset } from '@shared/constants';
+import { menuBarRepository, MenuBarRepository } from './menuBar';
+import { shellRepository, ShellRepository } from './shell';
+import { slackRepository, SlackRepository } from './slack';
+import { storeRepository, StoreRepository } from './store';
+import { metaRepo, MetaRepo } from './meta';
 
-interface IconRepo {
-  setTrayIcon(state: 'active' | 'inactive'): void;
-  setTrayTitle(msg: string): void;
-  windowFocus(): void;
-  count1Second(): Promise<Result<void>>;
-}
-
-export type Repositories = IconRepo &
+export type Repositories = IClientLogger &
+  MenuBarRepository &
+  MetaRepo &
   ShellRepository &
   SlackRepository &
   StoreRepository<UserConfig>;
 
-const trayIcon = nativeImage.createFromPath(asset('IconTemplate.png'));
-const trayActiveIcon = nativeImage.createFromPath(asset('IconActiveTemplate.png'));
+interface RepoArgs {
+  logger: ILogger;
+  mb: Menubar;
+}
 
-export const productionRepositories = (mb: Menubar): Repositories => ({
-  async count1Second() {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(ok(undefined));
-      }, 1000);
-    });
-  },
-  windowFocus() {
-    mb.showWindow();
-  },
-  setTrayIcon(state) {
-    logger.info('called', state);
-    switch (state) {
-      case 'active':
-        mb.tray.setImage(trayActiveIcon);
-        break;
-      default:
-      case 'inactive':
-        mb.tray.setImage(trayIcon);
-        break;
-    }
-  },
-  setTrayTitle(msg: string) {
-    mb.tray.setTitle(msg);
-  },
-  ...slackRepository(),
+export const productionRepositories = ({ logger, mb }: RepoArgs): Repositories => ({
+  ...slackRepository({ logger }),
   ...shellRepository,
   ...storeRepository({
-    name: 'client',
-    defaults: emptyConfig,
+    storeConfig: {
+      name: 'client',
+      defaults: emptyConfig,
+    },
+    logger,
   }),
+  ...menuBarRepository({ logger, mb }),
+  ...logger,
+  ...metaRepo,
 });
 
 export type RepositoryOverrides = Partial<Repositories>;
-
-export const fakeRepositories = (overrides?: RepositoryOverrides): Repositories =>
-  merge(
-    {
-      async count1Second() {
-        return new Promise((resolve) => {
-          setTimeout(() => {
-            resolve(ok(undefined));
-          }, 1000);
-        });
-      },
-      windowFocus() {},
-      setTrayIcon() {},
-      setTrayTitle() {},
-      ...slackRepository(),
-      ...fakeShell(overrides),
-      ...fakeStoreRepoFactory({
-        name: 'client',
-        defaults: emptyConfig,
-      }),
-    },
-    overrides
-  );

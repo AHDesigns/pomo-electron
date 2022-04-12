@@ -1,8 +1,8 @@
-import { EventObject } from 'xstate';
-// eslint-disable-next-line import/no-extraneous-dependencies
-import { RegisteredMachine, InterpreterWithMatches } from '@xstate/compiled';
-// eslint-disable-next-line import/no-extraneous-dependencies
-export { useMachine, useService } from '@xstate/compiled/react';
+import { ActorRef, EventObject } from 'xstate';
+
+// export type OptionsFromModel<A extends Model<any, any, any, any>> = Partial<
+//   MachineOptions<ContextFrom<A>, EventFrom<A>, ModelActionsFrom<A>>
+// >;
 
 /**
  *
@@ -17,19 +17,16 @@ export function assertEventType<TE extends EventObject, TType extends TE['type']
   }
 }
 
-export type MachineOptions<TContext, TEvent extends EventObject, Id extends string> = Extract<
-  RegisteredMachine<TContext, TEvent>,
-  { id: Id }
->['_options'];
-
-export type MachineSend<
-  TContext,
-  TEvent extends EventObject,
-  Id extends 'app' | 'timer'
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-> = InterpreterWithMatches<TContext, any, TEvent, Id>['send'];
-
-export type Matches<TContext, TEvent extends EventObject, Id extends string> = Extract<
-  RegisteredMachine<TContext, TEvent>,
-  { id: Id }
->['_matches'];
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function nullActor(overrides?: Partial<ActorRef<any, any>>): ActorRef<any, any> {
+  return {
+    id: 'null',
+    send: () => {},
+    subscribe: () => ({ unsubscribe: () => {} }),
+    getSnapshot: () => {},
+    [Symbol.observable]: () => ({
+      subscribe: () => ({ unsubscribe: () => {} }),
+    }),
+    ...overrides,
+  };
+}

@@ -1,6 +1,7 @@
-import React, { FC, MouseEventHandler } from 'react';
+import React, { MouseEventHandler } from 'react';
 import styled from 'styled-components';
 import { CssSize } from '@shared/types';
+import { testWrap } from './testWrap/testComp';
 
 interface IBar {
   width: CssSize;
@@ -79,12 +80,14 @@ const Bar = styled.div<IBar>`
   }
 `;
 
-export const MenuButton: FC<{
-  onClick: MouseEventHandler<HTMLButtonElement>;
+interface IHamburgerC {
   showClose: boolean;
-}> = ({ onClick, showClose }) => (
-  <Button onClick={onClick}>
+}
+
+function HamburgerC({ showClose }: IHamburgerC): JSX.Element {
+  return (
     <div
+      aria-hidden
       style={{
         width: '35px',
         height: '16px',
@@ -95,8 +98,24 @@ export const MenuButton: FC<{
       <Bar width="35px" className={cls('middle', showClose)} />
       <Bar width="26px" className={cls('bottom', showClose)} />
     </div>
-  </Button>
-);
+  );
+}
+
+const Hamburger = testWrap(HamburgerC, 'hamburger');
+
+interface IMenuButton {
+  onClick: MouseEventHandler<HTMLButtonElement>;
+  showClose: boolean;
+}
+
+export function MenuButton({ onClick, showClose }: IMenuButton): JSX.Element {
+  return (
+    <Button onClick={onClick}>
+      <span className="sr-only">{showClose ? 'timer' : 'settings'}</span>
+      <Hamburger showClose={showClose} />
+    </Button>
+  );
+}
 
 function cls(classes: string, showClose: boolean): string {
   return showClose ? `${classes} showClose` : classes;

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { DefaultTheme } from 'styled-components';
 import { IFont, Palette } from './styled';
 
@@ -15,6 +14,7 @@ const nord: Palette = {
   backgroundProminent: '#3B4252',
   backgroundBright: '#434C5E',
   backgroundBrightest: '#4C566A',
+  accent: '#fff',
   white: '#D8DEE9',
   whiteBright: '#E5E9F0',
   whiteBrightest: '#ECEFF4',

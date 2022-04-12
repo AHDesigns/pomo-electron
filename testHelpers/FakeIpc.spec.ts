@@ -23,10 +23,7 @@ describe('fake ipc', () => {
     const mockIpcMain = new FakeIpcMain();
     const mockIpcRenderer = new FakeIpcRenderer(mockIpcMain);
 
-    mockIpcMain.handle('foo', async (_, msg) =>
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      Promise.resolve(`${msg as string} sandwich`)
-    );
+    mockIpcMain.handle('foo', async (_, msg) => Promise.resolve(`${msg as string} sandwich`));
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const result: string = await mockIpcRenderer.invoke('foo', 'bacon');

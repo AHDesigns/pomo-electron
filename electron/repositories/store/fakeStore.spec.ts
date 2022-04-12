@@ -24,23 +24,23 @@ describe('fakeStoreRepo', () => {
   };
 
   describe('#read', () => {
-    it('should return the store', () => {
+    it('should return the store', async () => {
       const store = fakeStoreRepoFactory(defaultStoreOptions);
-      expect(store.storeRead()).toMatchResult(ok(schema));
+      expect(await store.storeRead()).toMatchResult(ok(schema));
     });
   });
 
   describe('#read', () => {
-    it('should return the store', () => {
+    it('should return the store', async () => {
       const store = fakeStoreRepoFactory(defaultStoreOptions);
-      expect(store.storeRead()).toMatchResult(ok(schema));
+      expect(await store.storeRead()).toMatchResult(ok(schema));
     });
   });
 
   describe('#update', () => {
-    it('should update the store with the new value and return the result', () => {
+    it('should update the store with the new value and return the result', async () => {
       const store = fakeStoreRepoFactory(defaultStoreOptions);
-      const updateRes = store.storeUpdate({
+      const updateRes = await store.storeUpdate({
         a: 4,
         foo: { ping: 'bye' },
       });
@@ -55,18 +55,18 @@ describe('fakeStoreRepo', () => {
           b: 'hi',
         })
       );
-      expect(updateRes).toMatchResult(store.storeRead());
+      expect(updateRes).toMatchResult(await store.storeRead());
     });
   });
 
   describe('#reset', () => {
-    it('should clear the store and reset all values to defaults', () => {
+    it('should clear the store and reset all values to defaults', async () => {
       const store = fakeStoreRepoFactory(defaultStoreOptions);
-      store.storeUpdate({
+      await store.storeUpdate({
         a: 4,
         foo: { ping: 'bye' },
       });
-      const res = store.storeReset();
+      const res = await store.storeReset();
 
       expect(res).toMatchResult(ok(schema));
     });

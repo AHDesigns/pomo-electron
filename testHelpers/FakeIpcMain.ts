@@ -14,10 +14,10 @@ export class FakeIpcMain extends EventEmitter implements IpcMain {
     channel: string,
     listener: (event: IpcMainInvokeEvent, ...args: any[]) => Promise<any>
   ): void {
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     const mainInvokeEvent = {} as IpcMainInvokeEvent;
 
     this.on(channel, (...args) => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       listener(mainInvokeEvent, ...args)
         .then((res) => {
           this.renderer.emit(`${channel}-reply`, res);
