@@ -1,5 +1,6 @@
 import { ActorRefFrom, assign, createMachine } from 'xstate';
 import { sendParent } from 'xstate/lib/actions';
+import mainModel from '../main/model';
 import pomodoroModel from '../pomodoro/model';
 import model, { TimerContext, TimerEvents } from './model';
 
@@ -79,6 +80,12 @@ const timerMachine = createMachine(
       updateTimerConfig: assign({
         minutes: (_, { data }) => data,
       }),
+
+      onPauseHook: sendParent((c) => mainModel.events.TIMER_PAUSE(c)),
+      onStartHook: sendParent((c) => mainModel.events.TIMER_START(c)),
+      onPlayHook: sendParent((c) => mainModel.events.TIMER_PLAY(c)),
+      onStopHook: sendParent((c) => mainModel.events.TIMER_STOP(c)),
+      onTickHook: sendParent((c) => mainModel.events.TIMER_TICK(c)),
     },
   }
 );

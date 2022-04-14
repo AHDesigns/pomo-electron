@@ -99,9 +99,17 @@ export interface AnyObject {
 type CssSizeUnits = '%' | 'em' | 'px';
 export type CssSize = `${string}${CssSizeUnits}`;
 
-interface Hook {
-  (info: { minutes: number; seconds: number; type: 'long' | 'pomo' | 'short' }): void;
+interface HookContext {
+  timer: {
+    minutes: number;
+    seconds: number;
+    type: 'long' | 'pomo' | 'short';
+  };
+  config: UserConfig;
+  bridge: IBridge;
 }
+
+type Hook = (context: HookContext) => void;
 
 export interface TimerHooks {
   onStartHook: Hook;

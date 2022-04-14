@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React, { useEffect, useState } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { theme } from '@client/styles/theme';
@@ -7,19 +6,11 @@ import { BridgeProvider, MachinesProvider, LoggerProvider } from '@client/hooks/
 import { IBridge } from '@shared/types';
 import { GlobalStyle } from './styles/GlobalStyle';
 import { App } from './App';
+import { hooks } from './integrations';
 
 interface IProviders {
   bridge: IBridge;
 }
-
-const hooks = {
-  onTickHook: () => {},
-  onStartHook: console.log,
-  onPauseHook: console.log,
-  onPlayHook: console.log,
-  onStopHook: console.log,
-  onCompleteHook: console.log,
-};
 
 export function Providers({ bridge }: IProviders): JSX.Element {
   const [booting, setBooting] = useState(true);
