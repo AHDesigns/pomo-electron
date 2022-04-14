@@ -16,6 +16,7 @@ const mainModel = createModel(
       TIMER_PLAY: (data: TimerContext) => ({ data }),
       TIMER_PAUSE: (data: TimerContext) => ({ data }),
       TIMER_STOP: (data: TimerContext) => ({ data }),
+      TIMER_COMPLETE: (data: TimerContext) => ({ data }),
     },
   }
 );

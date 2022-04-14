@@ -31,6 +31,7 @@ const mainMachineFactory = ({ pomodoro, bridge, actions }: IMainMachine) =>
         TIMER_START: { actions: 'onTimerStart' },
         TIMER_STOP: { actions: 'onTimerStop' },
         TIMER_TICK: { actions: 'onTimerTick' },
+        TIMER_COMPLETE: { actions: 'onTimerComplete' },
       },
       states: {
         active: {
@@ -61,6 +62,9 @@ const mainMachineFactory = ({ pomodoro, bridge, actions }: IMainMachine) =>
         },
         onTimerTick: ({ config }, { data }) => {
           actions.onTickHook({ bridge, config, timer: data });
+        },
+        onTimerComplete: ({ config }, { data }) => {
+          actions.onCompleteHook({ bridge, config, timer: data });
         },
       },
     }

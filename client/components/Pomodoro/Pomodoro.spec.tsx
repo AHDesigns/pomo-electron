@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 import { tick } from '@test/tick';
@@ -66,7 +67,9 @@ describe('Pomodoro tests', () => {
 
       expect(hooks.onStartHook).toHaveBeenCalledTimes(1);
       expect(hooks.onStartHook).toHaveBeenCalledWith(
-        expect.objectContaining({ minutes: 10, seconds: 0, type: 'pomo' })
+        expect.objectContaining({
+          timer: expect.objectContaining({ minutes: 10, seconds: 0, type: 'pomo' }),
+        })
       );
 
       tick(11);
@@ -74,7 +77,9 @@ describe('Pomodoro tests', () => {
       expect(hooks.onTickHook).toHaveBeenCalledTimes(11);
       expect(hooks.onTickHook).toHaveBeenNthCalledWith(
         11,
-        expect.objectContaining({ minutes: 9, seconds: 49, type: 'pomo' })
+        expect.objectContaining({
+          timer: expect.objectContaining({ minutes: 9, seconds: 49, type: 'pomo' }),
+        })
       );
 
       // it.todo('should show the time in the menu bar');
@@ -91,7 +96,9 @@ describe('Pomodoro tests', () => {
 
       expect(hooks.onPauseHook).toHaveBeenCalledTimes(1);
       expect(hooks.onPauseHook).toHaveBeenCalledWith(
-        expect.objectContaining({ minutes: 9, seconds: 49, type: 'pomo' })
+        expect.objectContaining({
+          timer: expect.objectContaining({ minutes: 9, seconds: 49, type: 'pomo' }),
+        })
       );
 
       expect(timer.current({ mins: 9, secs: 49 })).toBeInTheDocument();
@@ -106,7 +113,9 @@ describe('Pomodoro tests', () => {
 
       expect(hooks.onPlayHook).toHaveBeenCalledTimes(1);
       expect(hooks.onPlayHook).toHaveBeenCalledWith(
-        expect.objectContaining({ minutes: 9, seconds: 49, type: 'pomo' })
+        expect.objectContaining({
+          timer: expect.objectContaining({ minutes: 9, seconds: 49, type: 'pomo' }),
+        })
       );
       expect(hooks.onTickHook).toHaveBeenCalledTimes(20);
 
@@ -122,7 +131,9 @@ describe('Pomodoro tests', () => {
 
       expect(hooks.onStopHook).toHaveBeenCalledTimes(1);
       expect(hooks.onStopHook).toHaveBeenCalledWith(
-        expect.objectContaining({ minutes: 9, seconds: 40, type: 'pomo' })
+        expect.objectContaining({
+          timer: expect.objectContaining({ minutes: 9, seconds: 40, type: 'pomo' }),
+        })
       );
 
       assert.timerAndProgress({ mins: 10, secs: 0, pomos: 0, long: 0 });
@@ -139,12 +150,16 @@ describe('Pomodoro tests', () => {
       expect(hooks.onStartHook).toHaveBeenCalledTimes(2);
       expect(hooks.onStartHook).toHaveBeenNthCalledWith(
         2,
-        expect.objectContaining({ minutes: 10, seconds: 0, type: 'pomo' })
+        expect.objectContaining({
+          timer: expect.objectContaining({ minutes: 10, seconds: 0, type: 'pomo' }),
+        })
       );
 
       expect(timer.current({ mins: 9, secs: 55 })).toBeInTheDocument();
       expect(hooks.onTickHook).toHaveBeenLastCalledWith(
-        expect.objectContaining({ minutes: 9, seconds: 55, type: 'pomo' })
+        expect.objectContaining({
+          timer: expect.objectContaining({ minutes: 9, seconds: 55, type: 'pomo' }),
+        })
       );
       // it.todo('should show the time in the menu bar');
       // it.todo('should show the active icon in the menu bar');
@@ -177,7 +192,9 @@ describe('Pomodoro tests', () => {
       tick(1);
 
       expect(hooks.onCompleteHook).toHaveBeenCalledTimes(1);
-      expect(hooks.onCompleteHook).toHaveBeenCalledWith(expect.objectContaining({ type: 'pomo' }));
+      expect(hooks.onCompleteHook).toHaveBeenCalledWith(
+        expect.objectContaining({ timer: expect.objectContaining({ type: 'pomo' }) })
+      );
 
       assert.timerAndProgress({ mins: 5, secs: 0, pomos: 1, long: 0 });
     });
@@ -200,11 +217,17 @@ describe('Pomodoro tests', () => {
       runOneShortTimer();
       assert.timerAndProgress({ mins: 10, secs: 0, pomos: 1, long: 0 });
 
-      expect(hooks.onStartHook).toHaveBeenCalledWith(expect.objectContaining({ type: 'short' }));
-      expect(hooks.onTickHook).toHaveBeenCalledWith(
-        expect.objectContaining({ type: 'short', minutes: 4, seconds: 59 })
+      expect(hooks.onStartHook).toHaveBeenCalledWith(
+        expect.objectContaining({ timer: expect.objectContaining({ type: 'short' }) })
       );
-      expect(hooks.onCompleteHook).toHaveBeenCalledWith(expect.objectContaining({ type: 'short' }));
+      expect(hooks.onTickHook).toHaveBeenCalledWith(
+        expect.objectContaining({
+          timer: expect.objectContaining({ type: 'short', minutes: 4, seconds: 59 }),
+        })
+      );
+      expect(hooks.onCompleteHook).toHaveBeenCalledWith(
+        expect.objectContaining({ timer: expect.objectContaining({ type: 'short' }) })
+      );
 
       /* ******************************************************************* */
       /* Run pomos
@@ -224,16 +247,22 @@ describe('Pomodoro tests', () => {
 
       userEvent.click(timer.startButton());
       tick(1);
-      expect(hooks.onStartHook).toHaveBeenCalledWith(expect.objectContaining({ type: 'long' }));
+      expect(hooks.onStartHook).toHaveBeenCalledWith(
+        expect.objectContaining({ timer: expect.objectContaining({ type: 'long' }) })
+      );
       expect(hooks.onTickHook).toHaveBeenLastCalledWith(
-        expect.objectContaining({ type: 'long', minutes: 7, seconds: 59 })
+        expect.objectContaining({
+          timer: expect.objectContaining({ type: 'long', minutes: 7, seconds: 59 }),
+        })
       );
 
       expect(records.long(0)).toBeInTheDocument();
 
       tick(7 * 60 + 59);
 
-      expect(hooks.onCompleteHook).toHaveBeenCalledWith(expect.objectContaining({ type: 'long' }));
+      expect(hooks.onCompleteHook).toHaveBeenCalledWith(
+        expect.objectContaining({ timer: expect.objectContaining({ type: 'long' }) })
+      );
       expect(screen.getByText(/completed pomos: 4/)).toBeInTheDocument();
       expect(screen.getByText(/completed breaks: 1/)).toBeInTheDocument();
 
@@ -280,7 +309,9 @@ describe('Pomodoro tests', () => {
 
       expect(hooks.onStopHook).toHaveBeenCalledTimes(1);
       expect(hooks.onStopHook).toHaveBeenCalledWith(
-        expect.objectContaining({ minutes: 4, seconds: 37, type: 'short' })
+        expect.objectContaining({
+          timer: expect.objectContaining({ minutes: 4, seconds: 37, type: 'short' }),
+        })
       );
 
       assert.timerAndProgress({ mins: 10, secs: 0, pomos: 1, long: 0 });
@@ -289,7 +320,9 @@ describe('Pomodoro tests', () => {
       /* ******************************************************************* */
 
       userEvent.click(screen.getByRole('button', { name: T.pomoTimer.start }));
-      expect(hooks.onStartHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'pomo' }));
+      expect(hooks.onStartHook).toHaveBeenLastCalledWith(
+        expect.objectContaining({ timer: expect.objectContaining({ type: 'pomo' }) })
+      );
     });
 
     test('stopping a long break takes you back to a pomo timer, but still increases completed break count', async () => {
@@ -305,7 +338,9 @@ describe('Pomodoro tests', () => {
 
       userEvent.click(screen.getByRole('button', { name: T.pomoTimer.start }));
 
-      expect(hooks.onStartHook).toHaveBeenCalledWith(expect.objectContaining({ type: 'long' }));
+      expect(hooks.onStartHook).toHaveBeenCalledWith(
+        expect.objectContaining({ timer: expect.objectContaining({ type: 'long' }) })
+      );
 
       tick(23);
 
@@ -316,7 +351,9 @@ describe('Pomodoro tests', () => {
 
       expect(hooks.onStopHook).toHaveBeenCalledTimes(1);
       expect(hooks.onStopHook).toHaveBeenCalledWith(
-        expect.objectContaining({ minutes: 7, seconds: 37, type: 'long' })
+        expect.objectContaining({
+          timer: expect.objectContaining({ minutes: 7, seconds: 37, type: 'long' }),
+        })
       );
 
       expect(records.pomos(4)).toBeInTheDocument();
@@ -365,7 +402,7 @@ describe('Pomodoro tests', () => {
       expect(timer.current({ mins: 5, secs: 0 })).toBeInTheDocument();
       expect(hooks.onStartHook).toHaveBeenCalledTimes(2);
       expect(hooks.onStartHook).toHaveBeenLastCalledWith(
-        expect.objectContaining({ type: 'short' })
+        expect.objectContaining({ timer: expect.objectContaining({ type: 'short' }) })
       );
 
       tick(3);
@@ -375,7 +412,9 @@ describe('Pomodoro tests', () => {
       /* ******************************************************************* */
       expect(timer.current({ mins: 4, secs: 57 })).toBeInTheDocument();
       expect(hooks.onTickHook).toHaveBeenLastCalledWith(
-        expect.objectContaining({ type: 'short', minutes: 4, seconds: 57 })
+        expect.objectContaining({
+          timer: expect.objectContaining({ type: 'short', minutes: 4, seconds: 57 }),
+        })
       );
 
       /* ******************************************************************* */
@@ -385,7 +424,7 @@ describe('Pomodoro tests', () => {
 
       expect(hooks.onCompleteHook).toHaveBeenCalledTimes(2);
       expect(hooks.onCompleteHook).toHaveBeenLastCalledWith(
-        expect.objectContaining({ type: 'short' })
+        expect.objectContaining({ timer: expect.objectContaining({ type: 'short' }) })
       );
 
       expect(timer.current({ mins: 10, secs: 0 })).toBeInTheDocument();
@@ -399,7 +438,7 @@ describe('Pomodoro tests', () => {
       /* ******************************************************************* */
       runOnePomoTimer();
       expect(hooks.onCompleteHook).toHaveBeenLastCalledWith(
-        expect.objectContaining({ type: 'pomo' })
+        expect.objectContaining({ timer: expect.objectContaining({ type: 'pomo' }) })
       );
     });
   });
@@ -422,7 +461,9 @@ describe('Pomodoro tests', () => {
 
       tick(3);
       expect(timer.startButtonQuery()).not.toBeInTheDocument();
-      expect(hooks.onStartHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'pomo' }));
+      expect(hooks.onStartHook).toHaveBeenLastCalledWith(
+        expect.objectContaining({ timer: expect.objectContaining({ type: 'pomo' }) })
+      );
       expect(screen.getByText(/9 : 57/)).toBeInTheDocument();
       expect(timer.current({ mins: 9, secs: 57 })).toBeInTheDocument();
       expect(hooks.onTickHook).toHaveBeenCalledTimes(3);
@@ -450,7 +491,9 @@ describe('Pomodoro tests', () => {
       runOnePomoTimer();
 
       expect(timer.startButtonQuery()).not.toBeInTheDocument();
-      expect(hooks.onStartHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'long' }));
+      expect(hooks.onStartHook).toHaveBeenLastCalledWith(
+        expect.objectContaining({ timer: expect.objectContaining({ type: 'long' }) })
+      );
 
       tick(3);
 
@@ -479,29 +522,37 @@ describe('Pomodoro tests', () => {
       await initTest();
 
       expect(timer.startButtonQuery()).not.toBeInTheDocument();
-      expect(hooks.onStartHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'pomo' }));
+      expect(hooks.onStartHook).toHaveBeenLastCalledWith(
+        expect.objectContaining({ timer: expect.objectContaining({ type: 'pomo' }) })
+      );
 
       tick(10 * 60);
 
       expect(records.pomos(1)).toBeInTheDocument();
       expect(hooks.onCompleteHook).toHaveBeenLastCalledWith(
-        expect.objectContaining({ type: 'pomo' })
+        expect.objectContaining({ timer: expect.objectContaining({ type: 'pomo' }) })
       );
       expect(hooks.onStartHook).toHaveBeenLastCalledWith(
-        expect.objectContaining({ type: 'short' })
+        expect.objectContaining({ timer: expect.objectContaining({ type: 'short' }) })
       );
 
       tick(5 * 60);
 
       expect(hooks.onCompleteHook).toHaveBeenLastCalledWith(
-        expect.objectContaining({ type: 'short' })
+        expect.objectContaining({ timer: expect.objectContaining({ type: 'short' }) })
       );
-      expect(hooks.onStartHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'pomo' }));
+      expect(hooks.onStartHook).toHaveBeenLastCalledWith(
+        expect.objectContaining({ timer: expect.objectContaining({ type: 'pomo' }) })
+      );
 
       userEvent.click(timer.pauseButton());
-      expect(hooks.onPauseHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'pomo' }));
+      expect(hooks.onPauseHook).toHaveBeenLastCalledWith(
+        expect.objectContaining({ timer: expect.objectContaining({ type: 'pomo' }) })
+      );
       userEvent.click(timer.playButton());
-      expect(hooks.onPlayHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'pomo' }));
+      expect(hooks.onPlayHook).toHaveBeenLastCalledWith(
+        expect.objectContaining({ timer: expect.objectContaining({ type: 'pomo' }) })
+      );
 
       tick(10 * 60); // pomo 2
       expect(records.pomos(2)).toBeInTheDocument();
@@ -514,13 +565,15 @@ describe('Pomodoro tests', () => {
       tick(10 * 60); // pomo 4
       expect(records.pomos(4)).toBeInTheDocument();
 
-      expect(hooks.onStartHook).toHaveBeenLastCalledWith(expect.objectContaining({ type: 'long' }));
+      expect(hooks.onStartHook).toHaveBeenLastCalledWith(
+        expect.objectContaining({ timer: expect.objectContaining({ type: 'long' }) })
+      );
       tick(8 * 60); // longBreak
 
       expect(records.pomos(4)).toBeInTheDocument();
       expect(records.long(1)).toBeInTheDocument();
       expect(hooks.onCompleteHook).toHaveBeenLastCalledWith(
-        expect.objectContaining({ type: 'long' })
+        expect.objectContaining({ timer: expect.objectContaining({ type: 'long' }) })
       );
     });
   });

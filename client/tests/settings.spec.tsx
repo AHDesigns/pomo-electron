@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { PageManager } from '@client/components';
 import { merge } from '@shared/merge';
 import { ok } from '@shared/Result';
@@ -88,7 +89,9 @@ when the user changes the timer settings to 57 minutes`, () => {
 
     expect(hooks.onStartHook).toHaveBeenCalledTimes(1);
     expect(hooks.onTickHook).toHaveBeenLastCalledWith(
-      expect.objectContaining({ minutes: 4, seconds: 59, type: 'pomo' })
+      expect.objectContaining({
+        timer: expect.objectContaining({ minutes: 4, seconds: 59, type: 'pomo' }),
+      })
     );
 
     await userActions.navigateToSettings();
@@ -102,7 +105,9 @@ when the user changes the timer settings to 57 minutes`, () => {
 
     expect(hooks.onStartHook).toHaveBeenCalledTimes(1);
     expect(hooks.onTickHook).toHaveBeenLastCalledWith(
-      expect.objectContaining({ minutes: 4, seconds: 58, type: 'pomo' })
+      expect.objectContaining({
+        timer: expect.objectContaining({ minutes: 4, seconds: 58, type: 'pomo' }),
+      })
     );
     expect(hooks.onCompleteHook).toHaveBeenCalledTimes(0);
     expect(hooks.onPauseHook).toHaveBeenCalledTimes(0);
@@ -130,7 +135,9 @@ when the user changes the timer settings to 57 minutes`, () => {
     userEvent.click(timer.startButton());
     tick(1);
     expect(hooks.onTickHook).toHaveBeenLastCalledWith(
-      expect.objectContaining({ minutes: 56, seconds: 59, type: 'pomo' })
+      expect.objectContaining({
+        timer: expect.objectContaining({ minutes: 56, seconds: 59, type: 'pomo' }),
+      })
     );
   });
 });

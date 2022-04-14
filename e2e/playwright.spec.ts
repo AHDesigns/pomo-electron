@@ -17,7 +17,17 @@ test('launch app', async () => {
   // await window.screenshot({ path: 'intro.png' });
   expect(await window.screenshot()).toMatchSnapshot();
 
-  // close app
+  const logs: string[] = [];
+
+  window.on('console', (msg) => logs.push(msg.text()));
+
+  await window.click('text=Start');
+
+  expect(logs).toContain('set tray icon active');
+
+  await window.click('text=Stop');
+
+  expect(logs).toContain('set tray icon inactive');
+
   await electronApp.close();
-  // close app
 });

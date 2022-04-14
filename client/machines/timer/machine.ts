@@ -1,6 +1,5 @@
 import { ActorRefFrom, assign, createMachine } from 'xstate';
 import { sendParent } from 'xstate/lib/actions';
-import mainModel from '../main/model';
 import pomodoroModel from '../pomodoro/model';
 import model, { TimerContext, TimerEvents } from './model';
 
@@ -47,11 +46,11 @@ const timerMachine = createMachine(
         },
       },
       complete: {
-        entry: ['onCompleteHook', 'notifyParentComplete'],
+        entry: ['onCompleteHook'],
         type: 'final',
       },
       stopped: {
-        entry: ['onStopHook', 'notifyParentInComplete'],
+        entry: ['onStopHook'],
         type: 'final',
       },
     },
@@ -73,19 +72,16 @@ const timerMachine = createMachine(
         seconds === 0 ? { minutes: minutes - 1, seconds: 59 } : { minutes, seconds: seconds - 1 }
       ),
 
-      notifyParentComplete: sendParent(pomodoroModel.events.TIMER_COMPLETE(true)),
-
-      notifyParentInComplete: sendParent(pomodoroModel.events.TIMER_INCOMPLETE(true)),
-
       updateTimerConfig: assign({
         minutes: (_, { data }) => data,
       }),
 
-      onPauseHook: sendParent((c) => mainModel.events.TIMER_PAUSE(c)),
-      onStartHook: sendParent((c) => mainModel.events.TIMER_START(c)),
-      onPlayHook: sendParent((c) => mainModel.events.TIMER_PLAY(c)),
-      onStopHook: sendParent((c) => mainModel.events.TIMER_STOP(c)),
-      onTickHook: sendParent((c) => mainModel.events.TIMER_TICK(c)),
+      onStartHook: sendParent((c) => pomodoroModel.events.TIMER_START(c)),
+      onPauseHook: sendParent((c) => pomodoroModel.events.TIMER_PAUSE(c)),
+      onPlayHook: sendParent((c) => pomodoroModel.events.TIMER_PLAY(c)),
+      onStopHook: sendParent((c) => pomodoroModel.events.TIMER_STOPPED(c)),
+      onTickHook: sendParent((c) => pomodoroModel.events.TIMER_TICK(c)),
+      onCompleteHook: sendParent((c) => pomodoroModel.events.TIMER_COMPLETE(c)),
     },
   }
 );
