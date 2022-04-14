@@ -1,11 +1,7 @@
 import { emptyConfig } from '@shared/types';
 import { ContextFrom, EventFrom } from 'xstate';
 import { createModel } from 'xstate/lib/model';
-
-// interface AdhocTimer {
-//   minutes: number;
-//   seconds: number;
-// }
+import { TimerContext } from '../timer/model';
 
 const pomodoroModel = createModel(
   {
@@ -25,6 +21,11 @@ const pomodoroModel = createModel(
         timers: typeof emptyConfig.timers,
         autoStart: typeof emptyConfig.autoStart
       ) => ({ data: { timers, autoStart } }),
+      TIMER_START: (data: TimerContext) => ({ data }),
+      TIMER_TICK: (data: TimerContext) => ({ data }),
+      TIMER_PLAY: (data: TimerContext) => ({ data }),
+      TIMER_PAUSE: (data: TimerContext) => ({ data }),
+      TIMER_STOP: (data: TimerContext) => ({ data }),
     },
   }
 );

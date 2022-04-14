@@ -31,12 +31,9 @@ export function MachinesProvider({ children, hooks }: IMachinesProvider): JSX.El
 
   const main = useInterpret(
     mainMachine({
-      pomodoro: {
-        actions: {
-          ...hooks,
-        },
-      },
       bridge,
+      actions: hooks,
+      pomodoro: {},
     }),
     {
       devTools: true,

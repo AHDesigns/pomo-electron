@@ -1,4 +1,4 @@
-import { IBridge } from '@shared/types';
+import { IBridge, TimerHooks } from '@shared/types';
 import { assign, createMachine, forwardTo, InterpreterFrom } from 'xstate';
 import configMachine from '../config/machine';
 import { actorIds } from '../constants';
@@ -8,9 +8,10 @@ import mainModel, { MainContext, MainEvents } from './model';
 export interface IMainMachine {
   pomodoro: IPomodoroMachine;
   bridge: IBridge;
+  actions: TimerHooks;
 }
 
-const mainMachineFactory = ({ pomodoro, bridge }: IMainMachine) =>
+const mainMachineFactory = ({ pomodoro, bridge, actions }: IMainMachine) =>
   createMachine(
     {
       id: 'main',
@@ -25,6 +26,11 @@ const mainMachineFactory = ({ pomodoro, bridge }: IMainMachine) =>
         CONFIG_LOADED: {
           actions: [forwardTo(actorIds.POMODORO), 'setLoaded'],
         },
+        TIMER_PAUSE: { actions: 'onTimerPause' },
+        TIMER_PLAY: { actions: 'onTimerPlay' },
+        TIMER_START: { actions: 'onTimerStart' },
+        TIMER_STOP: { actions: 'onTimerStop' },
+        TIMER_TICK: { actions: 'onTimerTick' },
       },
       states: {
         active: {
@@ -37,9 +43,25 @@ const mainMachineFactory = ({ pomodoro, bridge }: IMainMachine) =>
     },
     {
       actions: {
-        setLoaded: assign({
+        setLoaded: assign((_, { data }) => ({
+          config: data,
           loaded: true,
-        }),
+        })),
+        onTimerPause: ({ config }, { data }) => {
+          actions.onPauseHook({ bridge, config, timer: data });
+        },
+        onTimerStart: ({ config }, { data }) => {
+          actions.onStartHook({ bridge, config, timer: data });
+        },
+        onTimerPlay: ({ config }, { data }) => {
+          actions.onPlayHook({ bridge, config, timer: data });
+        },
+        onTimerStop: ({ config }, { data }) => {
+          actions.onStopHook({ bridge, config, timer: data });
+        },
+        onTimerTick: ({ config }, { data }) => {
+          actions.onTickHook({ bridge, config, timer: data });
+        },
       },
     }
   );
