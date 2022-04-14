@@ -27,14 +27,6 @@ function PomoMachine(): JSX.Element {
           pomo: 1,
         },
       },
-      actions: {
-        onStartHook: () => {},
-        onTickHook: () => {},
-        onPauseHook: () => {},
-        onPlayHook: () => {},
-        onStopHook: () => {},
-        onCompleteHook: () => {},
-      },
     }),
     {
       devTools: true,

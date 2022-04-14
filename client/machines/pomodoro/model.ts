@@ -15,17 +15,16 @@ const pomodoroModel = createModel(
   },
   {
     events: {
-      TIMER_COMPLETE: (complete: boolean) => ({ data: { complete } }),
-      TIMER_INCOMPLETE: (complete: boolean) => ({ data: { complete } }),
       CONFIG_LOADED: (
         timers: typeof emptyConfig.timers,
         autoStart: typeof emptyConfig.autoStart
       ) => ({ data: { timers, autoStart } }),
+      TIMER_COMPLETE: (data: TimerContext) => ({ data }),
+      TIMER_STOPPED: (data: TimerContext) => ({ data }),
       TIMER_START: (data: TimerContext) => ({ data }),
       TIMER_TICK: (data: TimerContext) => ({ data }),
       TIMER_PLAY: (data: TimerContext) => ({ data }),
       TIMER_PAUSE: (data: TimerContext) => ({ data }),
-      TIMER_STOP: (data: TimerContext) => ({ data }),
     },
   }
 );
