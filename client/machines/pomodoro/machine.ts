@@ -78,6 +78,7 @@ function pomodoroMachine({ context }: IPomodoroMachine) {
             TIMER_STOPPED: { target: 'pomo', actions: 'onStopHook' },
             CONFIG_LOADED: { actions: 'updateTimerConfig' },
           },
+          exit: 'increaseShortBreakCount',
         },
         long: {
           invoke: {
@@ -97,18 +98,20 @@ function pomodoroMachine({ context }: IPomodoroMachine) {
             TIMER_STOPPED: { target: 'pomo', actions: 'onStopHook' },
             CONFIG_LOADED: { actions: 'updateTimerConfig' },
           },
-          exit: 'increaseBreakCount',
+          exit: 'increaseLongBreakCount',
         },
       },
     },
     {
       guards: {
-        isLongBreak: ({ completed: { pomo } }) => pomo !== 0 && pomo % 4 === 0,
+        isLongBreak: ({ completed: { pomo }, longBreakEvery }) =>
+          pomo !== 0 && pomo % longBreakEvery === 0,
       },
 
       actions: {
-        updateTimerConfig: assign((ctx, { data: { timers, autoStart } }) => ({
+        updateTimerConfig: assign((ctx, { data: { timers, autoStart, longBreakEvery } }) => ({
           ...ctx,
+          longBreakEvery,
           timers,
           autoStart,
         })),
@@ -117,7 +120,11 @@ function pomodoroMachine({ context }: IPomodoroMachine) {
           completed: ({ completed }) => ({ ...completed, pomo: completed.pomo + 1 }),
         }),
 
-        increaseBreakCount: assign({
+        increaseShortBreakCount: assign({
+          completed: ({ completed }) => ({ ...completed, short: completed.short + 1 }),
+        }),
+
+        increaseLongBreakCount: assign({
           completed: ({ completed }) => ({ ...completed, long: completed.long + 1 }),
         }),
 

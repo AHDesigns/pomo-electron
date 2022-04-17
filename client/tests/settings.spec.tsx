@@ -3,6 +3,7 @@ import { PageManager } from '@client/components';
 import { merge } from '@shared/merge';
 import { ok } from '@shared/Result';
 import { emptyConfig, TimerHooks } from '@shared/types';
+import { ignoreWarnings } from '@test/ignore';
 import { pageModel, userActions } from '@test/pageModels';
 import { act, render, screen } from '@test/rtl';
 import { tick } from '@test/tick';
@@ -44,8 +45,6 @@ async function initTest() {
 }
 
 const {
-  nav,
-  settings,
   pomo: { timer },
 } = pageModel;
 
@@ -59,6 +58,11 @@ afterEach(() => {
     jest.useRealTimers();
   });
 });
+
+ignoreWarnings(
+  'xstate has a bug which logs a harmless warning for exit/entry actions https://github.com/statelyai/xstate/issues/1792',
+  /No implementation found for action type 'onStartHook'/
+);
 
 describe(`given no timer is running
 when the user changes the timer duration to 57`, () => {

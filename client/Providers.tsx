@@ -15,6 +15,7 @@ interface IProviders {
 export function Providers({ bridge }: IProviders): JSX.Element {
   const [booting, setBooting] = useState(true);
   const [shouldInspect, setShouldInspect] = useState(false);
+
   useEffect(() => {
     bridge.isDev().then((isDev) => {
       isDev.map((b) => setShouldInspect(b));

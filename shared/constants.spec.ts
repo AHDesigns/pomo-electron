@@ -23,10 +23,7 @@ describe('constants', () => {
         it('sets nodenv', () => {
           jest.resetModules();
           process.env.NODE_ENV = env;
-          expect(() => {
-            // eslint-disable-next-line global-require
-            require('./constants');
-          }).not.toThrowError();
+          expect(import('./constants')).resolves.not.toThrowError();
         });
       });
     });
@@ -38,10 +35,7 @@ describe('constants', () => {
         it('throws error', () => {
           jest.resetModules();
           process.env.NODE_ENV = env;
-          expect(() => {
-            // eslint-disable-next-line global-require
-            require('./constants');
-          }).toThrowError();
+          expect(import('./constants')).rejects.toThrowError();
         });
       });
     });
@@ -62,11 +56,10 @@ describe('constants', () => {
     ];
 
     collections.forEach((collection) => {
-      it(`when env is "${collection.env} env flags are set correctly`, () => {
+      it(`when env is "${collection.env} env flags are set correctly`, async () => {
         jest.resetModules();
         process.env.NODE_ENV = collection.env;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires, global-require
-        const { isDev, isProd, isTest } = require('./constants');
+        const { isDev, isProd, isTest } = await import('./constants');
         expect(isDev).toBe(collection.isDev);
         expect(isProd).toBe(collection.isProd);
         expect(isTest).toBe(collection.isTest);
@@ -76,41 +69,48 @@ describe('constants', () => {
 
   describe('isIntegration', () => {
     describe('when not in production mode', () => {
-      it('is always false', () => {
+      it('is always false', async () => {
         process.env.NODE_ENV = 'development';
         process.env.INTEGRATION = 'true';
 
         jest.resetModules();
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires, global-require
-        const { isIntegration } = require('./constants');
+        const { isIntegration } = await import('./constants');
         expect(isIntegration).toBe(false);
       });
     });
 
     describe('when in production mode', () => {
       describe('when INTEGRATION is true', () => {
-        it('is is true', () => {
+        it('is is true', async () => {
           process.env.NODE_ENV = 'production';
           process.env.INTEGRATION = 'true';
 
           jest.resetModules();
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires, global-require
-          const { isIntegration } = require('./constants');
+          const { isIntegration } = await import('./constants');
           expect(isIntegration).toBe(true);
         });
       });
 
       describe('when INTEGRATION is false', () => {
-        it('is is true', () => {
+        it('is is true', async () => {
           process.env.NODE_ENV = 'production';
           process.env.INTEGRATION = 'false';
 
           jest.resetModules();
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires, global-require
-          const { isIntegration } = require('./constants');
+          const { isIntegration } = await import('./constants');
           expect(isIntegration).toBe(false);
         });
       });
+    });
+  });
+
+  describe('asset', () => {
+    it('returns the asset location', async () => {
+      jest.resetModules();
+      const { asset } = await import('./constants');
+      expect(asset('foo')).toMatchInlineSnapshot(
+        `"/Users/codethread/dev/pomo-electron/shared/foo"`
+      );
     });
   });
 });

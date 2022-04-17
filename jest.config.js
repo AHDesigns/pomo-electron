@@ -19,6 +19,7 @@ const unitTests = {
 module.exports = {
   rootDir: process.cwd(),
   coverageDirectory: '<rootDir>/reports',
+  maxWorkers: '80%',
   projects: [
     {
       ...unitTests,

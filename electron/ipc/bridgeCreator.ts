@@ -20,6 +20,7 @@ export function bridgeCreator(ipcR: IpcRenderer): IBridge {
           [key]: async (...args: unknown[]) => reBuild(await ipcR.invoke(key, args)),
         };
       default:
+        /* istanbul ignore next */
         throw new Error('impossible missing method for ipc handler methods');
     }
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions

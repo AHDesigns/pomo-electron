@@ -45,7 +45,7 @@ export class FakeIpcMain extends EventEmitter implements IpcMain {
     listener?: (event: Electron.IpcMainInvokeEvent, ...args: any[]) => any
   ): void {
     // eslint-disable-next-line no-console
-    console.log(channel, listener);
+    console.warn(channel, listener);
     throw new Error('method not yet mocked');
   }
 }

@@ -1,12 +1,11 @@
 import React from 'react';
-import { mocked } from 'ts-jest/utils';
 import { renderNoProviders, screen } from '@test/rtl';
 import * as _constants from '@shared/constants';
 import { testWrap } from './testComp';
 
 jest.mock('@shared/constants');
 
-const constants = mocked(_constants);
+const constants = jest.mocked(_constants);
 
 describe('nullComp', () => {
   describe('in tests', () => {

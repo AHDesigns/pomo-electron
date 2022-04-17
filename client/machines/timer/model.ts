@@ -1,3 +1,4 @@
+import { HookContext } from '@shared/types';
 import { ContextFrom, EventFrom } from 'xstate';
 import { createModel } from 'xstate/lib/model';
 
@@ -5,9 +6,9 @@ const timerModel = createModel(
   {
     minutes: 0,
     seconds: 0,
-    type: 'pomo' as 'long' | 'pomo' | 'short',
+    type: 'pomo',
     autoStart: false,
-  },
+  } as HookContext['timer'],
   {
     events: {
       START: () => ({}),

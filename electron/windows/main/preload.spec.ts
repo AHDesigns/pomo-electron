@@ -1,5 +1,4 @@
 import { contextBridge as _contextBridge, ipcRenderer } from 'electron';
-import { mocked } from 'ts-jest/utils';
 import { bridgeCreator } from '@electron/ipc/bridgeCreator';
 import { exposeMinimalBridgeApiToClient } from './preload';
 
@@ -8,7 +7,7 @@ jest.mock('@electron/ipc/bridgeCreator', () => ({
     return { foo: '' };
   },
 }));
-const contextBridge = mocked(_contextBridge);
+const contextBridge = jest.mocked(_contextBridge);
 
 jest.mock('electron');
 

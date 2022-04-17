@@ -50,9 +50,7 @@ function Child({ service }: { service: PomodoroService }): JSX.Element {
         <button
           type="button"
           onClick={() => {
-            service.send(
-              pomodoroModel.events.CONFIG_LOADED(emptyConfig.timers, emptyConfig.autoStart)
-            );
+            service.send(pomodoroModel.events.CONFIG_LOADED(emptyConfig));
           }}
         >
           load config

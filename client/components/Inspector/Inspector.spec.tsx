@@ -2,14 +2,13 @@ import { nullActor } from '@client/machines/utils';
 import { screen, renderNoProviders } from '@test/rtl';
 import { inspect as _inspect } from '@xstate/inspect';
 import React, { useState } from 'react';
-import { mocked } from 'ts-jest/utils';
 import { IInspector, Inspector } from './Inspector';
 
 jest.mock('@xstate/inspect', () => ({
   inspect: jest.fn(),
 }));
 
-const inspect = mocked(_inspect);
+const inspect = jest.mocked(_inspect);
 
 describe('Inspector', () => {
   const renderW = async (props?: IInspector) =>

@@ -174,6 +174,7 @@ module.exports = {
         ],
         // for simple test utils this is often overkill and makes test updates slow
         '@typescript-eslint/explicit-function-return-type': 'off',
+        '@typescript-eslint/no-unsafe-return': 'off',
       },
     },
     {

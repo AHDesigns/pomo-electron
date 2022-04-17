@@ -2,6 +2,40 @@ import { FakeIpcMain } from '@test/FakeIpcMain';
 import { FakeIpcRenderer } from '@test/FakeIpcRenderer';
 
 describe('fake ipc', () => {
+  it('should throw an error for unmocked methods', async () => {
+    jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const mockIpcMain = new FakeIpcMain();
+    const mockIpcRenderer = new FakeIpcRenderer(mockIpcMain);
+
+    const myFunc = () => {};
+    expect(() => mockIpcMain.handleOnce('foo', myFunc)).toThrowErrorMatchingInlineSnapshot(
+      `"method not yet mocked"`
+    );
+
+    // eslint-disable-next-line no-console
+    expect(console.warn).toHaveBeenLastCalledWith('foo', myFunc);
+
+    expect(() => mockIpcMain.removeHandler('bar')).toThrowErrorMatchingInlineSnapshot(
+      `"method not yet mocked"`
+    );
+
+    // eslint-disable-next-line no-console
+    expect(console.warn).toHaveBeenLastCalledWith('bar', undefined);
+
+    expect(() => mockIpcRenderer.postMessage('', null)).toThrowErrorMatchingInlineSnapshot(
+      `"method not yet mocked"`
+    );
+    expect(() => mockIpcRenderer.sendSync('')).toThrowErrorMatchingInlineSnapshot(
+      `"method not yet mocked"`
+    );
+    expect(() => mockIpcRenderer.sendTo(0, '')).toThrowErrorMatchingInlineSnapshot(
+      `"method not yet mocked"`
+    );
+    expect(() => mockIpcRenderer.sendToHost('')).toThrowErrorMatchingInlineSnapshot(
+      `"method not yet mocked"`
+    );
+  });
+
   it('should send and receive messages from Renderer to Main', () => {
     const mockIpcMain = new FakeIpcMain();
     const mockIpcRenderer = new FakeIpcRenderer(mockIpcMain);
@@ -25,12 +59,18 @@ describe('fake ipc', () => {
 
     mockIpcMain.handle('foo', async (_, msg) => Promise.resolve(`${msg as string} sandwich`));
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const result: string = await mockIpcRenderer.invoke('foo', 'bacon');
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const result2: string = await mockIpcRenderer.invoke('foo', 'cheese');
+    expect(await mockIpcRenderer.invoke('foo', 'bacon')).toBe('bacon sandwich');
+    expect(await mockIpcRenderer.invoke('foo', 'cheese')).toBe('cheese sandwich');
+  });
 
-    expect(result).toBe('bacon sandwich');
-    expect(result2).toBe('cheese sandwich');
+  it('should invoke and handle errors from Renderer to Main', async () => {
+    const mockIpcMain = new FakeIpcMain();
+    const mockIpcRenderer = new FakeIpcRenderer(mockIpcMain);
+
+    mockIpcMain.handle('foo', async () => Promise.reject(new Error('oh no!')));
+
+    expect(mockIpcRenderer.invoke('foo', 'bacon')).rejects.toThrowErrorMatchingInlineSnapshot(
+      `"oh no!"`
+    );
   });
 });

@@ -80,14 +80,3 @@ export const useTimer = (): TimerActorRef | null => {
 
   return timer;
 };
-
-export function createFakeHooks(): TimerHooks {
-  return {
-    onTickHook: () => {},
-    onStartHook: () => {},
-    onPauseHook: () => {},
-    onPlayHook: () => {},
-    onStopHook: () => {},
-    onCompleteHook: () => {},
-  };
-}

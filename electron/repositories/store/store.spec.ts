@@ -41,6 +41,38 @@ describe('StoreRepository', () => {
     });
   });
 
+  describe('when created init', () => {
+    it('should log useful info', () => {
+      const infoSpy = jest.fn();
+      const debugSpy = jest.fn();
+
+      storeRepository({
+        ...defaultStoreOptions,
+        logger: createFakeLogger({
+          info: infoSpy,
+          debug: debugSpy,
+        }),
+      });
+
+      expect(infoSpy).toHaveBeenLastCalledWith(
+        expect.stringMatching(/setting up Store Repo: name "test" cwd "[\S]+\/temp"$/)
+      );
+      expect(debugSpy).toHaveBeenCalledWith(`${storeFilePath}/test.json`);
+
+      storeRepository({
+        storeConfig: {
+          ...defaultStoreOptions.storeConfig,
+          cwd: undefined,
+        },
+        logger: createFakeLogger({
+          info: infoSpy,
+          debug: debugSpy,
+        }),
+      });
+      expect(infoSpy).toHaveBeenLastCalledWith('setting up Store Repo: name "test"');
+    });
+  });
+
   describe('#read', () => {
     it('should return the store contents', async () => {
       const store = storeRepository(defaultStoreOptions);

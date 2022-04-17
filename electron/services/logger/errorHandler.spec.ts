@@ -1,12 +1,11 @@
 import log from 'electron-log';
 import * as electron from 'electron';
-import { mocked } from 'ts-jest/utils';
 import { createLogger } from './createLogger';
 import { errorHandler } from './errorHandler';
 
 jest.mock('electron-log');
 
-const { app, dialog } = mocked(electron, true);
+const { app, dialog } = jest.mocked(electron, true);
 
 describe('errorHandler', () => {
   const error = new Error('poop');

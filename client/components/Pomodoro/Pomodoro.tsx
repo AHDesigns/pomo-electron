@@ -1,15 +1,14 @@
 import React from 'react';
 import { usePomodoro, useTimer } from '@client/hooks';
-import { useActor } from '@xstate/react';
 import { Timer } from '@client/components';
-import { StateValue } from 'xstate';
+import { TimerType } from '@shared/types';
 
 export function Pomodoro(): JSX.Element | null {
   const [state] = usePomodoro();
   const timerRef = useTimer();
 
   const { pomo, long } = state.context.completed;
-  const value = getValue(state.value);
+  const value = getValue();
   const duration = state.context.timers[value];
 
   const title = getTitle(value);
@@ -23,9 +22,20 @@ export function Pomodoro(): JSX.Element | null {
       </div>
     </>
   ) : null;
+
+  function getValue(): TimerType {
+    switch (true) {
+      case state.matches('long'):
+        return 'long';
+      case state.matches('short'):
+        return 'short';
+      default:
+        return 'pomo';
+    }
+  }
 }
 
-function getTitle(state: 'long' | 'pomo' | 'short'): string {
+function getTitle(state: TimerType): string {
   switch (state) {
     case 'pomo':
       return 'Pomodoro';
@@ -35,11 +45,4 @@ function getTitle(state: 'long' | 'pomo' | 'short'): string {
     default:
       return 'Long Break';
   }
-}
-
-function getValue(value: StateValue): 'long' | 'pomo' | 'short' {
-  if (value === 'pomo' || value === 'short' || value === 'long') {
-    return value;
-  }
-  throw new Error(`state.value is not expected timer state: got ${value.toString()}`);
 }

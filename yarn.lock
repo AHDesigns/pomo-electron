@@ -1735,7 +1735,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@emotion/is-prop-valid@npm:0.8.8, @emotion/is-prop-valid@npm:^0.8.6, @emotion/is-prop-valid@npm:^0.8.8":
+"@emotion/is-prop-valid@npm:0.8.8, @emotion/is-prop-valid@npm:^0.8.6":
   version: 0.8.8
   resolution: "@emotion/is-prop-valid@npm:0.8.8"
   dependencies:
@@ -1744,10 +1744,26 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@emotion/is-prop-valid@npm:^1.1.0":
+  version: 1.1.2
+  resolution: "@emotion/is-prop-valid@npm:1.1.2"
+  dependencies:
+    "@emotion/memoize": ^0.7.4
+  checksum: 58b1f2d429a589f8f5bc2c33a8732cbb7bbcb17131a103511ef9a94ac754d7eeb53d627f947da480cd977f9d419fd92e244991680292f3287204159652745707
+  languageName: node
+  linkType: hard
+
 "@emotion/memoize@npm:0.7.4":
   version: 0.7.4
   resolution: "@emotion/memoize@npm:0.7.4"
   checksum: 4e3920d4ec95995657a37beb43d3f4b7d89fed6caa2b173a4c04d10482d089d5c3ea50bbc96618d918b020f26ed6e9c4026bbd45433566576c1f7b056c3271dc
+  languageName: node
+  linkType: hard
+
+"@emotion/memoize@npm:^0.7.4":
+  version: 0.7.5
+  resolution: "@emotion/memoize@npm:0.7.5"
+  checksum: 83da8d4a7649a92c72f960817692bc6be13cc13e107b9f7e878d63766525ed4402881bfeb3cda61145c050281e7e260f114a0a2870515527346f2ef896b915b3
   languageName: node
   linkType: hard
 
@@ -4198,7 +4214,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/styled-components@npm:^5.1.0":
+"@types/styled-components@npm:^5.1.25":
   version: 5.1.25
   resolution: "@types/styled-components@npm:5.1.25"
   dependencies:
@@ -5738,7 +5754,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-styled-components@npm:>= 1":
+"babel-plugin-styled-components@npm:>= 1.12.0":
   version: 2.0.7
   resolution: "babel-plugin-styled-components@npm:2.0.7"
   dependencies:
@@ -13587,6 +13603,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"mockdate@npm:^3.0.5":
+  version: 3.0.5
+  resolution: "mockdate@npm:3.0.5"
+  checksum: 72b66786d9e072379693f80bf9fb82eb5153c9741030a4294184e3ccaf952d0713fae8966f77780580cf902f8ec7ccc95577b0ad47980d255e2ffb71fc7ca49c
+  languageName: node
+  linkType: hard
+
 "move-concurrently@npm:^1.0.1":
   version: 1.0.1
   resolution: "move-concurrently@npm:1.0.1"
@@ -14890,7 +14913,7 @@ __metadata:
     "@types/lodash.merge": 4.6.6
     "@types/react": 17.0.2
     "@types/react-dom": 17.0.1
-    "@types/styled-components": ^5.1.0
+    "@types/styled-components": ^5.1.25
     "@typescript-eslint/eslint-plugin": 5.12.0
     "@typescript-eslint/parser": 5.12.0
     "@xstate/cli": 0.1.5
@@ -14925,21 +14948,22 @@ __metadata:
     jest-diff: 26.6.2
     lodash.merge: 4.6.2
     menubar: 9.1.1
+    mockdate: ^3.0.5
     npm-run-all: 4.1.5
     playwright: ^1.20.2
     prettier: ^2.6.2
     react: 16.14.0
     react-dom: 16.14.0
     react-is: ^18.0.0
-    styled-components: 5.2.1
+    styled-components: ^5.3.5
     ts-jest: ^27.1.4
-    typescript: 4.5.5
+    typescript: ^4.6.3
     wait-on: 5.2.1
     webpack: 4.46.0
     webpack-cli: 3.3.12
     webpack-dev-server: 3.11.2
     ws: 8.5.0
-    xstate: 4.30.1
+    xstate: ^4.31.0
   languageName: unknown
   linkType: soft
 
@@ -17424,16 +17448,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"styled-components@npm:5.2.1":
-  version: 5.2.1
-  resolution: "styled-components@npm:5.2.1"
+"styled-components@npm:^5.3.5":
+  version: 5.3.5
+  resolution: "styled-components@npm:5.3.5"
   dependencies:
     "@babel/helper-module-imports": ^7.0.0
     "@babel/traverse": ^7.4.5
-    "@emotion/is-prop-valid": ^0.8.8
+    "@emotion/is-prop-valid": ^1.1.0
     "@emotion/stylis": ^0.8.4
     "@emotion/unitless": ^0.7.4
-    babel-plugin-styled-components: ">= 1"
+    babel-plugin-styled-components: ">= 1.12.0"
     css-to-react-native: ^3.0.0
     hoist-non-react-statics: ^3.0.0
     shallowequal: ^1.1.0
@@ -17442,7 +17466,7 @@ __metadata:
     react: ">= 16.8.0"
     react-dom: ">= 16.8.0"
     react-is: ">= 16.8.0"
-  checksum: e1fa699bad203e5acde6a62c7a9d511629de5b066345799c458415434a716b93253ddbba3fbc197c16362ba8532a59f85024878d6cc2de67655e0438d6620e0f
+  checksum: 05a664dfe423c2906959a0f3f47f9b1ad630e493eb2e06deea0dc0906af33ba5ca17277b98948a6c9642e73894d6533391aebf45576489f5afe920c974e9f8eb
   languageName: node
   linkType: hard
 
@@ -18078,23 +18102,23 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:4.5.5":
-  version: 4.5.5
-  resolution: "typescript@npm:4.5.5"
+"typescript@npm:^4.6.3":
+  version: 4.6.3
+  resolution: "typescript@npm:4.6.3"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 506f4c919dc8aeaafa92068c997f1d213b9df4d9756d0fae1a1e7ab66b585ab3498050e236113a1c9e57ee08c21ec6814ca7a7f61378c058d79af50a4b1f5a5e
+  checksum: 255bb26c8cb846ca689dd1c3a56587af4f69055907aa2c154796ea28ee0dea871535b1c78f85a6212c77f2657843a269c3a742d09d81495b97b914bf7920415b
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@4.5.5#~builtin<compat/typescript>":
-  version: 4.5.5
-  resolution: "typescript@patch:typescript@npm%3A4.5.5#~builtin<compat/typescript>::version=4.5.5&hash=bda367"
+"typescript@patch:typescript@^4.6.3#~builtin<compat/typescript>":
+  version: 4.6.3
+  resolution: "typescript@patch:typescript@npm%3A4.6.3#~builtin<compat/typescript>::version=4.6.3&hash=bda367"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
-  checksum: 858c61fa63f7274ca4aaaffeced854d550bf416cff6e558c4884041b3311fb662f476f167cf5c9f8680c607239797e26a2ee0bcc6467fbc05bfcb218e1c6c671
+  checksum: 6bf45caf847062420592e711bc9c28bf5f9a9a7fa8245343b81493e4ededae33f1774009d1234d911422d1646a2c839f44e1a23ecb111b40a60ac2ea4c1482a8
   languageName: node
   linkType: hard
 
@@ -19218,14 +19242,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"xstate@npm:4.30.1":
-  version: 4.30.1
-  resolution: "xstate@npm:4.30.1"
-  checksum: be4317419a4981c67321160b005f9fe962e9d8b6afd985635b6830e743e30bf70c8b3fa76b8aab4165682a7460a4edc88646077145723e497fb56732be065765
-  languageName: node
-  linkType: hard
-
-"xstate@npm:^4.29.0":
+"xstate@npm:^4.29.0, xstate@npm:^4.31.0":
   version: 4.31.0
   resolution: "xstate@npm:4.31.0"
   checksum: 985dc978acf4d79ade378c7d899e202ed86469f93cdfa0a0979facf24607a220d0817de0545684f50e2092a4868283c34560c17a032316b132dd5bcc37a4a7ed
