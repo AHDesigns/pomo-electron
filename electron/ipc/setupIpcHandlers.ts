@@ -22,6 +22,7 @@ export function setupIpcHandlers(ipcMain: IpcMain, loadedHandlers: IpcHandlers):
         });
         break;
       default:
+        /* istanbul ignore next */
         throw new Error('impossible missing method for ipc handler methods');
     }
   });

@@ -1,7 +1,8 @@
 import React, { ReactElement } from 'react';
 import { ThemeProvider } from 'styled-components';
 import { ErrorBoundary } from '@client/components';
-import { createFakeHooks, IMachinesProvider } from '@client/hooks/machines';
+import { IMachinesProvider } from '@client/hooks/machines';
+import { createFakeHooks } from '@client/machines';
 import { BridgeProvider, LoggerProvider, MachinesProvider } from '@client/hooks/providers';
 import { theme } from '@client/styles/theme';
 import { createFakeBridge } from '@electron/ipc/createFakeBridge';

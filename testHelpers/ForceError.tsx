@@ -1,9 +1,9 @@
 import { FC } from 'react';
 
 interface IForceError {
-  errorMessage?: string;
+  errorMessage: string;
 }
 
-export const ForceError: FC<IForceError> = ({ errorMessage = 'error message' }) => {
+export const ForceError: FC<IForceError> = ({ errorMessage }) => {
   throw new Error(errorMessage);
 };

@@ -9,3 +9,7 @@ export function tick(duration: number): void {
     jest.advanceTimersByTime(duration * 1000);
   });
 }
+
+export function ticks(duration: number): void {
+  jest.advanceTimersByTime(duration * 1000);
+}

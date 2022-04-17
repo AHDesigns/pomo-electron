@@ -10,12 +10,15 @@ export interface ILogger extends ElectronLog {
 
 export type IClientLogger = Pick<ILogger, 'error' | 'info' | 'warn'>;
 
+export type TimerType = keyof UserConfig['timers'];
+
 export const emptyConfig: UserConfig = {
   timers: {
     pomo: 10,
     short: 5,
     long: 15,
   },
+  longBreakEvery: 3,
   autoStart: {
     beforeShortBreak: true,
     beforeLongBreak: true,
@@ -30,6 +33,7 @@ export interface UserConfig {
     short: number;
     long: number;
   };
+  longBreakEvery: number;
   autoStart: {
     beforeShortBreak: boolean;
     beforeLongBreak: boolean;
@@ -99,11 +103,12 @@ export interface AnyObject {
 type CssSizeUnits = '%' | 'em' | 'px';
 export type CssSize = `${string}${CssSizeUnits}`;
 
-interface HookContext {
+export interface HookContext {
   timer: {
     minutes: number;
     seconds: number;
-    type: 'long' | 'pomo' | 'short';
+    type: TimerType;
+    autoStart: boolean;
   };
   config: UserConfig;
   bridge: IBridge;

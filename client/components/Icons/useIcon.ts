@@ -1,6 +1,5 @@
-import { useContext } from 'react';
 import { Palette } from '@client/styles/styled';
-import { ThemeContext } from 'styled-components';
+import { useTheme } from 'styled-components';
 import { CssSize } from '@shared/types';
 
 export type SvgSize =
@@ -14,7 +13,7 @@ interface IconProps {
 }
 
 export function useIcon(props: SvgSize): IconProps {
-  const themeContext = useContext(ThemeContext);
+  const themeContext = useTheme();
   const { width, height } = 'width' in props ? props : { width: props.size, height: props.size };
   return {
     width,

@@ -1,9 +1,8 @@
-import { mocked } from 'ts-jest/utils';
 import { autoUpdater as _autoUpdater } from 'electron-updater';
 import { createFakeLogger } from '../logger/createFakeLogger';
 import { checkForUpdates } from './updater';
 
-const autoUpdater = mocked(_autoUpdater, true);
+const autoUpdater = jest.mocked(_autoUpdater, true);
 
 describe('checkForUpdates', () => {
   const spy = jest.fn();

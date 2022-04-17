@@ -10,3 +10,6 @@ export { default as mainMachine } from './main/machine';
 export type { IMainMachine, MainService } from './main/machine';
 
 export * from './constants';
+export * from './createFakeHooks';
+
+export { getActor } from './utils';

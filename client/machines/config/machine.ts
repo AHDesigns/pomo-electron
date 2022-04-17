@@ -1,4 +1,3 @@
-import { merge } from '@shared/merge';
 import { DeepPartial, emptyConfig, IBridge, UserConfig } from '@shared/types';
 import { ActorRefFrom, ContextFrom, EventFrom, InterpreterFrom, sendParent, assign } from 'xstate';
 import { createModel } from 'xstate/lib/model';
@@ -16,9 +15,13 @@ export type ConfitEvents = EventFrom<typeof configModel>;
 
 export interface IConfigMachine {
   bridge: IBridge;
+  /**
+   * Inject a config as a testing mechanism
+   */
+  configOverride?: UserConfig;
 }
 
-export default function configMachine({ bridge }: IConfigMachine) {
+export default function configMachine({ bridge, configOverride }: IConfigMachine) {
   return configModel.createMachine(
     {
       id: 'config',
@@ -92,6 +95,10 @@ export default function configMachine({ bridge }: IConfigMachine) {
     {
       services: {
         loadConfig: async () => {
+          if (configOverride) {
+            return configOverride;
+          }
+
           const r = await bridge.storeRead();
           return r.match({
             Ok: (config) => config,

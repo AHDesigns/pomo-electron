@@ -1,17 +1,21 @@
-import { IBridge, TimerHooks } from '@shared/types';
+import { IBridge, TimerHooks, UserConfig } from '@shared/types';
 import { assign, createMachine, forwardTo, InterpreterFrom } from 'xstate';
 import configMachine from '../config/machine';
 import { actorIds } from '../constants';
-import pomodoroMachine, { IPomodoroMachine } from '../pomodoro/machine';
+import pomodoroMachineFactory, { IPomodoroMachine } from '../pomodoro/machine';
 import mainModel, { MainContext, MainEvents } from './model';
 
 export interface IMainMachine {
   pomodoro: IPomodoroMachine;
   bridge: IBridge;
   actions: TimerHooks;
+  /**
+   * Inject a config as a testing mechanism
+   */
+  configOverride?: UserConfig;
 }
 
-const mainMachineFactory = ({ pomodoro, bridge, actions }: IMainMachine) =>
+const mainMachineFactory = ({ pomodoro, bridge, actions, configOverride }: IMainMachine) =>
   createMachine(
     {
       id: 'main',
@@ -36,8 +40,8 @@ const mainMachineFactory = ({ pomodoro, bridge, actions }: IMainMachine) =>
       states: {
         active: {
           invoke: [
-            { id: actorIds.POMODORO, src: pomodoroMachine(pomodoro) },
-            { id: actorIds.CONFIG, src: configMachine({ bridge }) },
+            { id: actorIds.POMODORO, src: pomodoroMachineFactory(pomodoro) },
+            { id: actorIds.CONFIG, src: configMachine({ bridge, configOverride }) },
           ],
         },
       },

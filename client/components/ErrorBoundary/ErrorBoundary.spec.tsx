@@ -1,5 +1,4 @@
 import React from 'react';
-import { mocked } from 'ts-jest/utils';
 import { render, screen } from '@testing-library/react';
 import { ForceError } from '@test/ForceError';
 import { LoggerProvider, BridgeProvider } from '@client/hooks/providers';
@@ -47,7 +46,7 @@ describe('Error Boundary', () => {
     });
 
     afterAll(() => {
-      mocked(console).error.mockRestore();
+      jest.mocked(console).error.mockRestore();
     });
 
     it('renders the error component and logs the error', () => {

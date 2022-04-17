@@ -1,12 +1,11 @@
 import _installExtension, { REACT_DEVELOPER_TOOLS } from 'electron-devtools-installer';
-import { mocked } from 'ts-jest/utils';
 import * as _constants from '@shared/constants';
 import { setUpDevtools } from './devTools';
 import { createFakeLogger } from '../logger/createFakeLogger';
 
 jest.mock('@shared/constants');
-const constants = mocked(_constants, true);
-const installExtension = mocked(_installExtension);
+const constants = jest.mocked(_constants, true);
+const installExtension = jest.mocked(_installExtension);
 
 describe('Devtools service', () => {
   const spyInfo = jest.fn();
