@@ -1,8 +1,6 @@
 # Pomo 🍅
 
-Simple Pomodoro timer
-
-Also turning off all electron safety settings so use at own risk.
+Simple Pomodoro timer, with integrations such as Slack, to politely mute your notifications and let your colleagues know when you'll be back
 
 ## Usage
 
