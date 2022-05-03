@@ -72,17 +72,18 @@ yarn storybook
 
 Some other useful commands
 
-| command           | description                                                                                                                                                                                                |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `yarn clean`      | [**aggresive**] remove all files not recognised by git, then install all dependencies                                                                                                                      |
-| `yarn lint`       | use eslint to check source code in the repo for errors                                                                                                                                                     |
-| `yarn test`       | use [ts-jest](https://kulshekhar.github.io/ts-jest/) to run the project's unit tests. This will also compile via [typescript](https://www.typescriptlang.org/) to check for type errors as part of ts-jest |
-| `yarn visual`     | use backstop.js to run visual regression tests against a running storybook (`yarn storybook`). **Does not yet run on CI, so please run locally before opening Pull Requests.**                             |
-| `yarn e2e`        | run spectron tests located in the e2e folder. **run `yarn build` before running**                                                                                                                          |
-| `yarn build`      | build the project for production and e2e testing (no the same as the release script)                                                                                                                       |
-| `yarn checks`     | runs the full checklist of lint, test, build and e2e                                                                                                                                                       |
-| `yarn docker-e2e` | runs the e2e tests via a Dockerfile in a headless state - this is how CI will run these tests                                                                                                              |
-| `yarn release`    | see [releasing wiki](https://github.com/AHDesigns/pancake-electron/wiki/Releasing) for information                                                                                                         |
+| command            | description                                                                                                                                                                                                |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `yarn clean`       | [**aggressive**] remove all files not recognised by git, then install all dependencies                                                                                                                     |
+| `yarn dev`         | run the project locally in watch mode, both in browser and electron                                                                                                                                        |
+| `yarn lint`        | use eslint to check source code in the repo for errors                                                                                                                                                     |
+| `yarn test`        | use [ts-jest](https://kulshekhar.github.io/ts-jest/) to run the project's unit tests. This will also compile via [typescript](https://www.typescriptlang.org/) to check for type errors as part of ts-jest |
+| `yarn e2e`         | run playwright tests located in the e2e folder. **run `yarn build` before running**                                                                                                                        |
+| `yarn e2e:approve` | update visual regression tests with latest snapshots                                                                                                                                                       |
+| `yarn build`       | build the project for production and e2e testing (no the same as the release script)                                                                                                                       |
+| `yarn checks`      | runs the full checklist of lint, test, build and e2e                                                                                                                                                       |
+| `yarn docker-e2e`  | runs the e2e tests via a Dockerfile in a headless state - this is how CI will run these tests                                                                                                              |
+| `yarn release`     | see [releasing wiki](https://github.com/AHDesigns/pancake-electron/wiki/Releasing) for information                                                                                                         |
 
 ## License
 
