@@ -1,6 +1,7 @@
 # Pomo 🍅
 
-Simple Pomodoro timer, with integrations such as Slack, to politely mute your notifications and let your colleagues know when you'll be back
+Simple Pomodoro timer, with integrations such as Slack, to politely mute your notifications and let
+your colleagues know when you'll be back
 
 ## Usage
 
@@ -42,12 +43,10 @@ Pomo is an [electron](https://www.electronjs.org/) app built using:
 
 - [Typescript](https://www.typescriptlang.org/) throughout (with very strict settings)
 - [React](https://reactjs.org/) for the GUI
+- [Xstate](https://xstate.js.org/docs/) for state management
+- [Playwright](https://playwright.dev/) for electron e2e testing, and visual regression tests
 - [Storybook](https://storybook.js.org/docs/react/get-started/introduction) for building components
   and User documentation
-- [Backstop.js](https://garris.github.io/BackstopJS/) for visual regression tests
-- [Spectron](https://www.electronjs.org/spectron) for e2e tests running against the production
-  electron app (it's a wrapper around [webdriver.io](https://v6.webdriver.io/docs/api.html) which in
-  turn wraps selenium)
 - Github actions for CI (not yet supporting publishing)
 
 Install a node manager of your choice (volta is supported and recommended)

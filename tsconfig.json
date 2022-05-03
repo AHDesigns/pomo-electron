@@ -25,6 +25,7 @@
   "include": [
     "./.eslintrc.js",
     "./jest.config.js",
+    "./jest.prettier.js",
     "./playwright.config.ts",
     "tooling",
     "client",
