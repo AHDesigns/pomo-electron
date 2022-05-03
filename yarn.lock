@@ -7351,6 +7351,19 @@ __metadata:
   languageName: node
   linkType: hard
 
+"create-jest-runner@npm:^0.8.0":
+  version: 0.8.0
+  resolution: "create-jest-runner@npm:0.8.0"
+  dependencies:
+    chalk: ^4.1.0
+    jest-worker: ^27.0.6
+    throat: ^6.0.1
+  bin:
+    create-jest-runner: generator/index.js
+  checksum: 5390bfc55d65c1fc2e43ec988edaf13ba6460f331bce972962bd253fe07e7e1a97484ce60efcfeee237807e7ecdc43a171a4bf89ad6ff91c862d8a0021874211
+  languageName: node
+  linkType: hard
+
 "cross-env@npm:7.0.3":
   version: 7.0.3
   resolution: "cross-env@npm:7.0.3"
@@ -8410,6 +8423,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"emphasize@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "emphasize@npm:5.0.0"
+  dependencies:
+    chalk: ^4.0.0
+    highlight.js: ~11.0.0
+    lowlight: ~2.0.0
+  checksum: f1a3e7c2ed777119d4daaa08bc4c125a7cc933f2df085ab1ede19c6fb1b41e38c228068298328604c719689fd5793171b67c4b749a5894f242e5d4d27fac61cb
+  languageName: node
+  linkType: hard
+
 "encodeurl@npm:^1.0.2, encodeurl@npm:~1.0.2":
   version: 1.0.2
   resolution: "encodeurl@npm:1.0.2"
@@ -9373,6 +9397,15 @@ __metadata:
   dependencies:
     format: ^0.2.0
   checksum: 5ac610d8b09424e0f2fa8cf913064372f2ee7140a203a79957f73ed557c0e79b1a3d096064d7f40bde8132a69204c1fe25ec23634c05c6da2da2039cff26c4e7
+  languageName: node
+  linkType: hard
+
+"fault@npm:^2.0.0":
+  version: 2.0.1
+  resolution: "fault@npm:2.0.1"
+  dependencies:
+    format: ^0.2.0
+  checksum: c9b30f47d95769177130a9409976a899ed31eb598450fbad5b0d39f2f5f56d5f4a9ff9257e0bee8407cb0fc3ce37165657888c6aa6d78472e403893104329b72
   languageName: node
   linkType: hard
 
@@ -10534,6 +10567,13 @@ __metadata:
   version: 10.7.3
   resolution: "highlight.js@npm:10.7.3"
   checksum: defeafcd546b535d710d8efb8e650af9e3b369ef53e28c3dc7893eacfe263200bba4c5fcf43524ae66d5c0c296b1af0870523ceae3e3104d24b7abf6374a4fea
+  languageName: node
+  linkType: hard
+
+"highlight.js@npm:~11.0.0":
+  version: 11.0.1
+  resolution: "highlight.js@npm:11.0.1"
+  checksum: b126a84654114441d0a29ed4791a034d3b7572c9058f21fee49ac94c2f6bd3431b738b455afa34867bf226e9c7691c752a7cde83adce6f1fe93bced396b1c249
   languageName: node
   linkType: hard
 
@@ -11919,7 +11959,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-diff@npm:^27.2.5, jest-diff@npm:^27.5.1":
+"jest-diff@npm:^27.0.0, jest-diff@npm:^27.2.5, jest-diff@npm:^27.5.1":
   version: 27.5.1
   resolution: "jest-diff@npm:27.5.1"
   dependencies:
@@ -12186,6 +12226,22 @@ __metadata:
   languageName: node
   linkType: hard
 
+"jest-runner-prettier@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "jest-runner-prettier@npm:1.0.0"
+  dependencies:
+    create-jest-runner: ^0.8.0
+    emphasize: ^5.0.0
+    jest-diff: ^27.0.0
+    jest-runner: ^27.5.1
+    p-limit: ^4.0.0
+  peerDependencies:
+    jest: ">= 27.0.0"
+    prettier: ">= 1.8"
+  checksum: c2243b05495ad5694dd69f3bc5625b7335ba71fb1a39c9a70e1a7c5b127d9fb8eb7a64a040f0a2750e8ca55737727f5464409dd58810ea5333444c8b0cfce28b
+  languageName: node
+  linkType: hard
+
 "jest-runner@npm:^27.5.1":
   version: 27.5.1
   resolution: "jest-runner@npm:27.5.1"
@@ -12363,7 +12419,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-worker@npm:^27.5.1":
+"jest-worker@npm:^27.0.6, jest-worker@npm:^27.5.1":
   version: 27.5.1
   resolution: "jest-worker@npm:27.5.1"
   dependencies:
@@ -13015,6 +13071,17 @@ __metadata:
     fault: ^1.0.0
     highlight.js: ~10.7.0
   checksum: 14a1815d6bae202ddee313fc60f06d46e5235c02fa483a77950b401d85b4c1e12290145ccd17a716b07f9328bd5864aa2d402b6a819ff3be7c833d9748ff8ba7
+  languageName: node
+  linkType: hard
+
+"lowlight@npm:~2.0.0":
+  version: 2.0.1
+  resolution: "lowlight@npm:2.0.1"
+  dependencies:
+    "@types/hast": ^2.0.0
+    fault: ^2.0.0
+    highlight.js: ~11.0.0
+  checksum: 93d9c65bace2a4c8c0a4ac383209e492d0c76c3faff103db605fc49fc16842cc7d1cb4ddd725ac29018ec22513c9b4e18e582d6ed8e07cc7ec06c2111d2cd2a4
   languageName: node
   linkType: hard
 
@@ -14343,6 +14410,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"p-limit@npm:^4.0.0":
+  version: 4.0.0
+  resolution: "p-limit@npm:4.0.0"
+  dependencies:
+    yocto-queue: ^1.0.0
+  checksum: 01d9d70695187788f984226e16c903475ec6a947ee7b21948d6f597bed788e3112cc7ec2e171c1d37125057a5f45f3da21d8653e04a3a793589e12e9e80e756b
+  languageName: node
+  linkType: hard
+
 "p-locate@npm:^2.0.0":
   version: 2.0.0
   resolution: "p-locate@npm:2.0.0"
@@ -14946,6 +15022,7 @@ __metadata:
     html-webpack-plugin: 4.5.2
     jest: ^27.5.1
     jest-diff: 26.6.2
+    jest-runner-prettier: ^1.0.0
     lodash.merge: 4.6.2
     menubar: 9.1.1
     mockdate: ^3.0.5
@@ -19393,6 +19470,13 @@ __metadata:
   version: 0.1.0
   resolution: "yocto-queue@npm:0.1.0"
   checksum: f77b3d8d00310def622123df93d4ee654fc6a0096182af8bd60679ddcdfb3474c56c6c7190817c84a2785648cdee9d721c0154eb45698c62176c322fb46fc700
+  languageName: node
+  linkType: hard
+
+"yocto-queue@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "yocto-queue@npm:1.0.0"
+  checksum: 2cac84540f65c64ccc1683c267edce396b26b1e931aa429660aefac8fbe0188167b7aee815a3c22fa59a28a58d898d1a2b1825048f834d8d629f4c2a5d443801
   languageName: node
   linkType: hard
 
