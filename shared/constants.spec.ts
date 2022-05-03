@@ -108,9 +108,7 @@ describe('constants', () => {
     it('returns the asset location', async () => {
       jest.resetModules();
       const { asset } = await import('./constants');
-      expect(asset('foo')).toMatchInlineSnapshot(
-        `"/Users/codethread/dev/pomo-electron/shared/foo"`
-      );
+      expect(asset('foo')).toBe(`${process.cwd()}/shared/foo`);
     });
   });
 });

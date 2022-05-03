@@ -55,7 +55,7 @@ describe('StoreRepository', () => {
       });
 
       expect(infoSpy).toHaveBeenLastCalledWith(
-        expect.stringMatching(/setting up Store Repo: name "test" cwd "[\S]+\/temp"$/)
+        `setting up Store Repo: name "test" cwd "${storeFilePath}"`
       );
       expect(debugSpy).toHaveBeenCalledWith(`${storeFilePath}/test.json`);
 
