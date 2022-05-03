@@ -97,7 +97,7 @@ module.exports = {
       },
     },
     {
-      files: ['tooling/**', '.eslintrc.js', 'jest.config.js'],
+      files: ['tooling/**', '.eslintrc.js', 'jest.config.js', 'jest.prettier.js'],
       env: {
         node: true,
       },
