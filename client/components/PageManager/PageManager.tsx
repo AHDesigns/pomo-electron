@@ -12,7 +12,8 @@ const Header = styled.div`
 export type Pages = 'Pomodoro' | 'Settings';
 
 export function PageManager(): JSX.Element {
-  const [page, navigatePageTo] = useState<Pages>('Pomodoro');
+  // const [page, navigatePageTo] = useState<Pages>('Pomodoro');
+  const [page, navigatePageTo] = useState<Pages>('Settings');
   const theme = useTheme();
 
   return (

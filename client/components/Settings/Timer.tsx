@@ -1,5 +1,6 @@
 import React from 'react';
 import { useConfig } from '@client/hooks';
+import { Button } from '@client/components';
 import { useTheme } from 'styled-components';
 import { Setting } from './Setting';
 import { Form, InputText, Label } from './Form';
@@ -21,6 +22,8 @@ export function Timer(): JSX.Element | null {
         <InputText
           id="pomo"
           type="number"
+          min={1}
+          max={120}
           value={timers.pomo}
           onChange={(e) => {
             storeUpdate({
@@ -63,6 +66,9 @@ export function Timer(): JSX.Element | null {
             });
           }}
         />
+      <Button disabled={false} type="submit" style={{ gridColumn: 'middle-r / right' }}>
+        Submit
+      </Button>
       </Form>
     </Setting>
   );

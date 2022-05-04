@@ -7,7 +7,8 @@ import { createMockFn } from '@test/createMockFn';
 import { createMachine, interpret } from 'xstate';
 import { waitFor } from 'xstate/lib/waitFor';
 import { actorIds } from '../constants';
-import { MainEvents } from '../main/model';
+import mainModel, { MainEvents } from '../main/model';
+import { parentMachine } from '../testHelpers/machines';
 import { getActor } from '../utils';
 import configMachineFactory, { configModel } from './machine';
 
@@ -27,42 +28,28 @@ async function runTest(overrides?: TestOverrides) {
   const spy = jest.fn();
 
   const { bridge, config, dontWait } = overrides ?? {};
-  const parent = createMachine(
-    {
-      id: 'parent',
-      tsTypes: {} as import('./machine.spec.typegen').Typegen0,
-      schema: {
-        events: {} as MainEvents,
-      },
-      initial: 'running',
-      states: {
-        running: {
-          on: {
-            CONFIG_LOADED: { actions: 'spy' },
-          },
-          invoke: {
-            id: CONFIG,
-            src: configMachineFactory({
-              bridge: createFakeBridge(bridge),
-              configOverride: config && merge(emptyConfig, config),
-            }),
-          },
-        },
-      },
+
+  const parent = parentMachine({
+    id: CONFIG,
+    childMachine: configMachineFactory,
+    parentEvents: Object.keys(mainModel.events),
+    args: {
+      bridge: createFakeBridge(bridge),
+      configOverride: config && merge(emptyConfig, config),
     },
-    {
-      actions: {
-        spy: (_, e) => spy(e),
-      },
-    }
+  });
+
+  const service = interpret(
+    parent.withConfig({
+      actions: { spy: (_, e) => spy(e) },
+    })
   );
 
-  const service = interpret(parent);
   service.start();
   const configMachine = getActor(service, CONFIG);
 
   if (!dontWait) {
-    await waitFor(configMachine, ({ value }) => value === 'loaded', { timeout: 100 });
+    await waitFor(configMachine, (m) => !m.hasTag('loading'), { timeout: 100 });
   }
 
   return {
@@ -153,10 +140,10 @@ describe('config machine', () => {
 
       configMachine.send(UPDATE(update));
 
-      const { value } = configMachine.getSnapshot() ?? {};
-      expect(value).toBe('updating');
+      const c = configMachine.getSnapshot();
+      expect(c?.hasTag('updating')).toBe(true);
 
-      await waitFor(configMachine, (c) => c.value === 'loaded');
+      await waitFor(configMachine, (m) => m.hasTag('idle'));
 
       const { context } = configMachine.getSnapshot() ?? {};
       expect(context?.timers.pomo).toBe(222);
@@ -179,10 +166,10 @@ describe('config machine', () => {
 
       configMachine.send(RESET());
 
-      const { value } = configMachine.getSnapshot() ?? {};
-      expect(value).toBe('resetting');
+      const c = configMachine.getSnapshot();
+      expect(c?.hasTag('updating')).toBe(true);
 
-      await waitFor(configMachine, (c) => c.value === 'loaded');
+      await waitFor(configMachine, (m) => m.hasTag('idle'));
 
       const { context } = configMachine.getSnapshot() ?? {};
       expect(context?.timers.pomo).toBe(222);
