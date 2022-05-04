@@ -1,3 +1,4 @@
+import { UserConfig } from '@shared/types';
 import { ContextFrom, EventFrom } from 'xstate';
 import { createModel } from 'xstate/lib/model';
 
@@ -9,8 +10,10 @@ const timerSettingsModel = createModel(
   },
   {
     events: {
+      CONFIG_LOADED: (data: UserConfig) => ({ data }),
       UPDATE: (key: 'long' | 'pomo' | 'short', value: number) => ({ data: { key, value } }),
       CANCEL: () => ({}),
+      SAVE: () => ({}),
     },
   }
 );

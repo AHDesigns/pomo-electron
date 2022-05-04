@@ -10,7 +10,8 @@ import { actorIds } from '../constants';
 import mainModel, { MainEvents } from '../main/model';
 import { parentMachine } from '../testHelpers/machines';
 import { getActor } from '../utils';
-import configMachineFactory, { configModel } from './machine';
+import configMachineFactory from './machine';
+import { configModel } from './model';
 
 const { CONFIG } = actorIds;
 const { UPDATE, RESET } = configModel.events;

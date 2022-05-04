@@ -3,7 +3,7 @@ import { merge } from '@shared/merge';
 import { DeepPartial, emptyConfig, UserConfig } from '@shared/types';
 import { createMachine, interpret } from 'xstate';
 import { waitFor } from 'xstate/lib/waitFor';
-import configMachine, { configModel } from '../config/machine';
+import configMachineFactory from '../config/machine';
 import { actorIds } from '../constants';
 import mainModel from '../main/model';
 import { parentMachine } from '../testHelpers/machines';
@@ -12,7 +12,7 @@ import { ITimerSettings, timerSettingsFactory } from './machine';
 import timerSettingsModel, { TimerSettingsContext } from './model';
 
 const { TIMER_SETTINGS, CONFIG } = actorIds;
-const { CANCEL, UPDATE } = timerSettingsModel.events;
+const { CANCEL, UPDATE, SAVE } = timerSettingsModel.events;
 
 const config: UserConfig = merge(emptyConfig, {
   timers: {
@@ -26,7 +26,7 @@ describe('timerSettings machine', () => {
   async function setupTest() {
     const parent = parentMachine({
       id: CONFIG,
-      childMachine: configMachine,
+      childMachine: configMachineFactory,
       parentEvents: Object.keys(mainModel.events),
       args: {
         bridge: createFakeBridge(),
@@ -36,12 +36,12 @@ describe('timerSettings machine', () => {
 
     const service = interpret(parent);
     service.start();
-    const configService = getActor(service, CONFIG);
-    await waitFor(configService, (m) => !m.hasTag('loading'), { timeout: 100 });
-    const timerSettingsMachine = getActor(configService, TIMER_SETTINGS);
+    const configMachine = getActor(service, CONFIG);
+    await waitFor(configMachine, (m) => !m.hasTag('loading'), { timeout: 100 });
+    const timerSettingsMachine = getActor(configMachine, TIMER_SETTINGS);
 
     return {
-      parent: service,
+      configMachine,
       timerSettingsMachine,
     };
   }
@@ -85,14 +85,23 @@ describe('timerSettings machine', () => {
       timerSettingsMachine.send(CANCEL());
 
       const c2 = timerSettingsMachine.getSnapshot();
-      expect(c?.can('CANCEL')).toBe(true);
+      expect(c2?.context.pomo).toBe(config.timers.pomo);
+      expect(c2?.hasTag('idle')).toBe(true);
     });
 
-    it.todo('should allow the user to submit the changes');
-  });
+    it('should allow the user to submit the changes and return to an idle state', async () => {
+      const { timerSettingsMachine, configMachine } = await setupTest();
 
-  describe('when the user submits changes', () => {
-    it.todo('should set the state to idle');
+      expect(configMachine.getSnapshot()?.context.timers.pomo).toBe(config.timers.pomo);
+
+      timerSettingsMachine.send(UPDATE('pomo', 77));
+      timerSettingsMachine.send(SAVE());
+
+      await waitFor(configMachine, (s) => s.hasTag('idle'));
+
+      expect(configMachine.getSnapshot()?.context.timers.pomo).toBe(77);
+      expect(timerSettingsMachine.getSnapshot()?.hasTag('idle')).toBe(true);
+    });
   });
 
   describe('when the user makes an invalid edit', () => {
