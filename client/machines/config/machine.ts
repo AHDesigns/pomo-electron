@@ -1,20 +1,19 @@
 import { DeepPartial, emptyConfig, IBridge, UserConfig } from '@shared/types';
-import { ActorRefFrom, ContextFrom, EventFrom, InterpreterFrom, sendParent, assign } from 'xstate';
-import { createModel } from 'xstate/lib/model';
+import {
+  ActorRefFrom,
+  ContextFrom,
+  EventFrom,
+  InterpreterFrom,
+  sendParent,
+  assign,
+  createMachine,
+} from 'xstate';
+import { respond } from 'xstate/lib/actions';
 import { actorIds } from '../constants';
 import mainModel from '../main/model';
+import { configModel, ConfigContext, ConfitEvents } from './model';
 import { timerSettingsFactory } from '../timerSettings/machine';
 import { TimerSettingsContext } from '../timerSettings/model';
-
-export const configModel = createModel(emptyConfig, {
-  events: {
-    RESET: () => ({}),
-    UPDATE: (data: DeepPartial<UserConfig>) => ({ data }),
-  },
-});
-
-export type ConfigContext = ContextFrom<typeof configModel>;
-export type ConfitEvents = EventFrom<typeof configModel>;
 
 export interface IConfigMachine {
   bridge: IBridge;
@@ -25,7 +24,7 @@ export interface IConfigMachine {
 }
 
 export default function configMachine({ bridge, configOverride }: IConfigMachine) {
-  return configModel.createMachine(
+  return createMachine(
     {
       id: 'config',
       tsTypes: {} as import('./machine.typegen').Typegen0,
@@ -69,10 +68,11 @@ export default function configMachine({ bridge, configOverride }: IConfigMachine
               states: {
                 idle: {
                   tags: ['idle'],
-                  entry: [sendParent((c) => mainModel.events.CONFIG_LOADED(c))],
+                  entry: 'broadcastConfig',
                   on: {
                     UPDATE: 'updating',
                     RESET: 'resetting',
+                    REQUEST_CONFIG: { actions: 'respondWithConfig' },
                   },
                 },
                 updating: {
@@ -147,6 +147,8 @@ export default function configMachine({ bridge, configOverride }: IConfigMachine
         },
       },
       actions: {
+        broadcastConfig: sendParent((c) => mainModel.events.CONFIG_LOADED(c)),
+        respondWithConfig: respond((c) => mainModel.events.CONFIG_LOADED(c)),
         storeConfig: assign((_, { data }) => data),
       },
     }

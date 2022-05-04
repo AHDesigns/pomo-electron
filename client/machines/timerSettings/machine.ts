@@ -1,4 +1,5 @@
-import { ActorRefFrom, assign, createMachine, InterpreterFrom } from 'xstate';
+import { ActorRefFrom, assign, createMachine, InterpreterFrom, send, sendParent } from 'xstate';
+import { configModel } from '../config/model';
 import { TimerSettingsContext, TimerSettingsEvents } from './model';
 
 export interface ITimerSettings {
@@ -25,15 +26,24 @@ export function timerSettingsFactory({ context }: ITimerSettings) {
         },
         editing: {
           on: {
-            CANCEL: { actions: 'reset', target: 'idle' },
+            CANCEL: 'resetting',
             UPDATE: { actions: 'updateSetting' },
+            SAVE: { actions: 'saveSettings', target: 'idle' },
           },
           tags: ['editing'],
+        },
+        resetting: {
+          entry: [sendParent(configModel.events.REQUEST_CONFIG())],
+          on: {
+            CONFIG_LOADED: { actions: 'storeConfig', target: 'idle' },
+          },
         },
       },
     },
     {
       actions: {
+        storeConfig: assign((_, e) => e.data.timers),
+        saveSettings: sendParent((c) => configModel.events.UPDATE({ timers: c })),
         updateSetting: assign((c, e) => ({
           ...c,
           [e.data.key]: e.data.value,
