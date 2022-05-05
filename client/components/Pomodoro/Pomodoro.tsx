@@ -2,6 +2,7 @@ import React from 'react';
 import { usePomodoro, useTimer } from '@client/hooks';
 import { Timer } from '@client/components';
 import { TimerType } from '@shared/types';
+import { assertUnreachable } from '@shared/asserts';
 
 export function Pomodoro(): JSX.Element | null {
   const [state] = usePomodoro();
@@ -42,7 +43,8 @@ function getTitle(state: TimerType): string {
     case 'short':
       return 'Short Break';
     case 'long':
-    default:
       return 'Long Break';
+    default:
+        return assertUnreachable(state);
   }
 }

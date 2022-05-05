@@ -4,7 +4,7 @@ import { respond } from 'xstate/lib/actions';
 import { actorIds } from '../constants';
 import mainModel from '../main/model';
 import { configModel, ConfigContext, ConfitEvents } from './model';
-import { timerSettingsMachine } from '../timerSettings/machine';
+import { createContext, timerSettingsMachine } from '../timerSettings/machine';
 
 export interface IConfigMachine {
   bridge: IBridge;
@@ -52,7 +52,12 @@ export default function configMachine({ bridge, configOverride }: IConfigMachine
               invoke: {
                 id: actorIds.TIMER_SETTINGS,
                 src: timerSettingsMachine,
-                data: ({ timers }) => timers,
+                data: ({ timers }) =>
+                  createContext({
+                    long: { value: timers.long },
+                    short: { value: timers.short },
+                    pomo: { value: timers.pomo },
+                  }),
               },
             },
             config: {
