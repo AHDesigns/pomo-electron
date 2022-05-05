@@ -2,7 +2,7 @@ export { default as pomodoroMachine } from './pomodoro/machine';
 export type { PomodoroService, IPomodoroMachine, PomodoroActorRef } from './pomodoro/machine';
 
 export { configModel } from './config/model';
-export type { ConfigActorRef } from './config/machine';
+export type { ConfigActorRef, ConfigService } from './config/machine';
 
 export type { TimerActorRef } from './timer/machine';
 

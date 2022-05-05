@@ -8,8 +8,7 @@ import { actorIds } from '../constants';
 import mainModel from '../main/model';
 import { parentMachine } from '../testHelpers/machines';
 import { getActor } from '../utils';
-import { ITimerSettings, timerSettingsFactory } from './machine';
-import timerSettingsModel, { TimerSettingsContext } from './model';
+import timerSettingsModel from './model';
 
 const { TIMER_SETTINGS, CONFIG } = actorIds;
 const { CANCEL, UPDATE, SAVE } = timerSettingsModel.events;

@@ -4,7 +4,7 @@ import { Providers, waitFor, act } from '@test/rtl';
 import { emptyConfig, UserConfig } from '@shared/types';
 import { ok } from '@shared/Result';
 import { ignoreWarnings } from '@test/ignore';
-import { useConfig } from './config';
+import { useConfig } from './machines';
 
 describe('useConfig', () => {
   ignoreWarnings(
