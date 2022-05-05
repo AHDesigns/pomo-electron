@@ -9,7 +9,10 @@ export type { TimerActorRef } from './timer/machine';
 export { default as mainMachine } from './main/machine';
 export type { IMainMachine, MainService } from './main/machine';
 
+export { timerSettingsModel } from './timerSettings/model';
+export type { TimerSettingsActorRef } from './timerSettings/machine';
+
 export * from './constants';
 export * from './createFakeHooks';
 
-export { getActor } from './utils';
+export { getActor, ActorError } from './utils';

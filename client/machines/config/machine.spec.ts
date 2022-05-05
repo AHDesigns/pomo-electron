@@ -1,15 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import { interpret } from 'xstate';
+import { waitFor } from 'xstate/lib/waitFor';
 import { createFakeBridge } from '@electron/ipc/createFakeBridge';
 import { merge } from '@shared/merge';
 import { err, ok } from '@shared/Result';
 import { DeepPartial, emptyConfig, IBridge, UserConfig } from '@shared/types';
 import { createMockFn } from '@test/createMockFn';
-import { createMachine, interpret } from 'xstate';
-import { waitFor } from 'xstate/lib/waitFor';
-import { actorIds } from '../constants';
-import mainModel, { MainEvents } from '../main/model';
-import { parentMachine } from '../testHelpers/machines';
-import { getActor } from '../utils';
+import { parentMachine } from '@client/machines/testHelpers/machines';
+import { getActor, actorIds } from '@client/machines';
+import mainModel from '../main/model';
 import configMachineFactory from './machine';
 import { configModel } from './model';
 
@@ -31,13 +30,12 @@ async function runTest(overrides?: TestOverrides) {
   const { bridge, config, dontWait } = overrides ?? {};
 
   const parent = parentMachine({
-    id: CONFIG,
-    childMachine: configMachineFactory,
     parentEvents: Object.keys(mainModel.events),
-    args: {
+    childId: CONFIG,
+    childMachine: configMachineFactory({
       bridge: createFakeBridge(bridge),
       configOverride: config && merge(emptyConfig, config),
-    },
+    }),
   });
 
   const service = interpret(

@@ -1,3 +1,3 @@
-export { BridgeProvider } from './bridge';
+export { BridgeProvider } from './useBridge';
 export { MachinesProvider } from './machines';
-export { LoggerProvider } from './logger';
+export { LoggerProvider } from './useLogger';

@@ -1,6 +1,6 @@
 import React, { createContext, useContext } from 'react';
 import { IClientLogger } from '@shared/types';
-import { useBridge } from './bridge';
+import { useBridge } from './useBridge';
 
 const loggerContext = createContext<IClientLogger | null>(null);
 

@@ -1,38 +1,28 @@
-import { createMachine } from 'xstate';
+import { AnyStateMachine, createMachine } from 'xstate';
 import { actorIds } from '../constants';
 
-interface Parent<Machine, MachineArgs> {
+interface Parent<A> {
   parentEvents: string[];
-  childMachine: Machine;
-  id: keyof typeof actorIds;
-  args: MachineArgs;
+  childMachine: A;
+  childId: keyof typeof actorIds;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function parentMachine<B, A extends (arg: B) => any>({
+export function parentMachine<A extends AnyStateMachine>({
   childMachine,
   parentEvents,
-  args,
-  id,
-}: Parent<A, B>) {
+  childId,
+}: Parent<A>) {
   return createMachine(
     {
       id: 'parent',
       initial: 'running',
       states: {
         running: {
-          on: Object.fromEntries(
-            parentEvents.map((e) => [
-              e,
-              {
-                actions: 'spy',
-              },
-            ])
-          ),
+          on: Object.fromEntries(parentEvents.map((e) => [e, { actions: 'spy' }])),
           invoke: {
-            id,
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-            src: childMachine(args),
+            id: childId,
+            src: childMachine,
           },
         },
       },
