@@ -3,7 +3,7 @@ import T from '@client/copy';
 import { useTimerSettings } from '@client/hooks';
 import { Button } from '@client/components';
 import { useTheme } from 'styled-components';
-import timerSettingsModel from '@client/machines/timerSettings/model';
+import { timerSettingsModel } from '@client/machines';
 import { Form, InputText, Label } from './Form';
 import { Setting } from './Setting';
 

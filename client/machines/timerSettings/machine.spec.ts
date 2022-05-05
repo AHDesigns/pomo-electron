@@ -8,7 +8,7 @@ import { actorIds } from '../constants';
 import mainModel from '../main/model';
 import { parentMachine } from '../testHelpers/machines';
 import { getActor } from '../utils';
-import timerSettingsModel from './model';
+import { timerSettingsModel } from './model';
 
 const { TIMER_SETTINGS, CONFIG } = actorIds;
 const { CANCEL, UPDATE, SAVE } = timerSettingsModel.events;
@@ -24,13 +24,12 @@ const config: UserConfig = merge(emptyConfig, {
 describe('timerSettings machine', () => {
   async function setupTest() {
     const parent = parentMachine({
-      id: CONFIG,
-      childMachine: configMachineFactory,
       parentEvents: Object.keys(mainModel.events),
-      args: {
+      childId: CONFIG,
+      childMachine: configMachineFactory({
         bridge: createFakeBridge(),
         configOverride: config,
-      },
+      }),
     });
 
     const service = interpret(parent);
