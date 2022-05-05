@@ -1,7 +1,7 @@
 import { createFakeBridge } from '@electron/ipc/createFakeBridge';
 import { merge } from '@shared/merge';
-import { DeepPartial, emptyConfig, UserConfig } from '@shared/types';
-import { createMachine, interpret } from 'xstate';
+import { emptyConfig, UserConfig } from '@shared/types';
+import { interpret } from 'xstate';
 import { waitFor } from 'xstate/lib/waitFor';
 import configMachineFactory from '../config/machine';
 import { actorIds } from '../constants';
@@ -50,7 +50,7 @@ describe('timerSettings machine', () => {
     const c = timerSettingsMachine.getSnapshot();
 
     expect(c?.hasTag('idle')).toBe(true);
-    expect(c?.context.pomo).toBe(config.timers.pomo);
+    expect(c?.context.pomo.value).toBe(config.timers.pomo);
   });
 
   describe('when the user makes a valid edit', () => {
@@ -61,13 +61,13 @@ describe('timerSettings machine', () => {
 
       const c = timerSettingsMachine.getSnapshot();
 
-      expect(c?.context.pomo).toBe(77);
+      expect(c?.context.pomo.value).toBe(77);
       expect(c?.hasTag('editing')).toBe(true);
 
       timerSettingsMachine.send(timerSettingsModel.events.UPDATE('pomo', 29));
 
       const c2 = timerSettingsMachine.getSnapshot();
-      expect(c2?.context.pomo).toBe(29);
+      expect(c2?.context.pomo.value).toBe(29);
       expect(c2?.hasTag('editing')).toBe(true);
     });
 
@@ -78,12 +78,12 @@ describe('timerSettings machine', () => {
 
       const c = timerSettingsMachine.getSnapshot();
 
-      expect(c?.context.pomo).toBe(77);
+      expect(c?.context.pomo.value).toBe(77);
 
       timerSettingsMachine.send(CANCEL());
 
       const c2 = timerSettingsMachine.getSnapshot();
-      expect(c2?.context.pomo).toBe(config.timers.pomo);
+      expect(c2?.context.pomo.value).toBe(config.timers.pomo);
       expect(c2?.hasTag('idle')).toBe(true);
     });
 
@@ -103,13 +103,86 @@ describe('timerSettings machine', () => {
   });
 
   describe('when the user makes an invalid edit', () => {
-    it.todo('should allow the user cancel the changes');
-    it.todo('should report errors for each error');
-    it.todo('should prevent the user submitting the changes');
+    it('should report errors and allow the user cancel the changes', async () => {
+      const { timerSettingsMachine } = await setupTest();
+
+      timerSettingsMachine.send(UPDATE('pomo', 0));
+      timerSettingsMachine.send(UPDATE('short', 0));
+      timerSettingsMachine.send(UPDATE('long', 0));
+
+      expect(timerSettingsMachine.getSnapshot()?.hasTag('errors')).toBe(true);
+      expect(timerSettingsMachine.getSnapshot()?.context.pomo.error).toMatchInlineSnapshot(
+        `"Timer must be at least 1 minute"`
+      );
+      expect(timerSettingsMachine.getSnapshot()?.context.short.error).toMatchInlineSnapshot(
+        `"Timer must be at least 1 minute"`
+      );
+      expect(timerSettingsMachine.getSnapshot()?.context.long.error).toMatchInlineSnapshot(
+        `"Timer must be at least 1 minute"`
+      );
+
+      timerSettingsMachine.send(CANCEL());
+
+      expect(timerSettingsMachine.getSnapshot()?.hasTag('errors')).toBe(false);
+      expect(timerSettingsMachine.getSnapshot()?.context.pomo.error).toBeUndefined();
+    });
+
+    it('should prevent the user submitting the changes', async () => {
+      const { timerSettingsMachine } = await setupTest();
+
+      timerSettingsMachine.send(UPDATE('pomo', 0));
+
+      expect(timerSettingsMachine.getSnapshot()?.can('SAVE')).toBe(false);
+    });
 
     describe('once the user corrects all errors', () => {
-      it.todo('should allow the user cancel the changes');
-      it.todo('should allow the user to submit the changes');
+      it('should allow the user cancel the changes', async () => {
+        const { timerSettingsMachine } = await setupTest();
+
+        timerSettingsMachine.send(UPDATE('pomo', 0));
+        timerSettingsMachine.send(UPDATE('short', 0));
+
+        expect(timerSettingsMachine.getSnapshot()?.hasTag('errors')).toBe(true);
+
+        timerSettingsMachine.send(UPDATE('pomo', 1));
+
+        expect(timerSettingsMachine.getSnapshot()?.hasTag('errors')).toBe(true);
+
+        timerSettingsMachine.send(UPDATE('short', 1));
+
+        expect(timerSettingsMachine.getSnapshot()?.hasTag('errors')).toBe(false);
+
+        timerSettingsMachine.send(CANCEL());
+        const c = timerSettingsMachine.getSnapshot();
+
+        expect(c?.context.pomo.value).toBe(config.timers.pomo);
+        expect(c?.hasTag('idle')).toBe(true);
+      });
+
+      it('should allow the user to submit the changes', async () => {
+        const { timerSettingsMachine, configMachine } = await setupTest();
+
+        timerSettingsMachine.send(UPDATE('pomo', 0));
+        timerSettingsMachine.send(UPDATE('short', 0));
+
+        expect(timerSettingsMachine.getSnapshot()?.hasTag('errors')).toBe(true);
+
+        timerSettingsMachine.send(UPDATE('pomo', 77));
+
+        expect(timerSettingsMachine.getSnapshot()?.hasTag('errors')).toBe(true);
+
+        timerSettingsMachine.send(UPDATE('short', 1));
+
+        expect(timerSettingsMachine.getSnapshot()?.hasTag('errors')).toBe(false);
+
+        timerSettingsMachine.send(SAVE());
+        const c = timerSettingsMachine.getSnapshot();
+
+        await waitFor(configMachine, (s) => s.hasTag('idle'));
+
+        expect(configMachine.getSnapshot()?.context.timers.pomo).toBe(77);
+        expect(timerSettingsMachine.getSnapshot()?.hasTag('idle')).toBe(true);
+      });
     });
   });
 });

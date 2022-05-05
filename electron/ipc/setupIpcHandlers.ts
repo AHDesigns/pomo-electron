@@ -2,6 +2,7 @@ import type { IpcMain } from 'electron';
 import type { IpcHandlers } from '@shared/types';
 import { Result, strip } from '@shared/Result';
 import { handlerMethods } from '@electron/ipc/handlerMethods';
+import { assertUnreachable } from '@shared/asserts';
 
 export function setupIpcHandlers(ipcMain: IpcMain, loadedHandlers: IpcHandlers): void {
   Object.entries(handlerMethods).forEach(([key, { main }]) => {
@@ -23,7 +24,7 @@ export function setupIpcHandlers(ipcMain: IpcMain, loadedHandlers: IpcHandlers):
         break;
       default:
         /* istanbul ignore next */
-        throw new Error('impossible missing method for ipc handler methods');
+        assertUnreachable(main);
     }
   });
 }

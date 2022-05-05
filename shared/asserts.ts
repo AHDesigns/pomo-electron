@@ -14,3 +14,12 @@ export function assertValidNodenv(env: string): asserts env is Nodenv {
     throw new Error(`node_env of "${env}" is invalid`);
   }
 }
+
+export function assertUnreachable(branch: never): never {
+  throw new Error(
+    `This should not be reachable, likely there is a missing condition or switch case for branch ${
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      branch as string
+    }`
+  );
+}

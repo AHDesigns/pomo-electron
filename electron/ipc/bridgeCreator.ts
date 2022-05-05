@@ -2,6 +2,7 @@
 import type { IpcRenderer } from '@electron/electron';
 import type { IBridge } from '@shared/types';
 import { reBuild } from '@shared/Result';
+import { assertUnreachable } from '@shared/asserts';
 import { handlerMethods } from './handlerMethods';
 
 export function bridgeCreator(ipcR: IpcRenderer): IBridge {
@@ -21,7 +22,7 @@ export function bridgeCreator(ipcR: IpcRenderer): IBridge {
         };
       default:
         /* istanbul ignore next */
-        throw new Error('impossible missing method for ipc handler methods');
+        return assertUnreachable(renderer);
     }
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   }, {} as IBridge);
