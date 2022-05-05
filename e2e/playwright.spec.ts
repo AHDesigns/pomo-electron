@@ -29,5 +29,24 @@ test('launch app', async () => {
 
   expect(logs).toContain('set tray icon inactive');
 
+  // navigate to settings
+  await window.click('text=settings');
+
+  // let animation complete
+  await delay(500);
+
+  // activate slack settings
+  await window.click('text=Slack');
+
+  expect(await window.screenshot({ fullPage: true })).toMatchSnapshot();
+
   await electronApp.close();
 });
+
+async function delay(milliseconds: number): Promise<void> {
+  return new Promise((res) => {
+    setTimeout(() => {
+      res(undefined);
+    }, milliseconds);
+  });
+}

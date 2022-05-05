@@ -46,7 +46,7 @@ async function initTest() {
 
 const {
   pomo: { timer },
-  settings
+  settings,
 } = pageModel;
 
 beforeEach(() => {

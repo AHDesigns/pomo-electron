@@ -117,10 +117,8 @@ export function ButtonPair({ Confirm, Cancel }: IButtonPair): JSX.Element {
         justifyContent: 'space-around',
       }}
     >
-      <div style={{ marginRight: `${theme.spacing.normal}px` }}>
-	{Confirm}
-      </div>
-	{Cancel}
+      <div style={{ marginRight: `${theme.spacing.normal}px` }}>{Confirm}</div>
+      {Cancel}
     </div>
   );
 }
