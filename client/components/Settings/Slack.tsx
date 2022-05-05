@@ -3,7 +3,7 @@ import { useConfig, useBridge } from '@client/hooks';
 import { Button } from '@client/components';
 import styled, { useTheme } from 'styled-components';
 import { Setting } from './Setting';
-import { Form, InputPassword, Label } from './Form';
+import { ButtonPair, Form, InputPassword, Label } from './Form';
 
 export function Slack(): JSX.Element | null {
   const config = useConfig();
@@ -102,31 +102,27 @@ export function Slack(): JSX.Element | null {
               where do I get these from?
             </Button>
           </div>
-          <div
-            style={{
-              gridColumn: 'left / right',
-              display: 'flex',
-              justifyContent: 'space-around',
-            }}
-          >
-            <div style={{ marginRight: `${theme.spacing.normal}px` }}>
+          <ButtonPair
+            Confirm={
               <Button disabled={canSubmit} type="submit">
                 Submit
               </Button>
-            </div>
-            <Button
-              disabled={[token, cookie].includes('')}
-              type="button"
-              variant="secondary"
-              onClick={() => {
-                setToken(initialToken);
-                setCookie(initialCookie);
-                setSCookie(initialSCookie);
-              }}
-            >
-              Cancel
-            </Button>
-          </div>
+            }
+            Cancel={
+              <Button
+                disabled={[token, cookie].includes('')}
+                type="button"
+                variant="secondary"
+                onClick={() => {
+                  setToken(initialToken);
+                  setCookie(initialCookie);
+                  setSCookie(initialSCookie);
+                }}
+              >
+                Cancel
+              </Button>
+            }
+          />
         </Form>
       )}
     </Setting>

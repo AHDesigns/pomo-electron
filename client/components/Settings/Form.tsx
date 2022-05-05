@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import styled from 'styled-components';
+import styled, { css, useTheme } from 'styled-components';
 import { Icons } from '@client/components';
 
 const { EyeClosed, EyeOpen } = Icons;
@@ -17,23 +17,41 @@ export const Label = styled.label`
   line-height: 2em;
 `;
 
-export const InputText = styled.input`
+interface IInputText {
+  error?: boolean;
+}
+
+export const InputText = styled.input<IInputText>`
   grid-column: middle-r / right;
   text-align: left;
 
   color: ${({ theme }) => theme.palette.whiteBright};
   background: ${({ theme }) => theme.palette.backgroundBright};
   border: thin solid ${({ theme }) => theme.palette.backgroundProminent};
+
   border-radius: 3px;
   line-height: 2em;
   padding-left: 5px;
   width: 100%;
 
+  ${({ theme, error }) =>
+    error &&
+    `
+      outline: none;
+      box-shadow: 0 0 0 0.05em ${theme.palette.red}, 0 0 0 0.15em ${theme.palette.red};
+    `}
+
   &:focus {
     outline: none;
-    box-shadow: 0 0 0 0.05em ${({ theme }) => theme.palette.background},
-      0 0 0 0.15em ${({ theme }) => theme.palette.bright};
+    box-shadow: 0 0 0 0.05em
+        ${({ theme, error }) => (error ? theme.palette.red : theme.palette.background)},
+      0 0 0 0.15em ${({ theme, error }) => (error ? theme.palette.red : theme.palette.bright)};
   }
+`;
+
+export const ErrorMsg = styled.p`
+  color: ${({ theme }) => theme.palette.red};
+  grid-column: left / right;
 `;
 
 const InputPwd = styled(InputText)`
@@ -82,4 +100,27 @@ export function InputPassword(props: IInputPassword): JSX.Element {
     setIsVisible(!isVisible);
     inputEl.current?.focus();
   }
+}
+
+interface IButtonPair {
+  Confirm: React.ReactNode;
+  Cancel: React.ReactNode;
+}
+
+export function ButtonPair({ Confirm, Cancel }: IButtonPair): JSX.Element {
+  const theme = useTheme();
+  return (
+    <div
+      style={{
+        gridColumn: 'left / right',
+        display: 'flex',
+        justifyContent: 'space-around',
+      }}
+    >
+      <div style={{ marginRight: `${theme.spacing.normal}px` }}>
+	{Confirm}
+      </div>
+	{Cancel}
+    </div>
+  );
 }

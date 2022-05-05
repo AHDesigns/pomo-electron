@@ -3,6 +3,7 @@ import { merge } from '@shared/merge';
 import { ActorRefFrom, assign, createMachine, InterpreterFrom, sendParent } from 'xstate';
 import { configModel } from '../config/model';
 import { TimerSettingsContext, TimerSettingsEvents } from './model';
+import { parsePomoError } from './validations';
 
 export function createContext(ctx: TimerSettingsContext) {
   return ctx;
@@ -119,12 +120,3 @@ type TimerSettingsMachine = typeof timerSettingsMachine;
 export type TimerSettingsService = InterpreterFrom<TimerSettingsMachine>;
 
 export type TimerSettingsActorRef = ActorRefFrom<TimerSettingsMachine>;
-
-function parsePomoError(n: number): string | undefined {
-  switch (true) {
-    case n < 1:
-      return 'Timer must be at least 1 minute';
-    default:
-      return undefined;
-  }
-}
