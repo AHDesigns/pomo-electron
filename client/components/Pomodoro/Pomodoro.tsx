@@ -45,6 +45,6 @@ function getTitle(state: TimerType): string {
     case 'long':
       return 'Long Break';
     default:
-        return assertUnreachable(state);
+      return assertUnreachable(state);
   }
 }
