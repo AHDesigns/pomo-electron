@@ -8,4 +8,7 @@ export default {
     pause: 'pause',
     play: 'play',
   },
+  settings: {
+    submit: 'Submit',
+  },
 };

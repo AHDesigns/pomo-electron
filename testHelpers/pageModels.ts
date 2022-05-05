@@ -40,6 +40,7 @@ export const pageModel = {
     title: () => screen.getByText('Settings'),
     timer: {
       pomo: () => screen.getByLabelText('Pomodoro'),
+      submit: () => screen.getByRole('button', { name: T.settings.submit }),
     },
   },
 } as const;
@@ -56,7 +57,11 @@ const timeouts = {
 export const userActions = {
   async navigateToSettings() {
     userEvent.click(pageModel.nav.toSettings());
-    await screen.findByRole('heading', { name: 'Settings' }, { timeout: timeouts.MEDIUM });
+    await screen.findByRole(
+      'heading',
+      { name: 'Settings', exact: true },
+      { timeout: timeouts.MEDIUM }
+    );
   },
   async navigateToTimer() {
     userEvent.click(pageModel.nav.toTimer());

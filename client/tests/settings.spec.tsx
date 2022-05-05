@@ -46,6 +46,7 @@ async function initTest() {
 
 const {
   pomo: { timer },
+  settings
 } = pageModel;
 
 beforeEach(() => {
@@ -76,6 +77,7 @@ when the user changes the timer duration to 57`, () => {
 
     expect(await screen.findByDisplayValue('57')).toBeInTheDocument();
 
+    userEvent.click(settings.timer.submit());
     await userActions.navigateToTimer();
 
     expect(screen.getByText('57 : 00')).toBeInTheDocument();
@@ -103,6 +105,7 @@ when the user changes the timer settings to 57 minutes`, () => {
     const input = screen.getByLabelText('Pomodoro');
 
     userEvent.type(input, '7');
+    userEvent.click(settings.timer.submit());
 
     await userActions.navigateToTimer();
     tick(1);
@@ -128,6 +131,7 @@ when the user changes the timer settings to 57 minutes`, () => {
     const input = screen.getByLabelText('Pomodoro');
 
     userEvent.type(input, '7');
+    userEvent.click(settings.timer.submit());
 
     await userActions.navigateToTimer();
     userEvent.click(timer.stopButton());

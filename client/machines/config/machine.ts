@@ -1,19 +1,10 @@
-import { DeepPartial, emptyConfig, IBridge, UserConfig } from '@shared/types';
-import {
-  ActorRefFrom,
-  ContextFrom,
-  EventFrom,
-  InterpreterFrom,
-  sendParent,
-  assign,
-  createMachine,
-} from 'xstate';
+import { IBridge, UserConfig } from '@shared/types';
+import { ActorRefFrom, InterpreterFrom, sendParent, assign, createMachine } from 'xstate';
 import { respond } from 'xstate/lib/actions';
 import { actorIds } from '../constants';
 import mainModel from '../main/model';
 import { configModel, ConfigContext, ConfitEvents } from './model';
-import { timerSettingsFactory } from '../timerSettings/machine';
-import { TimerSettingsContext } from '../timerSettings/model';
+import { timerSettingsMachine } from '../timerSettings/machine';
 
 export interface IConfigMachine {
   bridge: IBridge;
@@ -60,7 +51,8 @@ export default function configMachine({ bridge, configOverride }: IConfigMachine
             settings: {
               invoke: {
                 id: actorIds.TIMER_SETTINGS,
-                src: (c) => timerSettingsFactory({ context: c.timers }),
+                src: timerSettingsMachine,
+                data: ({ timers }) => timers,
               },
             },
             config: {

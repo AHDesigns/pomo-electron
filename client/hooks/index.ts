@@ -1,4 +1,3 @@
-export { useConfig } from './config';
 export { useBridge } from './bridge';
-export { useMachines, usePomodoro, useTimer } from './machines';
+export { useMachines, usePomodoro, useTimer, useConfig, useTimerSettings } from './machines';
 export { useLogger } from './logger';

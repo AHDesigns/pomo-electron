@@ -11,9 +11,12 @@ const Header = styled.div`
 
 export type Pages = 'Pomodoro' | 'Settings';
 
-export function PageManager(): JSX.Element {
-  // const [page, navigatePageTo] = useState<Pages>('Pomodoro');
-  const [page, navigatePageTo] = useState<Pages>('Settings');
+interface IPageManager {
+  inititalPage?: Pages;
+}
+
+export function PageManager({ inititalPage = 'Pomodoro' }: IPageManager = {}): JSX.Element {
+  const [page, navigatePageTo] = useState<Pages>(inititalPage);
   const theme = useTheme();
 
   return (
