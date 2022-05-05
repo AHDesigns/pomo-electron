@@ -9,6 +9,7 @@ export default {
     play: 'play',
   },
   settings: {
-    submit: 'Submit',
+    submit: 'submit',
+    cancel: 'cancel',
   },
 };
