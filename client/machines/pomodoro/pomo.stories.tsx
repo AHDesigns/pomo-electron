@@ -7,7 +7,7 @@ import machine from './machine';
 import pomodoroModel from './model';
 
 export default {
-  title: 'Machines/Pomo',
+  component: Pomo,
 };
 
 export function Pomo(): JSX.Element {

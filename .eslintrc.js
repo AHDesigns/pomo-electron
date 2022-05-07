@@ -13,7 +13,7 @@ module.exports = {
     tsconfigRootDir: __dirname,
     project: ['./tsconfig.json'],
   },
-  extends: ['airbnb', 'airbnb-typescript', 'airbnb/hooks', 'plugin:storybook/recommended'],
+  extends: ['airbnb', 'airbnb-typescript', 'airbnb/hooks'],
   plugins: ['@typescript-eslint'],
   rules: {
     'no-console': 'error',
@@ -179,6 +179,7 @@ module.exports = {
     },
     {
       files: ['*.stories.@(js|jsx|ts|tsx)'],
+      extends: ['plugin:storybook/recommended', 'plugin:storybook/csf-strict'],
       rules: {
         '@typescript-eslint/consistent-type-assertions': 'off',
         'import/no-extraneous-dependencies': 'off',
