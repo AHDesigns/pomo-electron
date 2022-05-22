@@ -9,10 +9,7 @@ export interface IButton extends ButtonProps {
 
 export function Button({ children, ...props }: IButton & IChildren): JSX.Element {
   return (
-    <button
-      className="border-2 border-thmBackground text-thmWhite bg-thmMagenta w-100 h-100"
-      {...props}
-    >
+    <button className="border-2 text-thmRed  w-100 h-100" {...props}>
       hello
       {children}
     </button>
