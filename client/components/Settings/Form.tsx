@@ -1,76 +1,95 @@
 import React, { useRef, useState } from 'react';
-import styled, { css, useTheme } from 'styled-components';
-import { Icons } from '@client/components';
+import { IChildren, Icons } from '@client/components';
 
 const { EyeClosed, EyeOpen } = Icons;
 
-export const Form = styled.form`
-  display: grid;
-  grid-template-columns: [left] 35% [middle-l] 1fr [middle-r] 40% [right-l] 1fr [button] 15% [right];
-  gap: ${({ theme }) => theme.spacing.normal}px 0;
-  margin: 0 ${({ theme }) => theme.spacing.normal}px ${({ theme }) => theme.spacing.normal}px;
-`;
+// export const Form = styled.form`
+//   display: grid;
+//   grid-template-columns: [left] 35% [middle-l] 1fr [middle-r] 40% [right-l] 1fr [button] 15% [right];
+//   gap: ${({ theme }) => theme.spacing.normal}px 0;
+//   margin: 0 ${({ theme }) => theme.spacing.normal}px ${({ theme }) => theme.spacing.normal}px;
+// `;
 
-export const Label = styled.label`
-  grid-column: left / middle-l;
-  text-align: left;
-  line-height: 2em;
-`;
+export function Form({ children }: IChildren): JSX.Element {
+  return <form>{children}</form>;
+}
+
+export function Label({ children }: IChildren): JSX.Element {
+  return <label>{children}</label>;
+}
+// export const Label = styled.label`
+//   grid-column: left / middle-l;
+//   text-align: left;
+//   line-height: 2em;
+// `;
 
 interface IInputText {
   error?: boolean;
 }
 
-export const InputText = styled.input<IInputText>`
-  grid-column: middle-r / right;
-  text-align: left;
+export function InputText({ children }: IChildren): JSX.Element {
+  return <input>{children}</input>;
+}
 
-  color: ${({ theme }) => theme.palette.whiteBright};
-  background: ${({ theme }) => theme.palette.backgroundBright};
-  border: thin solid ${({ theme }) => theme.palette.backgroundProminent};
+// export const InputText = styled.input<IInputText>`
+//   grid-column: middle-r / right;
+//   text-align: left;
+//
+//   color: ${({ theme }) => theme.palette.whiteBright};
+//   background: ${({ theme }) => theme.palette.backgroundBright};
+//   border: thin solid ${({ theme }) => theme.palette.backgroundProminent};
+//
+//   border-radius: 3px;
+//   line-height: 2em;
+//   padding-left: 5px;
+//   width: 100%;
+//
+//   ${({ theme, error }) =>
+//     error &&
+//     `
+//       outline: none;
+//       box-shadow: 0 0 0 0.05em ${theme.palette.red}, 0 0 0 0.15em ${theme.palette.red};
+//     `}
+//
+//   &:focus {
+//     outline: none;
+//     box-shadow: 0 0 0 0.05em
+//         ${({ theme, error }) => (error ? theme.palette.red : theme.palette.background)},
+//       0 0 0 0.15em ${({ theme, error }) => (error ? theme.palette.red : theme.palette.bright)};
+//   }
+// `;
 
-  border-radius: 3px;
-  line-height: 2em;
-  padding-left: 5px;
-  width: 100%;
+export function ErrorMsg({ children }: IChildren): JSX.Element {
+  return <p>{children}</p>;
+}
+// export const ErrorMsg = styled.p`
+//   color: ${({ theme }) => theme.palette.red};
+//   grid-column: left / right;
+// `;
 
-  ${({ theme, error }) =>
-    error &&
-    `
-      outline: none;
-      box-shadow: 0 0 0 0.05em ${theme.palette.red}, 0 0 0 0.15em ${theme.palette.red};
-    `}
+export function InputPwd({ children }: IChildren): JSX.Element {
+  return <input type={'password'} />;
+}
+// const InputPwd = styled(InputText)`
+//   grid-column: left / right-l;
+// `;
 
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 0.05em
-        ${({ theme, error }) => (error ? theme.palette.red : theme.palette.background)},
-      0 0 0 0.15em ${({ theme, error }) => (error ? theme.palette.red : theme.palette.bright)};
-  }
-`;
-
-export const ErrorMsg = styled.p`
-  color: ${({ theme }) => theme.palette.red};
-  grid-column: left / right;
-`;
-
-const InputPwd = styled(InputText)`
-  grid-column: left / right-l;
-`;
-
-const PwdToggle = styled.button`
-  grid-column: button / right;
-  color: ${({ theme }) => theme.palette.whiteBright};
-  background: ${({ theme }) => theme.palette.backgroundBright};
-  border: thin solid ${({ theme }) => theme.palette.backgroundProminent};
-  border-radius: 3px;
-
-  &:focus {
-    outline: none;
-    box-shadow: 0 0 0 0.05em ${({ theme }) => theme.palette.background},
-      0 0 0 0.15em ${({ theme }) => theme.palette.bright};
-  }
-`;
+export function PwdToggle({ children }: IChildren): JSX.Element {
+  return <button>{children}</button>;
+}
+// const PwdToggle = styled.button`
+//   grid-column: button / right;
+//   color: ${({ theme }) => theme.palette.whiteBright};
+//   background: ${({ theme }) => theme.palette.backgroundBright};
+//   border: thin solid ${({ theme }) => theme.palette.backgroundProminent};
+//   border-radius: 3px;
+//
+//   &:focus {
+//     outline: none;
+//     box-shadow: 0 0 0 0.05em ${({ theme }) => theme.palette.background},
+//       0 0 0 0.15em ${({ theme }) => theme.palette.bright};
+//   }
+// `;
 
 type IInputPassword = Required<
   Pick<
@@ -108,7 +127,6 @@ interface IButtonPair {
 }
 
 export function ButtonPair({ Confirm, Cancel }: IButtonPair): JSX.Element {
-  const theme = useTheme();
   return (
     <div
       style={{
@@ -117,7 +135,7 @@ export function ButtonPair({ Confirm, Cancel }: IButtonPair): JSX.Element {
         justifyContent: 'space-around',
       }}
     >
-      <div style={{ marginRight: `${theme.spacing.normal}px` }}>{Confirm}</div>
+      <div className="mr-2">{Confirm}</div>
       {Cancel}
     </div>
   );

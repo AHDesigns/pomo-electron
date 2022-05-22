@@ -2,6 +2,7 @@
 import { ElectronLog } from 'electron-log';
 import { IpcMainEvent, IpcMainInvokeEvent } from '@electron/electron';
 import { Repositories } from '@electron/repositories';
+import React from 'react';
 
 export interface ILogger extends ElectronLog {
   info: (...msg: any[]) => void;
@@ -123,4 +124,8 @@ export interface TimerHooks {
   onPlayHook: Hook;
   onStopHook: Hook;
   onCompleteHook: Hook;
+}
+
+export interface IChildren {
+  children: React.ReactNode;
 }

@@ -1,13 +1,10 @@
 import React, { FC, useState } from 'react';
-import { Page, Pomodoro, Settings, Box, MenuButton } from '@client/components';
-import styled, { useTheme } from 'styled-components';
+import { Pomodoro, Settings, Box, MenuButton } from '@client/components';
 import pj from 'package.json';
 
-const Header = styled.div`
-  display: grid;
-  grid-template-columns: [left] 20% [middle] 60% [right] 20%;
-  padding: ${({ theme }) => `${theme.spacing.small}px`} 0;
-`;
+// const Header = styled.div`
+//   grid-template-columns: [left] 20% [middle] 60% [right] 20%;
+// `;
 
 export type Pages = 'Pomodoro' | 'Settings';
 
@@ -17,12 +14,12 @@ interface IPageManager {
 
 export function PageManager({ inititalPage = 'Pomodoro' }: IPageManager = {}): JSX.Element {
   const [page, navigatePageTo] = useState<Pages>(inititalPage);
-  const theme = useTheme();
+  // const theme = useTheme();
 
   return (
-    <Page>
+    <div className="w-full h-full overflow-hidden text-thmWhite bg-thmBackground">
       <h1 style={{ display: 'none' }}>Pomodoro App</h1>
-      <Header>
+      <header className="grid grid-cols-[20%_60%_20%]">
         <MenuButton
           onClick={() => {
             navigatePageTo(page === 'Settings' ? 'Pomodoro' : 'Settings');
@@ -33,14 +30,14 @@ export function PageManager({ inititalPage = 'Pomodoro' }: IPageManager = {}): J
           <h2 style={{ textAlign: 'center' }}>{page === 'Settings' ? 'Settings' : 'Timer'}</h2>
         </Box>
         <Box>
-          <p style={{ color: theme.palette.backgroundBrightest }}>Beta</p>
-          <p style={{ color: theme.palette.backgroundBright }}>{pj.version}</p>
+          <p className="text-thmBackgroundBrightest">Beta</p>
+          <p className="text-thmBackgroundBright">{pj.version}</p>
         </Box>
-      </Header>
-      <Box style={{ flexGrow: 1 }}>
+      </header>
+      <Box classNames="flex-grow">
         {page === 'Settings' && <Settings />}
         {page === 'Pomodoro' && <Pomodoro />}
       </Box>
-    </Page>
+    </div>
   );
 }

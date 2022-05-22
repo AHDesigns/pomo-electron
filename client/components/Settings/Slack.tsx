@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import { useConfig, useBridge } from '@client/hooks';
 import { Button } from '@client/components';
-import styled, { useTheme } from 'styled-components';
 import { Setting } from './Setting';
 import { ButtonPair, Form, InputPassword, Label } from './Form';
 
 export function Slack(): JSX.Element | null {
   const config = useConfig();
   const { storeUpdate } = config;
-  const theme = useTheme();
   const bridge = useBridge();
 
   // TODO: fix this up to handle loading

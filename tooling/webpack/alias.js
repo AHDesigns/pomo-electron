@@ -10,6 +10,7 @@ const shared = {
 
 const client = {
   '@client': path.resolve(root, 'client'),
+  '@sb': path.resolve(root, 'client/storybook'),
 };
 
 const server = {

@@ -114,7 +114,7 @@ module.exports = {
       // envs don't seem to work since adding airbnb-typescript but keeping them
       // anyway in the event the issue is fixed, or I work out what I've done wrong
       // I suspect I'm expected to use typescript to check globals
-      files: ['electron/**', '**/*.backstop.js'],
+      files: ['electron/**', '**/*.backstop.js', "./tailwind.config.js"],
       env: {
         node: true,
       },

@@ -1,3 +1,4 @@
+import { PageWrapper } from '@client/storybook';
 import React from 'react';
 import { PageManager as Pages } from './PageManager';
 
@@ -6,5 +7,9 @@ export default {
 };
 
 export function PageManager(): JSX.Element {
-  return <Pages />;
+  return (
+    <PageWrapper>
+      <Pages />
+    </PageWrapper>
+  );
 }

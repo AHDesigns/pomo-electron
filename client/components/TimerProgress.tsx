@@ -1,4 +1,3 @@
-import { useTheme } from 'styled-components';
 import React from 'react';
 import { testWrap } from './testWrap/testComp';
 
@@ -17,7 +16,6 @@ export function TimerProgressC({
   state,
   title,
 }: ITimerProgress): JSX.Element {
-  const theme = useTheme();
   const totalDurationInSeconds = duration * 60;
 
   const secondsExpired = 60 - seconds;
@@ -30,14 +28,15 @@ export function TimerProgressC({
   return (
     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <circle
+        className="stroke-thmBackgroundProminent"
         cx={50}
         cy={50}
         r={radius}
-        stroke={theme.palette.backgroundProminent}
         fill="none"
         strokeWidth={stroke}
       />
       <circle
+        className="stroke-thmBright"
         style={{
           transform: 'rotate(-90deg)',
           transformOrigin: 'center',
@@ -47,7 +46,6 @@ export function TimerProgressC({
         cx={50}
         cy={50}
         r={radius}
-        stroke={title === 'pomodoro' ? theme.palette.bright : theme.palette.green}
         fill="none"
         strokeWidth={stroke}
         strokeDasharray={circumference}

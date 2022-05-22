@@ -1,16 +1,14 @@
 /* eslint-disable react/jsx-filename-extension */
 import React from 'react';
-import { ThemeProvider } from 'styled-components';
 import { fakeRepositories } from '../../electron/repositories/fakes';
 import { BridgeProvider, LoggerProvider, MachinesProvider } from '../../client/hooks/providers';
 import { createFakeHooks } from '../../client/machines';
 import { ErrorBoundary, ScrollBar } from '../../client/components';
-import { theme } from '../../client/styles/theme';
-import { GlobalStyle } from '../../client/styles/GlobalStyle';
+import '../../client/index.css';
 
-export const parameters = {
-  actions: { argTypesRegex: '^on[A-Z].*' },
-};
+// export const parameters = {
+//   actions: { argTypesRegex: '^on[A-Z].*' },
+// };
 
 export const decorators = [
   (Story) => (
@@ -25,13 +23,8 @@ function Providers({ children, hooks }) {
     <BridgeProvider bridge={fakeRepositories()}>
       <LoggerProvider>
         <ErrorBoundary>
-          <ThemeProvider theme={theme}>
-            <GlobalStyle />
-            <ScrollBar />
-            <MachinesProvider hooks={{ ...createFakeHooks(), ...hooks }}>
-              {children}
-            </MachinesProvider>
-          </ThemeProvider>
+          <ScrollBar />
+          <MachinesProvider hooks={{ ...createFakeHooks(), ...hooks }}>{children}</MachinesProvider>
         </ErrorBoundary>
       </LoggerProvider>
     </BridgeProvider>

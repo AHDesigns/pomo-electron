@@ -1,30 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { createGlobalStyle } from 'styled-components';
-import { testWrap } from './testWrap/testComp';
-
-const ScrollbarStyle = createGlobalStyle`
-  /* width */
-  ::-webkit-scrollbar {
-    width: 8px;
-    transition: all 0.2s;
-  }
-
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: ${({ theme }) => theme.palette.background};
-  }
-
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: ${({ theme }) => theme.palette.backgroundBright};
-    border-radius: 4px;
-  }
-
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: ${({ theme }) => theme.palette.backgroundBrightest};
-  }
-`;
+import { testWrap } from '../testWrap/testComp';
+import './scrollbar.css';
 
 function ScrollBarC(): JSX.Element | null {
   const [showScroll, setShowScroll] = useState(false);
@@ -54,7 +30,8 @@ function ScrollBarC(): JSX.Element | null {
     }
   }, []);
 
-  return showScroll ? <ScrollbarStyle /> : null;
+  return null;
+  // return showScroll ? <ScrollbarStyle /> : null;
 }
 
 export const ScrollBar = testWrap(ScrollBarC, 'scroll-bar');

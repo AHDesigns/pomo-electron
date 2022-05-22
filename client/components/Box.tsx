@@ -1,11 +1,14 @@
-import styled from 'styled-components';
-import { testWrap } from './testWrap/testComp';
+import React from 'react';
+import { IChildren } from '@shared/types';
 
-const BoxC = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: stretch;
-`;
+interface IBox extends IChildren {
+  classNames?: string;
+}
 
-export const Box = testWrap(BoxC, 'box');
+export function Box({ children, classNames }: IBox): JSX.Element {
+  return (
+    <div className={` flex flex-col justify-center justify-items-stretch ${classNames ?? ''}`}>
+      {children}
+    </div>
+  );
+}

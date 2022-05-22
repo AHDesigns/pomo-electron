@@ -1,4 +1,3 @@
-import styled from 'styled-components';
 import React, { ChangeEventHandler, CSSProperties } from 'react';
 import { Box } from '@client/components';
 
@@ -6,41 +5,27 @@ import { Box } from '@client/components';
  * Hide checkbox visually but remain accessible to screen readers.
  * Source: https://polished.js.org/docs/#hidevisually
  */
-const HiddenCheckbox = styled.input``;
+// const HiddenCheckbox = styled.input``;
 
-const Icon = styled.svg`
-  float: left;
-  fill: none;
-  stroke: white;
-  stroke-width: 2px;
-`;
-
-const StyledCheckbox = styled.div<{ checked: boolean }>`
-  display: inline-block;
-  float: left;
-  width: 16px;
-  height: 16px;
-  background: ${({ theme, checked }) =>
-    checked ? theme.palette.bright : theme.palette.backgroundBrightest};
-  border-radius: 3px;
-  transition: all 150ms;
-
-  ${HiddenCheckbox}:focus + & {
-    box-shadow: 0 0 0 0.05em ${({ theme }) => theme.palette.background},
-      0 0 0 0.1em ${({ theme }) => theme.palette.bright};
-  }
-
-  ${Icon} {
-    visibility: ${(props) => (props.checked ? 'visible' : 'hidden')};
-  }
-`;
-
-const Label = styled.label`
-  display: flex;
-  font-size: ${({ theme }) => theme.typography.h2.fontSize};
-  cursor: pointer;
-  justify-content: space-between;
-`;
+// const StyledCheckbox = styled.div<{ checked: boolean }>`
+//   display: inline-block;
+//   float: left;
+//   width: 16px;
+//   height: 16px;
+//   background: ${({ theme, checked }) =>
+//     checked ? theme.palette.bright : theme.palette.backgroundBrightest};
+//   border-radius: 3px;
+//   transition: all 150ms;
+//
+//   ${HiddenCheckbox}:focus + & {
+//     box-shadow: 0 0 0 0.05em ${({ theme }) => theme.palette.background},
+//       0 0 0 0.1em ${({ theme }) => theme.palette.bright};
+//   }
+//
+//   ${Icon} {
+//     visibility: ${(props) => (props.checked ? 'visible' : 'hidden')};
+//   }
+// `;
 
 interface ICheckbox {
   checked: boolean;
@@ -51,16 +36,21 @@ interface ICheckbox {
 
 export function Checkbox({ checked, onChange, styles, children }: ICheckbox): JSX.Element {
   return (
-    <Label style={styles}>
+    <div style={styles} className="flex text-lg cursor-pointer justify-between">
       {children}
       <Box>
-        <HiddenCheckbox type="checkbox" className="sr-only" checked={checked} onChange={onChange} />
-        <StyledCheckbox checked={checked}>
-          <Icon viewBox="0 0 24 24">
+        <input type="checkbox" className="sr-only" checked={checked} onChange={onChange} />
+        <div>
+          <svg
+            className="float-left stroke-thmWhite"
+            fill="none"
+            strokeWidth="2px"
+            viewBox="0 0 24 24"
+          >
             <polyline points="20 6 9 17 4 12" />
-          </Icon>
-        </StyledCheckbox>
+          </svg>
+        </div>
       </Box>
-    </Label>
+    </div>
   );
 }

@@ -2,7 +2,6 @@ import React, { useRef } from 'react';
 import T from '@client/copy';
 import { useTimerSettings } from '@client/hooks';
 import { Button } from '@client/components';
-import { useTheme } from 'styled-components';
 import { timerSettingsModel } from '@client/machines';
 import { ButtonPair, ErrorMsg, Form, InputText, Label } from './Form';
 import { Setting } from './Setting';
@@ -14,11 +13,10 @@ export function Timer(): JSX.Element {
   const {
     context: { long, pomo, short },
   } = state;
-  const { spacing } = useTheme();
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <Setting variant="simple" heading="Timer" styles={{ marginTop: spacing.small }}>
+    <Setting variant="simple" heading="Timer" styles={{ marginTop: '' }}>
       <Form
         onSubmit={(e) => {
           e.preventDefault();
@@ -26,49 +24,33 @@ export function Timer(): JSX.Element {
           inputRef.current?.focus();
         }}
       >
-        <Label htmlFor="pomo">Pomodoro</Label>
-        <InputText
-          ref={inputRef}
-          id="pomo"
-          type="number"
-          error={Boolean(pomo.error)}
-          min={1}
-          max={120}
+        <TimerInput
+          name="Pomodoro"
+          ariaLabel="Set the duration, in minutes, of a pomodoro timer"
+          error={pomo.error}
           value={pomo.value}
-          onChange={(e) => {
-            send(UPDATE('pomo', Number(e.target.value)));
+          onChange={(n) => {
+            send(UPDATE('pomo', n));
           }}
         />
-        {pomo.error && <ErrorMsg>{pomo.error}</ErrorMsg>}
-        <Label htmlFor="short-break">Short break</Label>
-        <InputText
-          name="short-break"
-          id="short-break"
-          error={Boolean(short.error)}
-          type="number"
-          min={1}
-          max={120}
+        <TimerInput
+          name="Short Break"
+          ariaLabel="Set the duration, in minutes, of each short break timer between pomodoros"
+          error={short.error}
           value={short.value}
-          onChange={({ target: { value } }) => {
-            send(UPDATE('short', Number(value)));
+          onChange={(n) => {
+            send(UPDATE('short', n));
           }}
         />
-        {short.error && <ErrorMsg>{short.error}</ErrorMsg>}
-        <Label htmlFor="long-break">Long break</Label>
-        <InputText
-          name="long-break"
-          id="long-break"
-          type="number"
-          error={Boolean(long.error)}
-          min={1}
-          max={120}
-          placeholder="xocx-..."
+        <TimerInput
+          name="Long Break"
+          ariaLabel="Set the duration, in minutes, of each long break timer which runs after completing several pomodoros"
+          error={long.error}
           value={long.value}
-          onChange={({ target: { value } }) => {
-            send(UPDATE('long', Number(value)));
+          onChange={(n) => {
+            send(UPDATE('long', n));
           }}
         />
-        {long.error && <ErrorMsg>{long.error}</ErrorMsg>}
         <ButtonPair
           Confirm={
             <Button
@@ -96,5 +78,43 @@ export function Timer(): JSX.Element {
         />
       </Form>
     </Setting>
+  );
+}
+
+interface ITimerInput {
+  name: string;
+  ariaLabel: string;
+  error?: string;
+  value: number;
+  onChange: (n: number) => void;
+}
+
+function TimerInput({ name, onChange, value, error, ariaLabel }: ITimerInput): JSX.Element {
+  const id = `timer-form-${name.toLowerCase().replace(/ /g, '-')}`;
+  return (
+    <>
+      <Label htmlFor={id} aria-label={ariaLabel}>
+        {name}
+      </Label>
+      <InputText
+        id={id}
+        type="number"
+        {...(error && {
+          error: true,
+          'aria-describedby': `${id}-error`,
+        })}
+        min={1}
+        max={120}
+        value={value}
+        onChange={({ target: { value: n } }) => {
+          onChange(Number(n));
+        }}
+      />
+      {error && (
+        <ErrorMsg id={`${id}-error`} aria-live="polite">
+          {error}
+        </ErrorMsg>
+      )}
+    </>
   );
 }
