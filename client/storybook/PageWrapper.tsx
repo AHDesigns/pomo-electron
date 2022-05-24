@@ -1,19 +1,19 @@
 import React from 'react';
-
-// const Wrapper = styled.div`
-//   width: 300px;
-//   height: 300px;
-//   overflow-y: scroll;
-//   margin: 20px auto;
-//   border-radius: 13px;
-//   box-shadow: 0 22px 70px 4px rgba(0, 0, 0, 0.56);
-//   background: ${({ theme }) => theme.palette.background};
-// `;
+import classNames from 'classnames';
 
 interface IPageWrapper {
   children: React.ReactNode;
+  padded?: true;
 }
 
-export function PageWrapper({ children }: IPageWrapper): JSX.Element {
-  return <div>{children}</div>;
+export function PageWrapper({ children, padded }: IPageWrapper): JSX.Element {
+  return (
+    <div
+      className={classNames(
+        'w-[300px] h-[300px] overflow-y-hidden mx-auto my-4 rounded-[13px] shadow-2xl bg-thmBackground'
+      )}
+    >
+      {padded ? <div className="flex flex-col space-y-2 m-4">{children}</div> : { children }}
+    </div>
+  );
 }

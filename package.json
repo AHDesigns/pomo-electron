@@ -99,6 +99,7 @@
     "@xstate/cli": "0.1.5",
     "@xstate/inspect": "0.6.2",
     "@xstate/react": "2.0.0",
+    "classnames": "^2.3.1",
     "dotenv": "10.0.0",
     "electron-devtools-installer": "3.1.1",
     "electron-log": "4.3.2",

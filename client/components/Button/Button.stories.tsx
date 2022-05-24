@@ -7,28 +7,53 @@ export default {
   component: Button,
 } as ComponentMeta<typeof Button>;
 
-// interface IStory extends IButton {};
+const sharedArgs: Omit<IButton, 'type'> = {
+  fullWidth: false,
+  disabled: false,
+};
 
-const Template: ComponentStory<typeof Button> = (args) => (
-  <PageWrapper>
-    <Button {...args}>{args.children}</Button>
+export const VariantsCol: ComponentStory<typeof Button> = (args) => (
+  <PageWrapper padded>
+    <Button {...args} type="button" variant="primary">
+      Primary
+    </Button>
+    <Button {...args} type="button" variant="secondary">
+      secondary
+    </Button>
+    <Button {...args} type="button" variant="tertiary">
+      tertiary
+    </Button>
+  </PageWrapper>
+);
+VariantsCol.args = { ...sharedArgs };
+
+export const VariantsRow: ComponentStory<typeof Button> = (args) => (
+  <PageWrapper padded>
+    <div className="flex flex-row flex-wrap gap-1">
+      <Button {...args} type="button" variant="primary">
+        Primary
+      </Button>
+      <Button {...args} type="button" variant="secondary">
+        secondary
+      </Button>
+      <Button {...args} type="button" variant="tertiary">
+        tertiary
+      </Button>
+    </div>
   </PageWrapper>
 );
 
-// export const Primary = Template.bind({});
+VariantsRow.args = { ...sharedArgs };
 
-export const Primary = {
-  children: 'hello',
-};
+const Template: ComponentStory<typeof Button> = (args) => (
+  <PageWrapper padded>
+    <Button {...args} type="button">
+      {args.children}
+    </Button>
+  </PageWrapper>
+);
 
-// Primary.args = {
-//   children: 'hello',
-// };
-
-// export function PrimaryButton(): JSX.Element {
-//   return (
-//     <PageWrapper>
-//       <Button>Some button text</Button>
-//     </PageWrapper>
-//   );
-// }
+export const Primary = Template.bind({});
+Primary.args = { children: 'button' };
+export const PrimaryFullWidth = Template.bind({});
+PrimaryFullWidth.args = { children: 'button', fullWidth: true };
