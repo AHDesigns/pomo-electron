@@ -8,13 +8,12 @@ import pj from 'package.json';
 
 export type Pages = 'Pomodoro' | 'Settings';
 
-interface IPageManager {
-  inititalPage?: Pages;
+export interface IPageManager {
+  initialPage?: Pages;
 }
 
-export function PageManager({ inititalPage = 'Pomodoro' }: IPageManager = {}): JSX.Element {
-  const [page, navigatePageTo] = useState<Pages>(inititalPage);
-  // const theme = useTheme();
+export function PageManager({ initialPage = 'Pomodoro' }: IPageManager = {}): JSX.Element {
+  const [page, navigatePageTo] = useState<Pages>(initialPage);
 
   return (
     <div className="w-full h-full overflow-hidden text-thmWhite bg-thmBackground">

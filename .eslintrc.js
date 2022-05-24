@@ -183,6 +183,7 @@ module.exports = {
       rules: {
         '@typescript-eslint/consistent-type-assertions': 'off',
         'import/no-extraneous-dependencies': 'off',
+        'react/function-component-definition': 'off'
       },
     },
   ],
