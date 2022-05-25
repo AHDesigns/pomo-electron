@@ -17,14 +17,11 @@ type StoryArgs = (
   }
 ) => JSX.Element;
 
-export const PageManager: ComponentStory<StoryArgs> = (args) =>
-  args.wrapped ? (
-    <PageWrapper>
-      <Pages initialPage={args.initialPage} />
-    </PageWrapper>
-  ) : (
+export const PageManager: ComponentStory<StoryArgs> = (args) => (
+  <PageWrapper wrapped={args.wrapped}>
     <Pages initialPage={args.initialPage} />
-  );
+  </PageWrapper>
+);
 
 PageManager.args = {
   initialPage: 'Pomodoro',

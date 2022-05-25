@@ -4,9 +4,14 @@ import classNames from 'classnames';
 interface IPageWrapper {
   children: React.ReactNode;
   padded?: true;
+  wrapped?: boolean;
 }
 
-export function PageWrapper({ children, padded }: IPageWrapper): JSX.Element {
+export function PageWrapper({ children, padded, wrapped = true }: IPageWrapper): JSX.Element {
+  if (!wrapped) {
+    return <div className="bg-thmBackground w-full h-full">{children}</div>;
+  }
+
   return (
     <div
       className={classNames(

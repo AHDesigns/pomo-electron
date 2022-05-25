@@ -1,6 +1,6 @@
-import React, { FC, useState } from 'react';
-import { Pomodoro, Settings, Box, MenuButton } from '@client/components';
-import pj from 'package.json';
+import React, { useState } from 'react';
+import { Box, Pomodoro, Settings } from '@client/components';
+import { Header } from '@client/components/Header/Header';
 
 // const Header = styled.div`
 //   grid-template-columns: [left] 20% [middle] 60% [right] 20%;
@@ -18,21 +18,12 @@ export function PageManager({ initialPage = 'Pomodoro' }: IPageManager = {}): JS
   return (
     <div className="w-full h-full overflow-hidden text-thmWhite bg-thmBackground">
       <h1 style={{ display: 'none' }}>Pomodoro App</h1>
-      <header className="grid grid-cols-[20%_60%_20%]">
-        <MenuButton
-          onClick={() => {
-            navigatePageTo(page === 'Settings' ? 'Pomodoro' : 'Settings');
-          }}
-          showClose={page === 'Settings'}
-        />
-        <Box>
-          <h2 style={{ textAlign: 'center' }}>{page === 'Settings' ? 'Settings' : 'Timer'}</h2>
-        </Box>
-        <Box>
-          <p className="text-thmBackgroundBrightest">Beta</p>
-          <p className="text-thmBackgroundBright">{pj.version}</p>
-        </Box>
-      </header>
+      <Header
+        onClick={() => {
+          navigatePageTo(page === 'Settings' ? 'Pomodoro' : 'Settings');
+        }}
+        page={page}
+      />
       <Box classNames="flex-grow">
         {page === 'Settings' && <Settings />}
         {page === 'Pomodoro' && <Pomodoro />}

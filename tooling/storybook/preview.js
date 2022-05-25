@@ -6,9 +6,9 @@ import { createFakeHooks } from '../../client/machines';
 import { ErrorBoundary, ScrollBar } from '../../client/components';
 import '../../client/index.css';
 
-// export const parameters = {
-//   actions: { argTypesRegex: '^on[A-Z].*' },
-// };
+export const parameters = {
+  actions: { argTypesRegex: '^on[A-Z].*' },
+};
 
 export const decorators = [
   (Story) => (
@@ -24,7 +24,9 @@ function Providers({ children, hooks }) {
       <LoggerProvider>
         <ErrorBoundary>
           <ScrollBar />
-          <MachinesProvider hooks={{ ...createFakeHooks(), ...hooks }}>{children}</MachinesProvider>
+          <MachinesProvider hooks={{ ...createFakeHooks(), ...hooks }}>
+            <div className="text-thmWhite">{children}</div>
+          </MachinesProvider>
         </ErrorBoundary>
       </LoggerProvider>
     </BridgeProvider>

@@ -14,3 +14,5 @@ export * from './TimerProgress';
 export * from './Timer/Timer';
 export * from './Button/Button';
 export { IChildren } from '@shared/types';
+export { Header } from '@client/components/Header/Header';
+export { IHeader } from '@client/components/Header/Header';
