@@ -33,7 +33,7 @@ export function Button({
     <button
       className={classNames(
         common,
-        'bg-thmBright text-thmBackground disabled:text-thmBackground disabled:bg-thmBackgroundBright disabled:cursor-not-allowed hover:brightness-125 disabled:hover:brightness-100',
+        'bg-thmBright text-thmBackground  disabled:text-thmBackground disabled:bg-thmBackgroundBright disabled:cursor-not-allowed hover:brightness-125 disabled:hover:brightness-100',
         width
       )}
       {...props}
