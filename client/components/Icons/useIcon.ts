@@ -15,6 +15,6 @@ export function useIcon(props: SvgSize): IconProps {
   return {
     width,
     height,
-    color: 'red',
+    color: 'thm-bright',
   };
 }

@@ -16,7 +16,7 @@ export function PageManager({ initialPage = 'Pomodoro' }: IPageManager = {}): JS
   const [page, navigatePageTo] = useState<Pages>(initialPage);
 
   return (
-    <div className="w-full h-full overflow-hidden text-thmWhite bg-thmBackground">
+    <div className="h-full w-full overflow-y-scroll bg-thmBackground text-thmWhite">
       <h1 style={{ display: 'none' }}>Pomodoro App</h1>
       <Header
         onClick={() => {

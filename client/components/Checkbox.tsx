@@ -36,7 +36,7 @@ interface ICheckbox {
 
 export function Checkbox({ checked, onChange, styles, children }: ICheckbox): JSX.Element {
   return (
-    <div style={styles} className="flex text-lg cursor-pointer justify-between">
+    <div style={styles} className="flex cursor-pointer justify-between text-lg">
       {children}
       <Box>
         <input type="checkbox" className="sr-only" checked={checked} onChange={onChange} />

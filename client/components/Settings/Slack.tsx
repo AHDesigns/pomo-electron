@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useConfig, useBridge } from '@client/hooks';
 import { Button } from '@client/components';
-import { Setting } from './Setting';
-import { ButtonPair, Form, InputPassword, Label } from './Form';
+import { ButtonPair, InputPassword, Label, Setting } from './Components';
+import { FormItemPassword } from '@client/components/Form/FormItem';
 
 export function Slack(): JSX.Element | null {
   const config = useConfig();
@@ -39,90 +39,81 @@ export function Slack(): JSX.Element | null {
           },
         });
       }}
+      onSubmit={() => {
+        storeUpdate({
+          slack: {
+            slackToken: token,
+            slackDCookie: cookie,
+            slackDSCookie: sCookie,
+          },
+        });
+      }}
     >
-      {slack.enabled && (
-        <Form
-          onSubmit={(e) => {
-            e.preventDefault();
-            storeUpdate({
-              slack: {
-                slackToken: token,
-                slackDCookie: cookie,
-                slackDSCookie: sCookie,
-              },
-            });
+      <FormItemPassword
+        id="slackToken"
+        label="Token"
+        input={{
+          placeholder: 'xocx-...',
+          value: token,
+          onChange: (v) => setToken(v),
+        }}
+      />
+      <FormItemPassword
+        id="slackCookie"
+        label="Cookie 'd'"
+        input={{
+          placeholder: 'xocx-...',
+          value: cookie,
+          onChange: (v) => setCookie(v),
+        }}
+      />
+      <FormItemPassword
+        id="slackCookieD"
+        label="Cookie 'ds'"
+        input={{
+          placeholder: 'xocx-...',
+          value: sCookie,
+          onChange: (v) => setSCookie(v),
+        }}
+      />
+
+      <div
+        style={{
+          gridColumn: 'left / right',
+          textAlign: 'center',
+        }}
+      >
+        <Button
+          type="button"
+          variant="tertiary"
+          onClick={() => {
+            bridge.openExternal('https://github.com/AHDesigns/pomo-electron#slack-integration');
           }}
         >
-          <Label htmlFor="slackToken">Token</Label>
-          <InputPassword
-            name="slackToken"
-            id="slackToken"
-            placeholder="xocx-..."
-            value={token}
-            onChange={({ target }) => {
-              setToken(target.value);
-            }}
-          />
-          <Label htmlFor="slackCookie">Cookie "d"</Label>
-          <InputPassword
-            name="slackCookie"
-            id="slackCookie"
-            placeholder="xocx-..."
-            value={cookie}
-            onChange={({ target }) => {
-              setCookie(target.value);
-            }}
-          />
-          <Label htmlFor="slackCookieD">Cookie "ds"</Label>
-          <InputPassword
-            name="slackCookieD"
-            id="slackCookieD"
-            placeholder="xocx-..."
-            value={sCookie}
-            onChange={({ target }) => {
-              setSCookie(target.value);
-            }}
-          />
-
-          <div
-            style={{
-              gridColumn: 'left / right',
-              textAlign: 'center',
+          where do I get these from?
+        </Button>
+      </div>
+      <ButtonPair
+        Confirm={
+          <Button disabled={canSubmit} type="submit">
+            Submit
+          </Button>
+        }
+        Cancel={
+          <Button
+            disabled={[token, cookie].includes('')}
+            type="button"
+            variant="secondary"
+            onClick={() => {
+              setToken(initialToken);
+              setCookie(initialCookie);
+              setSCookie(initialSCookie);
             }}
           >
-            <Button
-              type="button"
-              variant="tertiary"
-              onClick={() => {
-                bridge.openExternal('https://github.com/AHDesigns/pomo-electron#slack-integration');
-              }}
-            >
-              where do I get these from?
-            </Button>
-          </div>
-          <ButtonPair
-            Confirm={
-              <Button disabled={canSubmit} type="submit">
-                Submit
-              </Button>
-            }
-            Cancel={
-              <Button
-                disabled={[token, cookie].includes('')}
-                type="button"
-                variant="secondary"
-                onClick={() => {
-                  setToken(initialToken);
-                  setCookie(initialCookie);
-                  setSCookie(initialSCookie);
-                }}
-              >
-                Cancel
-              </Button>
-            }
-          />
-        </Form>
-      )}
+            Cancel
+          </Button>
+        }
+      />
     </Setting>
   );
 }

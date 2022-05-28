@@ -1,18 +1,7 @@
-import React, { useRef, useState } from 'react';
-import { IChildren, Icons } from '@client/components';
+import React, { ChangeEventHandler, ReactNode, useRef, useState } from 'react';
+import { Box, Checkbox, IChildren, Icons } from '@client/components';
 
 const { EyeClosed, EyeOpen } = Icons;
-
-// export const Form = styled.form`
-//   display: grid;
-//   grid-template-columns: [left] 35% [middle-l] 1fr [middle-r] 40% [right-l] 1fr [button] 15% [right];
-//   gap: ${({ theme }) => theme.spacing.normal}px 0;
-//   margin: 0 ${({ theme }) => theme.spacing.normal}px ${({ theme }) => theme.spacing.normal}px;
-// `;
-
-export function Form({ children }: IChildren): JSX.Element {
-  return <form>{children}</form>;
-}
 
 export function Label({ children }: IChildren): JSX.Element {
   return <label>{children}</label>;
@@ -23,56 +12,20 @@ export function Label({ children }: IChildren): JSX.Element {
 //   line-height: 2em;
 // `;
 
-interface IInputText {
-  error?: boolean;
+export function ErrorMsg({
+  children,
+  ...props
+}: IChildren & React.HTMLAttributes<HTMLParagraphElement>): JSX.Element {
+  return (
+    <p {...props} className="text-thmRed">
+      {children}
+    </p>
+  );
 }
-
-export function InputText({ children }: IChildren): JSX.Element {
-  return <input>{children}</input>;
-}
-
-// export const InputText = styled.input<IInputText>`
-//   grid-column: middle-r / right;
-//   text-align: left;
-//
-//   color: ${({ theme }) => theme.palette.whiteBright};
-//   background: ${({ theme }) => theme.palette.backgroundBright};
-//   border: thin solid ${({ theme }) => theme.palette.backgroundProminent};
-//
-//   border-radius: 3px;
-//   line-height: 2em;
-//   padding-left: 5px;
-//   width: 100%;
-//
-//   ${({ theme, error }) =>
-//     error &&
-//     `
-//       outline: none;
-//       box-shadow: 0 0 0 0.05em ${theme.palette.red}, 0 0 0 0.15em ${theme.palette.red};
-//     `}
-//
-//   &:focus {
-//     outline: none;
-//     box-shadow: 0 0 0 0.05em
-//         ${({ theme, error }) => (error ? theme.palette.red : theme.palette.background)},
-//       0 0 0 0.15em ${({ theme, error }) => (error ? theme.palette.red : theme.palette.bright)};
-//   }
-// `;
-
-export function ErrorMsg({ children }: IChildren): JSX.Element {
-  return <p>{children}</p>;
-}
-// export const ErrorMsg = styled.p`
-//   color: ${({ theme }) => theme.palette.red};
-//   grid-column: left / right;
-// `;
 
 export function InputPwd({ children }: IChildren): JSX.Element {
   return <input type={'password'} />;
 }
-// const InputPwd = styled(InputText)`
-//   grid-column: left / right-l;
-// `;
 
 export function PwdToggle({ children }: IChildren): JSX.Element {
   return <button>{children}</button>;
@@ -138,5 +91,55 @@ export function ButtonPair({ Confirm, Cancel }: IButtonPair): JSX.Element {
       <div className="mr-2">{Confirm}</div>
       {Cancel}
     </div>
+  );
+}
+
+interface ISettingCommon {
+  heading: string;
+  children: ReactNode;
+  onSubmit(): void;
+}
+
+interface ISettingSimple extends ISettingCommon {
+  variant: 'simple';
+}
+
+interface ISettingToggle extends ISettingCommon {
+  variant: 'toggle';
+  onToggle: ChangeEventHandler<HTMLInputElement>;
+  checked: boolean;
+}
+
+type ISetting = ISettingSimple | ISettingToggle;
+
+export function Setting({ children, heading, onSubmit, ...props }: ISetting): JSX.Element {
+  return (
+    <Box classNames="">
+      <div
+        className="mb-2 bg-thmBackgroundProminent py-2 px-2"
+        // style={{
+        //   padding: `${theme.spacing.small}px ${theme.spacing.normal}px`,
+        //   marginBottom: `${theme.spacing.normal}px`,
+        //   backgroundColor: theme.palette.backgroundProminent,
+        // }}
+      >
+        {props.variant === 'toggle' ? (
+          <Checkbox checked={props.checked} onChange={props.onToggle}>
+            <h2 className="text-2xl">{heading}</h2>
+          </Checkbox>
+        ) : (
+          <h2 className="text-2xl">{heading}</h2>
+        )}
+      </div>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit();
+        }}
+        className="mx-2 flex flex-col"
+      >
+        {children}
+      </form>
+    </Box>
   );
 }

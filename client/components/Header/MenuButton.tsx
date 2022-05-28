@@ -44,7 +44,7 @@ export function MenuButton({ onClick, showClose }: IMenuButton): JSX.Element {
     <button
       type="button"
       onClick={onClick}
-      className="menu-button outline-1 outline-thmPrimary p-[10px] outline-offset-[-5px]"
+      className="menu-button p-[10px] outline-1 outline-offset-[-5px] outline-thmPrimary"
     >
       <span className="sr-only">{showClose ? 'timer' : 'settings'}</span>
       <Hamburger showClose={showClose} />

@@ -5,20 +5,32 @@ interface IPageWrapper {
   children: React.ReactNode;
   padded?: true;
   wrapped?: boolean;
+  centered?: true;
 }
 
-export function PageWrapper({ children, padded, wrapped = true }: IPageWrapper): JSX.Element {
+export function PageWrapper({
+  children,
+  padded,
+  wrapped = true,
+  centered,
+}: IPageWrapper): JSX.Element {
   if (!wrapped) {
-    return <div className="bg-thmBackground w-full h-full">{children}</div>;
+    return <div className="h-full w-full bg-thmBackground">{children}</div>;
   }
 
   return (
     <div
       className={classNames(
-        'w-[300px] h-[300px] overflow-y-hidden mx-auto my-4 rounded-[13px] shadow-2xl bg-thmBackground'
+        'mx-auto my-4 h-[300px] w-[300px] rounded-[13px] bg-thmBackground shadow-2xl'
       )}
     >
-      {padded ? <div className="flex flex-col space-y-2 m-4">{children}</div> : children}
+      {padded ? (
+        <div className={`m-4 flex flex-col space-y-2 ${centered ? 'h-full justify-center' : ''}`}>
+          {children}
+        </div>
+      ) : (
+        children
+      )}
     </div>
   );
 }

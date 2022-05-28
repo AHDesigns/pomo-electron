@@ -4,7 +4,8 @@ import classNames from 'classnames';
 import React, { ButtonHTMLAttributes } from 'react';
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
-  Required<Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>>;
+  Partial<Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>>;
+// Required<Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>>;
 
 export interface IButton extends ButtonProps {
   variant?: 'primary' | 'secondary' | 'tertiary';
@@ -17,23 +18,21 @@ export interface IButton extends ButtonProps {
 const common =
   'rounded w-fit p-2 px-4 uppercase transition-colors hover:brightness-125 disabled:hover:brightness-100 disabled:cursor-not-allowed outline-0 focus:outline-1 focus:outline-offset-1 focus:outline-thmBright active:brightness-150 shadow-3xl';
 
-function not(arg?: boolean): boolean {
-  return !arg;
-}
-
 export function Button({
   children,
   variant,
   fullWidth,
+  type = 'button',
   ...props
 }: IButton & IChildren): JSX.Element {
   const width = fullWidth ? 'w-full' : 'w-fit';
   // eslint-disable-next-line no-nested-ternary
   return !variant || variant === 'primary' ? (
     <button
+      type={type}
       className={classNames(
         common,
-        'bg-thmBright text-thmBackground  disabled:text-thmBackground disabled:bg-thmBackgroundBright disabled:cursor-not-allowed hover:brightness-125 disabled:hover:brightness-100',
+        'bg-thmBright text-thmBackground  hover:brightness-125 disabled:cursor-not-allowed disabled:bg-thmBackgroundBright disabled:text-thmBackground disabled:hover:brightness-100',
         width
       )}
       {...props}
@@ -42,9 +41,10 @@ export function Button({
     </button>
   ) : variant === 'secondary' ? (
     <button
+      type={type}
       className={classNames(
         common,
-        'disabled:text-thmBackground disabled:bg-thmBackgroundProminent bg-thmBackgroundBrightest text-thmWhite',
+        'bg-thmBackgroundBrightest text-thmWhite disabled:bg-thmBackgroundProminent disabled:text-thmBackground',
         width
       )}
       {...props}
@@ -53,9 +53,10 @@ export function Button({
     </button>
   ) : (
     <button
+      type={type}
       className={classNames(
         common,
-        'text-thmBright border-2 disabled:border-thmBackgroundBrightest disabled:text-thmBackgroundBrightest ',
+        'border-2 text-thmBright disabled:border-thmBackgroundBrightest disabled:text-thmBackgroundBrightest ',
         width
       )}
       {...props}
