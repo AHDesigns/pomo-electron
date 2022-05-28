@@ -1,15 +1,15 @@
 import React, { useRef } from 'react';
+import { useActor } from '@xstate/react';
 import T from '@client/copy';
-import { useTimerSettings } from '@client/hooks';
 import { Button } from '@client/components';
-import { timerSettingsModel } from '@client/machines';
-import { ButtonPair, ErrorMsg, InputText, Label, Setting } from './Components';
-import { InputNumber } from '@client/components/Inputs/InputNumber';
+import { TimerSettingsActorRef, timerSettingsModel } from '@client/machines';
+import { FormItemNumber } from '@client/components/Form/FormItem';
+import { Setting } from './Setting';
 
 const { CANCEL, SAVE, UPDATE } = timerSettingsModel.events;
 
-export function Timer(): JSX.Element {
-  const [state, send] = useTimerSettings();
+export function Timer({ actor }: { actor: TimerSettingsActorRef }): JSX.Element {
+  const [state, send] = useActor(actor);
   const {
     context: { long, pomo, short },
   } = state;
@@ -24,92 +24,66 @@ export function Timer(): JSX.Element {
         inputRef.current?.focus();
       }}
     >
-      <TimerInput
-        name="Pomodoro"
+      <FormItemNumber
+        label="Pomodoro"
         ariaLabel="Set the duration, in minutes, of a pomodoro timer"
         error={pomo.error}
-        value={pomo.value}
-        onChange={(n) => {
-          send(UPDATE('pomo', n));
+        input={{
+          min: 1,
+          max: 100,
+          value: pomo.value,
+          onChange: (n) => {
+            send(UPDATE('pomo', n));
+          },
         }}
       />
-      <TimerInput
-        name="Short Break"
+      <FormItemNumber
+        label="Short Break"
         ariaLabel="Set the duration, in minutes, of each short break timer between pomodoros"
         error={short.error}
-        value={short.value}
-        onChange={(n) => {
-          send(UPDATE('short', n));
+        input={{
+          min: 1,
+          max: 100,
+          value: short.value,
+          onChange: (n) => {
+            send(UPDATE('short', n));
+          },
         }}
       />
-      <TimerInput
-        name="Long Break"
+      <FormItemNumber
+        label="Long Break"
         ariaLabel="Set the duration, in minutes, of each long break timer which runs after completing several pomodoros"
         error={long.error}
-        value={long.value}
-        onChange={(n) => {
-          send(UPDATE('long', n));
+        input={{
+          min: 1,
+          max: 100,
+          value: long.value,
+          onChange: (n) => {
+            send(UPDATE('long', n));
+          },
         }}
       />
-      <ButtonPair
-        Confirm={
-          <Button
-            disabled={!state.can('SAVE')}
-            type="submit"
-            style={{ gridColumn: 'middle-r / right' }}
-          >
-            {T.settings.submit}
-          </Button>
-        }
-        Cancel={
-          <Button
-            disabled={!state.can('CANCEL')}
-            type="button"
-            variant="secondary"
-            style={{ gridColumn: 'middle-r / right' }}
-            onClick={() => {
-              send(CANCEL());
-              inputRef.current?.focus();
-            }}
-          >
-            {T.settings.cancel}
-          </Button>
-        }
-      />
+      <div className="flex justify-between">
+        <Button
+          disabled={!state.can('SAVE')}
+          type="submit"
+          style={{ gridColumn: 'middle-r / right' }}
+        >
+          {T.settings.submit}
+        </Button>
+        <Button
+          disabled={!state.can('CANCEL')}
+          type="button"
+          variant="secondary"
+          style={{ gridColumn: 'middle-r / right' }}
+          onClick={() => {
+            send(CANCEL());
+            inputRef.current?.focus();
+          }}
+        >
+          {T.settings.cancel}
+        </Button>
+      </div>
     </Setting>
-  );
-}
-
-interface ITimerInput {
-  name: string;
-  ariaLabel: string;
-  error?: string;
-  value: number;
-  onChange: (n: number) => void;
-}
-
-function TimerInput({ name, onChange, value, error, ariaLabel }: ITimerInput): JSX.Element {
-  const id = `timer-form-${name.toLowerCase().replace(/ /g, '-')}`;
-  return (
-    <>
-      <label htmlFor={id} aria-label={ariaLabel}>
-        {name}
-      </label>
-      <InputNumber
-        id={id}
-        hasError={Boolean(error)}
-        min={1}
-        max={120}
-        value={value}
-        onChange={(n) => {
-          onChange(n);
-        }}
-      />
-      {error && (
-        <ErrorMsg id={`${id}-error`} aria-live="polite">
-          {error}
-        </ErrorMsg>
-      )}
-    </>
   );
 }

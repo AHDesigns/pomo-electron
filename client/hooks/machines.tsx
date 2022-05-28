@@ -84,7 +84,5 @@ export const useTimerSettings = () => {
     (c) => c.children[actorIds.TIMER_SETTINGS] as TimerSettingsActorRef | null
   );
 
-  if (!settings) throw new ActorError(config, actorIds.TIMER_SETTINGS);
-
-  return useActor(settings);
+  return settings;
 };

@@ -1,5 +1,5 @@
 import React, { ChangeEventHandler, CSSProperties } from 'react';
-import { Box } from '@client/components';
+import { Box } from '@client/components/index';
 
 /**
  * Hide checkbox visually but remain accessible to screen readers.

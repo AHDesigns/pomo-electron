@@ -30,8 +30,8 @@ export function InputNumber({
       {...(hasError && {
         'aria-describedby': `${id}-error`,
       })}
-      min={1}
-      max={120}
+      min={min}
+      max={max}
       value={value}
       onChange={({ target: { value: n } }) => {
         onChange(Number(n));

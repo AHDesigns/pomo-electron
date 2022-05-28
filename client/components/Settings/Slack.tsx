@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { useConfig, useBridge } from '@client/hooks';
+import { useBridge, useConfig } from '@client/hooks';
 import { Button } from '@client/components';
-import { ButtonPair, InputPassword, Label, Setting } from './Components';
 import { FormItemPassword } from '@client/components/Form/FormItem';
+import { Setting } from './Setting';
 
 export function Slack(): JSX.Element | null {
   const config = useConfig();
@@ -93,27 +93,23 @@ export function Slack(): JSX.Element | null {
           where do I get these from?
         </Button>
       </div>
-      <ButtonPair
-        Confirm={
-          <Button disabled={canSubmit} type="submit">
-            Submit
-          </Button>
-        }
-        Cancel={
-          <Button
-            disabled={[token, cookie].includes('')}
-            type="button"
-            variant="secondary"
-            onClick={() => {
-              setToken(initialToken);
-              setCookie(initialCookie);
-              setSCookie(initialSCookie);
-            }}
-          >
-            Cancel
-          </Button>
-        }
-      />
+      <div className="flex justify-between">
+        <Button disabled={canSubmit} type="submit">
+          Submit
+        </Button>
+        <Button
+          disabled={[token, cookie].includes('')}
+          type="button"
+          variant="secondary"
+          onClick={() => {
+            setToken(initialToken);
+            setCookie(initialCookie);
+            setSCookie(initialSCookie);
+          }}
+        >
+          Cancel
+        </Button>
+      </div>
     </Setting>
   );
 }

@@ -1,34 +1,42 @@
 import React, { useRef, useState } from 'react';
-import { InputNumber, IInputNumber } from '@client/components/Inputs/InputNumber';
+import { IInputNumber, InputNumber } from '@client/components/Inputs/InputNumber';
 import { IInputPassword, InputPassword } from '@client/components/Inputs/InputPassword';
 import { EyeClosed, EyeOpen } from '@client/components/Icons';
 import { IChildren } from '@shared/types';
 
 interface IFormItemNumber extends IFormItem {
-  input: Omit<IInputNumber, 'id'>;
+  input: Omit<IInputNumber, 'hasError' | 'id'>;
 }
 
-export function FormItemNumber({ id, input, label }: IFormItemNumber): JSX.Element {
+export function FormItemNumber({ id: _id, input, label, error }: IFormItemNumber): JSX.Element {
+  const id = _id ?? `${label}form-input`;
   return (
-    <FormItem id={id} label={label}>
-      <InputNumber {...input} id={id} />
+    <FormItem id={id} label={label} error={error}>
+      <InputNumber {...input} id={id} hasError={Boolean(error)} />
     </FormItem>
   );
 }
 
 interface IFormItemPassword extends IFormItem {
-  input: Omit<IInputPassword, 'id'>;
+  input: Omit<IInputPassword, 'hasError' | 'id'>;
 }
 
-export function FormItemPassword({ id, input, label }: IFormItemPassword): JSX.Element {
+export function FormItemPassword({ id: _id, input, label, error }: IFormItemPassword): JSX.Element {
+  const id = _id ?? `${label}form-input`;
   const [isVisible, setIsVisible] = useState(false);
   const inputEl = useRef<HTMLInputElement>(null);
 
   return (
-    <FormItem label={label} id={label}>
+    <FormItem id={id} label={label} error={error}>
       <div className="flex gap-1">
         <div className="grow">
-          <InputPassword {...input} ref={inputEl} id={id} type={isVisible ? 'text' : 'password'} />
+          <InputPassword
+            {...input}
+            ref={inputEl}
+            id={id}
+            hasError={Boolean(error)}
+            type={isVisible ? 'text' : 'password'}
+          />
         </div>
         <button
           type="button"
@@ -54,15 +62,42 @@ export function FormItemPassword({ id, input, label }: IFormItemPassword): JSX.E
 }
 
 interface IFormItem {
-  id: string;
+  id?: string;
   label: string;
+  ariaLabel?: string;
+  error?: string;
 }
 
-function FormItem({ id, label, children }: IChildren & IFormItem): JSX.Element {
+function FormItem({
+  id: _id,
+  label,
+  children,
+  error,
+  ariaLabel,
+}: IChildren & IFormItem): JSX.Element {
+  const id = _id ?? `${label}form-input`;
   return (
-    <div className="flex max-w-md flex-col">
-      <label htmlFor={id}>{label}</label>
+    <div className="flex max-w-md flex-col gap-3 ">
+      <label htmlFor={id} aria-label={ariaLabel} className="leading-8">
+        {label}
+      </label>
       {children}
+      {error && (
+        <ErrorMsg id={`${id}-error`} aria-live="polite">
+          {error}
+        </ErrorMsg>
+      )}
     </div>
+  );
+}
+
+function ErrorMsg({
+  children,
+  ...props
+}: IChildren & React.HTMLAttributes<HTMLParagraphElement>): JSX.Element {
+  return (
+    <p {...props} className="text-thmRed">
+      {children}
+    </p>
   );
 }

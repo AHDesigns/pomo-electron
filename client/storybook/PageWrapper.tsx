@@ -21,16 +21,18 @@ export function PageWrapper({
   return (
     <div
       className={classNames(
-        'mx-auto my-4 h-[300px] w-[300px] rounded-[13px] bg-thmBackground shadow-2xl'
+        'mx-auto my-4 h-[300px] w-[300px] overflow-x-scroll rounded-[13px] bg-thmBackground shadow-2xl'
       )}
     >
-      {padded ? (
-        <div className={`m-4 flex flex-col space-y-2 ${centered ? 'h-full justify-center' : ''}`}>
-          {children}
-        </div>
-      ) : (
-        children
-      )}
+      <div className="absolute h-[300px] w-[300px]">
+        {padded ? (
+          <div className={`m-4 flex flex-col space-y-2 ${centered ? 'h-full justify-center' : ''}`}>
+            {children}
+          </div>
+        ) : (
+          children
+        )}
+      </div>
     </div>
   );
 }

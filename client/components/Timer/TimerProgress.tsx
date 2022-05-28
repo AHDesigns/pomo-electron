@@ -1,5 +1,5 @@
 import React from 'react';
-import { testWrap } from './testWrap/testComp';
+import { testWrap } from '../testWrap/testComp';
 
 interface ITimerProgress {
   duration: number;

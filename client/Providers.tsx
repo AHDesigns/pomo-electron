@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 // import { ThemeProvider } from 'styled-components';
 // import { theme } from '@client/styles/theme';
-import { ErrorBoundary, ScrollBar, PageManager } from '@client/components';
+import { ErrorBoundary, ScrollBar } from '@client/components';
 import { BridgeProvider, MachinesProvider, LoggerProvider } from '@client/hooks/providers';
 import { IBridge } from '@shared/types';
+import { PageManager } from '@client/pages/PageManager';
 // import { GlobalStyle } from './styles/GlobalStyle';
 import { App } from './App';
 import { hooks } from './integrations';
