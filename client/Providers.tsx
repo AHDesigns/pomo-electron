@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
-// import { ThemeProvider } from 'styled-components';
-// import { theme } from '@client/styles/theme';
 import { ErrorBoundary, ScrollBar } from '@client/components';
-import { BridgeProvider, MachinesProvider, LoggerProvider } from '@client/hooks/providers';
+import { BridgeProvider, LoggerProvider, MachinesProvider } from '@client/hooks/providers';
+import { ThemeProvider } from '@client/hooks/useTheme';
 import { IBridge } from '@shared/types';
 import { PageManager } from '@client/pages/PageManager';
-// import { GlobalStyle } from './styles/GlobalStyle';
 import { App } from './App';
 import { hooks } from './integrations';
 
@@ -29,17 +27,16 @@ export function Providers({ bridge }: IProviders): JSX.Element {
   ) : (
     <BridgeProvider bridge={bridge}>
       <LoggerProvider>
-        <ErrorBoundary>
-          {/* <ThemeProvider theme={theme}> */}
-          {/*   <GlobalStyle /> */}
-          <ScrollBar />
-          <MachinesProvider hooks={hooks}>
-            <App shouldInspect={shouldInspect}>
-              <PageManager />
-            </App>
-          </MachinesProvider>
-          {/* </ThemeProvider> */}
-        </ErrorBoundary>
+        <ThemeProvider theme="nord">
+          <ErrorBoundary>
+            <ScrollBar />
+            <MachinesProvider hooks={hooks}>
+              <App shouldInspect={shouldInspect}>
+                <PageManager />
+              </App>
+            </MachinesProvider>
+          </ErrorBoundary>
+        </ThemeProvider>
       </LoggerProvider>
     </BridgeProvider>
   );
