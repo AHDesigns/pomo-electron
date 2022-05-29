@@ -68,7 +68,7 @@ interface IFormItem {
   error?: string;
 }
 
-function FormItem({
+export function FormItem({
   id: _id,
   label,
   children,

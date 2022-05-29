@@ -1,4 +1,6 @@
 /* eslint-disable no-nested-ternary */
+import { Theme } from '@client/components/Settings/Theme';
+import classNames from 'classnames';
 import React, { useState } from 'react';
 import { Box } from '@client/components';
 import { Header } from '@client/components/Header/Header';
@@ -7,10 +9,6 @@ import { Timer } from '@client/components/Settings/Timer';
 import { Slack } from '@client/components/Settings/Slack';
 import { useTimerSettings } from '@client/hooks';
 import { Pomodoro } from '@client/pages/Pomodoro';
-
-// const Header = styled.div`
-//   grid-template-columns: [left] 20% [middle] 60% [right] 20%;
-// `;
 
 export type Pages = 'Slack Settings' | 'Theme Settings' | 'Timer Settings' | 'Timer';
 
@@ -42,7 +40,11 @@ export function PageManager({ initialPage = 'Timer' }: IPageManager = {}): JSX.E
           }}
         />
       ) : (
-        <Box className="flex-grow">
+        <div
+          className={`flex flex-grow flex-col justify-items-stretch ${
+            page === 'Timer' ? 'justify-center' : 'justify-start'
+          }`}
+        >
           {page === 'Timer' ? (
             <Pomodoro />
           ) : page === 'Timer Settings' ? (
@@ -53,10 +55,12 @@ export function PageManager({ initialPage = 'Timer' }: IPageManager = {}): JSX.E
             )
           ) : page === 'Slack Settings' ? (
             <Slack />
+          ) : page === 'Theme Settings' ? (
+            <Theme />
           ) : (
             <p>ahh!</p>
           )}
-        </Box>
+        </div>
       )}
     </div>
   );

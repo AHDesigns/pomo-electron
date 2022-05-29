@@ -2,7 +2,7 @@
 import React from 'react';
 import { fakeRepositories } from '../../electron/repositories/fakes';
 import { BridgeProvider, LoggerProvider, MachinesProvider } from '../../client/hooks/providers';
-import { useTheme } from '../../client/hooks';
+import { ThemeProvider, useTheme } from '../../client/hooks';
 import { createFakeHooks } from '../../client/machines';
 import { ErrorBoundary, ScrollBar } from '../../client/components';
 import '../../client/index.css';
@@ -24,15 +24,19 @@ export const globalTypes = {
 };
 
 export const decorators = [
-  WithThemeProvider,
-  (Story) => (
-    <Providers>
-      <Story />
-    </Providers>
+  (Story, context) => (
+    <ThemeProvider theme="nord">
+      <Providers context={context}>
+        <Story />
+      </Providers>
+    </ThemeProvider>
   ),
 ];
 
-function Providers({ children, hooks }) {
+function Providers({ children, hooks, context }) {
+  const [, setTheme] = useTheme();
+  setTheme(context.globals.theme);
+
   return (
     <BridgeProvider bridge={fakeRepositories()}>
       <LoggerProvider>
@@ -45,9 +49,4 @@ function Providers({ children, hooks }) {
       </LoggerProvider>
     </BridgeProvider>
   );
-}
-
-function WithThemeProvider(Story, context) {
-  useTheme(context.globals.theme);
-  return <Story {...context} />;
 }

@@ -1,28 +1,49 @@
-import React, { useContext, useEffect } from 'react';
+import { assertUnreachable } from '@shared/asserts';
 import { IChildren } from '@shared/types';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 
-export type ThemeName = 'nord-light' | 'nord';
+export const themes = ['nord-light', 'nord'] as const;
+export type ThemeName = typeof themes[number];
 
-export function ThemeProvider({ theme, children }: IChildren & { theme: ThemeName }): JSX.Element {
-  return <themeContext.Provider value={theme}>{children}</themeContext.Provider>;
+function updateTheme(theme: ThemeName): void {
+  const r = document.querySelector<HTMLElement>(':root')?.style;
+
+  if (!r) throw new Error('could not get :root selector for styles');
+
+  themeReset(r);
+
+  switch (theme) {
+    case 'nord-light':
+      return nordLight(r);
+    case 'nord':
+      return nord(r);
+    default:
+      return assertUnreachable(theme);
+  }
 }
 
-const themeContext = React.createContext<ThemeName>('nord');
-
-export function useTheme(themeOverride?: ThemeName): void {
-  const themeC = useContext(themeContext);
-  const theme = themeOverride ?? themeC;
+export function ThemeProvider({
+  theme: _theme,
+  children,
+}: IChildren & { theme: ThemeName }): JSX.Element {
+  const [theme, setTheme] = useState(_theme);
+  const value: ThemeContext = useMemo(() => [theme, setTheme], [theme, setTheme]);
 
   useEffect(() => {
-    const r = document.querySelector<HTMLElement>(':root')?.style;
-    if (!r) return;
-    themeReset(r);
-    if (theme === 'nord') {
-      nord(r);
-    } else if (theme === 'nord-light') {
-      nordLight(r);
-    }
+    updateTheme(theme);
   }, [theme]);
+
+  return <themeContext.Provider value={value}>{children}</themeContext.Provider>;
+}
+
+type ThemeContext = [theme: ThemeName, setTheme: (theme: ThemeName) => void];
+
+const themeContext = React.createContext<ThemeContext | null>(null);
+
+export function useTheme(): ThemeContext {
+  const themeC = useContext(themeContext);
+  if (!themeC) throw new Error('please use ThemeProvider');
+  return themeC;
 }
 
 function themeReset(r: CSSStyleDeclaration): void {
@@ -164,3 +185,52 @@ function nordLight(r: CSSStyleDeclaration): void {
   r.setProperty('--color-green', 'var(--col-green)');
   r.setProperty('--color-magenta', 'var(--col-magenta)');
 }
+
+export const colors = [
+  '--col-null',
+  '--col-bg',
+  '--col-bg-alt',
+  '--col-base0',
+  '--col-base1',
+  '--col-base2',
+  '--col-base3',
+  '--col-base4',
+  '--col-base5',
+  '--col-base6',
+  '--col-base7',
+  '--col-base8',
+  '--col-fg',
+  '--col-fg-alt',
+  '--col-grey',
+  '--col-red',
+  '--col-orange',
+  '--col-green',
+  '--col-teal',
+  '--col-yellow',
+  '--col-blue',
+  '--col-dark-blue',
+  '--col-magenta',
+  '--col-violet',
+  '--col-cyan',
+  '--col-dark-cyan',
+] as const;
+
+export const palette = [
+  '--color-background',
+  '--color-backgroundProminent',
+  '--color-backgroundBright',
+  '--color-backgroundBrightest',
+  '--color-accent',
+  '--color-white',
+  '--color-whiteBright',
+  '--color-whiteBrightest',
+  '--color-primary',
+  '--color-bright',
+  '--color-secondary',
+  '--color-tertiary',
+  '--color-red',
+  '--color-orange',
+  '--color-yellow',
+  '--color-green',
+  '--color-magenta',
+] as const;
