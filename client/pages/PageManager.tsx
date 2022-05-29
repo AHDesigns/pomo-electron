@@ -12,19 +12,19 @@ import { Pomodoro } from '@client/pages/Pomodoro';
 //   grid-template-columns: [left] 20% [middle] 60% [right] 20%;
 // `;
 
-export type Pages = 'Pomodoro' | 'Slack' | 'Theme' | 'Timer';
+export type Pages = 'Slack Settings' | 'Theme Settings' | 'Timer Settings' | 'Timer';
 
 export interface IPageManager {
   initialPage?: Pages;
 }
 
-export function PageManager({ initialPage = 'Pomodoro' }: IPageManager = {}): JSX.Element {
+export function PageManager({ initialPage = 'Timer' }: IPageManager = {}): JSX.Element {
   const [navVisible, setNavVisible] = useState(false);
   const [page, navigatePageTo] = useState<Pages>(initialPage);
   const timerActor = useTimerSettings();
 
   return (
-    <div className="h-full w-full overflow-y-scroll bg-thmBackground text-thmWhite">
+    <div className="flex h-full w-full flex-col overflow-y-scroll bg-thmBackground text-base text-thmWhite">
       <h1 style={{ display: 'none' }}>Pomodoro App</h1>
       <Header
         onClick={() => {
@@ -33,28 +33,30 @@ export function PageManager({ initialPage = 'Pomodoro' }: IPageManager = {}): JS
         showClose={navVisible}
         page={page}
       />
-      <Box classNames="flex-grow">
-        {page === 'Pomodoro' ? (
-          <Pomodoro />
-        ) : page === 'Timer' ? (
-          timerActor ? (
-            <Timer actor={timerActor} />
-          ) : (
-            <p>'loading'</p>
-          )
-        ) : page === 'Slack' ? (
-          <Slack />
-        ) : (
-          <p>ahh!</p>
-        )}
-      </Box>
-      {navVisible && (
+      {navVisible ? (
         <Navigation
+          page={page}
           onNavigate={(p) => {
             setNavVisible(false);
             navigatePageTo(p);
           }}
         />
+      ) : (
+        <Box className="flex-grow">
+          {page === 'Timer' ? (
+            <Pomodoro />
+          ) : page === 'Timer Settings' ? (
+            timerActor ? (
+              <Timer actor={timerActor} />
+            ) : (
+              <p>'loading'</p>
+            )
+          ) : page === 'Slack Settings' ? (
+            <Slack />
+          ) : (
+            <p>ahh!</p>
+          )}
+        </Box>
       )}
     </div>
   );

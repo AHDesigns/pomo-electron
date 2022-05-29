@@ -3,43 +3,34 @@ import { Button } from '@client/components';
 import { Pages } from './PageManager';
 
 interface INavigation {
+  page: Pages;
   onNavigate(page: Pages): void;
 }
-export function Navigation({ onNavigate }: INavigation): JSX.Element {
+export function Navigation({ onNavigate, page }: INavigation): JSX.Element {
   return (
-    <div className="absolute top-11 h-full w-full backdrop-blur-md">
-      <ul className="mt-3 flex flex-col justify-center gap-3 text-center align-middle">
-        <li>
-          <Button
-            onClick={() => {
-              onNavigate('Slack');
-            }}
-            variant="tertiary"
-          >
-            Slack Settings
-          </Button>
-        </li>
-        <li>
-          <Button
-            onClick={() => {
-              onNavigate('Timer');
-            }}
-            variant="tertiary"
-          >
-            Timer Settings
-          </Button>
-        </li>
-        <li>
-          <Button
-            onClick={() => {
-              onNavigate('Theme');
-            }}
-            variant="tertiary"
-          >
-            Theme
-          </Button>
-        </li>
+    // <div className="absolute top-0 h-full w-full backdrop-blur-md">
+    <div className="h-full w-full grow backdrop-blur-md">
+      <ul className="mx-auto mt-3 flex w-fit flex-col justify-center space-y-4 align-middle">
+        <NavItem onNavigate={onNavigate} page={page} name="Timer" />
+        <NavItem onNavigate={onNavigate} page={page} name="Slack Settings" />
+        <NavItem onNavigate={onNavigate} page={page} name="Timer Settings" />
+        <NavItem onNavigate={onNavigate} page={page} name="Theme Settings" />
       </ul>
     </div>
+  );
+}
+
+function NavItem({ onNavigate, page, name }: INavigation & { name: Pages }): JSX.Element | null {
+  return page === name ? null : (
+    <li>
+      <Button
+        onClick={() => {
+          onNavigate(name);
+        }}
+        variant="tertiary"
+      >
+        {name}
+      </Button>
+    </li>
   );
 }

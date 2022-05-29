@@ -38,7 +38,7 @@ export function Timer({ timerRef, title, duration }: ITimer): JSX.Element {
         <p className="text-center text-thmBright">{title}</p>
       </Box>
       <Box
-        classNames="mt-[-7px]"
+        className="mt-[7px]"
         style={{
           gridRow: 'center / bottom',
           gridColumn: 'middle / right',
@@ -63,7 +63,7 @@ export function Timer({ timerRef, title, duration }: ITimer): JSX.Element {
         >
           {state.can('START') && (
             <Button
-              variant="secondary"
+              // variant="secondary"
               onClick={() => {
                 send({ type: 'START' });
               }}

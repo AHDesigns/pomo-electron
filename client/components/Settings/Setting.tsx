@@ -21,14 +21,14 @@ type ISetting = ISettingSimple | ISettingToggle;
 
 export function Setting({ children, heading, onSubmit, ...props }: ISetting): JSX.Element {
   return (
-    <Box classNames="">
+    <Box className="mb-8 mt-4">
       <div className="mb-2 bg-thmBackgroundProminent py-2 px-2">
         {props.variant === 'toggle' ? (
           <Checkbox checked={props.checked} onChange={props.onToggle}>
-            <h2 className="text-2xl">{heading}</h2>
+            <h2 className="text-lg">{heading}</h2>
           </Checkbox>
         ) : (
-          <h2 className="text-2xl">{heading}</h2>
+          <h2 className="text-lg">{heading}</h2>
         )}
       </div>
       <form

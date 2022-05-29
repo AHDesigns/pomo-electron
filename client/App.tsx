@@ -25,5 +25,5 @@ export function App({ children, shouldInspect }: IApp): JSX.Element {
   if (!loaded) {
     return <p data-testid="providers-loading">...booting</p>;
   }
-  return <>{children}</>;
+  return <div className="h-screen w-screen">{children}</div>;
 }

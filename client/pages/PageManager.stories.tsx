@@ -2,13 +2,12 @@ import { PageWrapper } from '@client/storybook';
 import React from 'react';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { IPageManager, PageManager as Pages } from './PageManager';
-import { Slack } from '@client/components/Settings/Slack';
 import { Navigation } from './Navigation';
 
 export default {
   component: Pages,
   args: {
-    initialPage: 'Pomodoro',
+    initialPage: 'Timer',
     wrapped: true,
   },
 } as ComponentMeta<StoryArgs>;
@@ -26,14 +25,11 @@ export const PageManager: ComponentStory<StoryArgs> = (args) => (
 );
 
 PageManager.args = {
-  initialPage: 'Pomodoro',
+  initialPage: 'Timer',
 };
 
 export const Nav: ComponentStory<StoryArgs> = (args) => (
   <PageWrapper wrapped={args.wrapped}>
-    <div className="mt-11">
-      <Slack />
-    </div>
-    <Navigation onNavigate={() => {}} />
+    <Navigation onNavigate={() => {}} page={args.initialPage ?? 'Timer'} />
   </PageWrapper>
 );
