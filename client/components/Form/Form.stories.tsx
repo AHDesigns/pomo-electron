@@ -7,13 +7,12 @@ export default {
   component: FormItemNumberC,
   args: {
     wrapped: true,
-    hasError: false,
   },
 } as ComponentMeta<StoryArgs>;
 
-type StoryArgs = (args: { wrapped: boolean; hasError: boolean }) => JSX.Element;
+type StoryArgs = (args: { wrapped: boolean; error?: string }) => JSX.Element;
 
-export const Form: ComponentStory<StoryArgs> = ({ wrapped, hasError }) => {
+export const Form: ComponentStory<StoryArgs> = ({ wrapped, error }) => {
   const [c, setC] = useState(0);
   const [s, setS] = useState('');
 
@@ -22,8 +21,8 @@ export const Form: ComponentStory<StoryArgs> = ({ wrapped, hasError }) => {
       <FormItemNumberC
         id="number item"
         label="Some number"
+        error={error}
         input={{
-          hasError,
           min: 0,
           max: 20,
           onChange(n) {
@@ -35,8 +34,8 @@ export const Form: ComponentStory<StoryArgs> = ({ wrapped, hasError }) => {
       <FormItemNumberC
         id="number item"
         label="Some number"
+        error={error}
         input={{
-          hasError,
           min: 0,
           max: 20,
           onChange: setC,
@@ -46,8 +45,8 @@ export const Form: ComponentStory<StoryArgs> = ({ wrapped, hasError }) => {
       <FormItemPassword
         id="ofijwef"
         label="input password"
+        error={error}
         input={{
-          hasError,
           placeholder: 'enter passowrd',
           onChange: setS,
           value: s,
@@ -57,7 +56,7 @@ export const Form: ComponentStory<StoryArgs> = ({ wrapped, hasError }) => {
   );
 };
 
-export const FormInputPassword: ComponentStory<StoryArgs> = ({ wrapped, hasError }) => {
+export const FormInputPassword: ComponentStory<StoryArgs> = ({ wrapped, error }) => {
   const [s, setS] = useState('');
 
   return (
@@ -65,8 +64,8 @@ export const FormInputPassword: ComponentStory<StoryArgs> = ({ wrapped, hasError
       <FormItemPassword
         id="ofijwef"
         label="input password"
+        error={error}
         input={{
-          hasError,
           placeholder: 'enter passowrd',
           onChange: setS,
           value: s,
@@ -76,7 +75,7 @@ export const FormInputPassword: ComponentStory<StoryArgs> = ({ wrapped, hasError
   );
 };
 
-export const FormInputNumber: ComponentStory<StoryArgs> = ({ wrapped, hasError }) => {
+export const FormInputNumber: ComponentStory<StoryArgs> = ({ wrapped, error }) => {
   const [c, setC] = useState(0);
 
   return (
@@ -84,8 +83,8 @@ export const FormInputNumber: ComponentStory<StoryArgs> = ({ wrapped, hasError }
       <FormItemNumberC
         id="number item"
         label="Some number"
+        error={error}
         input={{
-          hasError,
           min: 0,
           max: 20,
           onChange: setC,

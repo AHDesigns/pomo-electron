@@ -24,7 +24,7 @@ export function Setting({ children, heading, onSubmit, ...props }: ISetting): JS
     <Box className="mb-8 mt-4">
       <div className="mb-2 bg-thmBackgroundProminent py-2 px-2">
         {props.variant === 'toggle' ? (
-          <Checkbox checked={props.checked} onChange={props.onToggle}>
+          <Checkbox initiallyChecked={props.checked} onChange={props.onToggle}>
             <h2 className="text-lg">{heading}</h2>
           </Checkbox>
         ) : (

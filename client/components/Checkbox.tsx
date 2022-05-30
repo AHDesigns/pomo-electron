@@ -1,56 +1,46 @@
-import React, { ChangeEventHandler, CSSProperties } from 'react';
-import { Box } from '@client/components/index';
-
-/**
- * Hide checkbox visually but remain accessible to screen readers.
- * Source: https://polished.js.org/docs/#hidevisually
- */
-// const HiddenCheckbox = styled.input``;
-
-// const StyledCheckbox = styled.div<{ checked: boolean }>`
-//   display: inline-block;
-//   float: left;
-//   width: 16px;
-//   height: 16px;
-//   background: ${({ theme, checked }) =>
-//     checked ? theme.palette.bright : theme.palette.backgroundBrightest};
-//   border-radius: 3px;
-//   transition: all 150ms;
-//
-//   ${HiddenCheckbox}:focus + & {
-//     box-shadow: 0 0 0 0.05em ${({ theme }) => theme.palette.background},
-//       0 0 0 0.1em ${({ theme }) => theme.palette.bright};
-//   }
-//
-//   ${Icon} {
-//     visibility: ${(props) => (props.checked ? 'visible' : 'hidden')};
-//   }
-// `;
+import classNames from 'classnames';
+import React, { useState } from 'react';
+import './checkbox.css';
 
 interface ICheckbox {
-  checked: boolean;
-  onChange: ChangeEventHandler<HTMLInputElement>;
-  styles?: CSSProperties;
+  id: string;
+  initiallyChecked: boolean;
+  hasError?: boolean;
+  disabled?: boolean;
   children: React.ReactNode;
+  onChange(checked: boolean): void;
 }
 
-export function Checkbox({ checked, onChange, styles, children }: ICheckbox): JSX.Element {
+export function Checkbox({
+  initiallyChecked,
+  hasError,
+  children,
+  onChange,
+  disabled,
+  id,
+}: ICheckbox): JSX.Element {
+  const [checked, setChecked] = useState(initiallyChecked);
   return (
-    <div style={styles} className="flex cursor-pointer justify-between text-lg">
+    <label
+      htmlFor={id}
+      className={classNames('flex w-fit items-center space-x-2', {
+        'text-thmBackgroundBrightest': disabled,
+        'cursor-not-allowed': disabled,
+        'text-thmRed': hasError,
+      })}
+    >
       {children}
-      <Box>
-        <input type="checkbox" className="sr-only" checked={checked} onChange={onChange} />
-        <div>
-          <svg
-            className="float-left stroke-thmWhite"
-            fill="none"
-            strokeWidth="2px"
-            viewBox="0 0 24 24"
-          >
-            <polyline points="20 6 9 17 4 12" />
-          </svg>
-        </div>
-      </Box>
-    </div>
+      <input
+        disabled={disabled}
+        className="m-0 grid h-5 w-5 appearance-none place-content-center rounded bg-thmBackgroundBrightest outline-none transition-all focus:ring focus:ring-thmBright disabled:cursor-not-allowed disabled:bg-thmBackgroundProminent disabled:text-thmBackgroundBright"
+        id={id}
+        type="checkbox"
+        checked={checked}
+        onChange={() => {
+          setChecked(!checked);
+          onChange(!checked);
+        }}
+      />
+    </label>
   );
 }

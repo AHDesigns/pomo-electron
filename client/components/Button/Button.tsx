@@ -61,7 +61,7 @@ export function Button({
       type={type}
       className={classNames(
         colors,
-        'rounded border-none p-0 text-lg text-thmBright underline underline-offset-1 shadow-none outline-none hover:underline-offset-2 focus:ring  focus:ring-thmBright disabled:border-thmBackgroundBrightest disabled:text-thmBackgroundBrightest',
+        'rounded border-none p-0 text-thmBright underline underline-offset-1 shadow-none outline-none hover:underline-offset-2 focus:ring  focus:ring-thmBright disabled:border-thmBackgroundBrightest disabled:text-thmBackgroundBrightest',
         width
       )}
       {...props}

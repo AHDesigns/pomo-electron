@@ -4,7 +4,7 @@ import classNames from 'classnames';
 export interface IInputSelect<A> {
   id: string;
   hasError?: boolean;
-  readonly initialValue: A;
+  readonly initialValue: A | 'none';
   className?: string;
   readonly options: readonly A[];
   onChange(n: A): void;
@@ -20,7 +20,12 @@ export const InputSelectFactory = <A extends string>() =>
           ref={ref}
           className={classNames(
             'w-full rounded border border-thmBackgroundProminent bg-thmBackgroundBright p-2 outline-none',
-            hasError ? 'text-thmRed' : 'text-thmWhiteBright',
+            // eslint-disable-next-line no-nested-ternary
+            hasError
+              ? 'text-thmRed'
+              : selected === 'none'
+              ? 'text-thmBackgroundBrightest'
+              : 'text-thmWhiteBright',
             hasError ? 'ring-1 ring-thmRed focus:ring' : 'focus:ring focus:ring-thmBright',
             className
           )}
@@ -36,6 +41,12 @@ export const InputSelectFactory = <A extends string>() =>
             onChange(v);
           }}
         >
+          {initialValue === 'none' && (
+            <option disabled value="none" className="hidden text-thmGreen">
+              {' '}
+              -- select an option --{' '}
+            </option>
+          )}
           {options.map((option) => (
             <option key={option} value={option} className="">
               {option}
