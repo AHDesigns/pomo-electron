@@ -2,7 +2,7 @@ import { assertUnreachable } from '@shared/asserts';
 import { IChildren } from '@shared/types';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 
-export const themes = ['nord-light', 'nord'] as const;
+export const themes = ['nord', 'nord-light', 'one-dark'] as const;
 export type ThemeName = typeof themes[number];
 
 function updateTheme(theme: ThemeName): void {
@@ -17,6 +17,8 @@ function updateTheme(theme: ThemeName): void {
       return nordLight(r);
     case 'nord':
       return nord(r);
+    case 'one-dark':
+      return oneDark(r);
     default:
       return assertUnreachable(theme);
   }
@@ -177,6 +179,60 @@ function nordLight(r: CSSStyleDeclaration): void {
   r.setProperty('--color-whiteBrightest', 'var(--col-base8)');
   r.setProperty('--color-primary', 'var(--col-blue)');
   r.setProperty('--color-bright', 'var(--col-cyan)');
+  r.setProperty('--color-secondary', 'var(--col-teal)');
+  r.setProperty('--color-tertiary', 'var(--col-dark-blue)');
+  r.setProperty('--color-red', 'var(--col-red)');
+  r.setProperty('--color-orange', 'var(--col-orange)');
+  r.setProperty('--color-yellow', 'var(--col-yellow)');
+  r.setProperty('--color-green', 'var(--col-green)');
+  r.setProperty('--color-magenta', 'var(--col-magenta)');
+}
+
+function oneDark(r: CSSStyleDeclaration): void {
+  /* --------------------------------------------------------------------------
+   * Palette
+   * ------------------------------------------------------------------------ */
+  r.setProperty('--col-grey', 'var(--col-base4)');
+
+  r.setProperty('--col-bg', '40 44 52');
+  r.setProperty('--col-fg', '187 194 207');
+  r.setProperty('--col-bg-alt', '33 36 43');
+  r.setProperty('--col-fg-alt', '91 98 104');
+  r.setProperty('--col-base0', '27 34 41');
+  r.setProperty('--col-base1', '28 31 36');
+  r.setProperty('--col-base2', '32 35 40');
+  r.setProperty('--col-base3', '35 39 46');
+  r.setProperty('--col-base4', '63 68 74');
+  r.setProperty('--col-base5', '91 98 104');
+  r.setProperty('--col-base6', '115 121 126');
+  r.setProperty('--col-base7', '156 160 164');
+  r.setProperty('--col-base8', '223 223 223');
+  r.setProperty('--col-red', '255 108 107');
+  r.setProperty('--col-orange', '218 133 72');
+  r.setProperty('--col-green', '152 190 101');
+  r.setProperty('--col-teal', '77 181 189');
+  r.setProperty('--col-yellow', '236 190 123');
+  r.setProperty('--col-blue', '81 175 239');
+  r.setProperty('--col-dark-blue', '34 87 160');
+  r.setProperty('--col-magenta', '198 120 221');
+  r.setProperty('--col-violet', '169 161 225');
+  r.setProperty('--col-cyan', '70 217 255');
+  r.setProperty('--col-dark-cyan', '86 153 175');
+
+  /* --------------------------------------------------------------------------
+   * Theme
+   * ------------------------------------------------------------------------ */
+
+  r.setProperty('--color-background', 'var(--col-bg)');
+  r.setProperty('--color-backgroundProminent', 'var(--col-bg-alt)');
+  r.setProperty('--color-backgroundBright', 'var(--col-base3)');
+  r.setProperty('--color-backgroundBrightest', 'var(--col-base5)');
+  r.setProperty('--color-accent', '255 255 255');
+  r.setProperty('--color-white', 'var(--col-fg)');
+  r.setProperty('--color-whiteBright', 'var(--col-fg-alt)');
+  r.setProperty('--color-whiteBrightest', 'var(--col-base8)');
+  r.setProperty('--color-primary', 'var(--col-violet)');
+  r.setProperty('--color-bright', 'var(--col-magenta)');
   r.setProperty('--color-secondary', 'var(--col-teal)');
   r.setProperty('--color-tertiary', 'var(--col-dark-blue)');
   r.setProperty('--color-red', 'var(--col-red)');

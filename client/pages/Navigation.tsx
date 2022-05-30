@@ -1,6 +1,6 @@
+import { Pages } from '@client/machines/page/machine';
 import React from 'react';
 import { Button } from '@client/components';
-import { Pages } from './PageManager';
 
 interface INavigation {
   page: Pages;

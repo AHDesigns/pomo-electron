@@ -1,6 +1,6 @@
+import { Pages } from '@client/machines/page/machine';
 import React from 'react';
 import { Box, MenuButton } from '@client/components';
-import { Pages } from '@client/pages/PageManager';
 import pj from '../../../package.json';
 
 export interface IHeader {

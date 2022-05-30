@@ -1,4 +1,12 @@
-import { colors, palette, useTheme } from '@client/hooks';
+import { Button, Header, Timer } from '@client/components';
+import {
+  FormItemNumber as FormItemNumberC,
+  FormItemPassword,
+} from '@client/components/Form/FormItem';
+import { InputSelectFactory } from '@client/components/Inputs/InputSelect';
+import { Slack } from '@client/components/Settings/Slack';
+import { colors, palette, ThemeName, themes, useTheme, useTimerSettings } from '@client/hooks';
+import { Pomodoro } from '@client/pages/Pomodoro';
 import { IChildren } from '@shared/types';
 import { ComponentMeta } from '@storybook/react';
 import React from 'react';
@@ -24,6 +32,82 @@ export function Palette(): JSX.Element {
       </div>
     </div>
   );
+}
+
+const InputSelect = InputSelectFactory<ThemeName>();
+export function General(): JSX.Element {
+  return (
+    <div className="grid h-full w-full grid-cols-2 gap-2 bg-thmBackground md:grid-cols-3">
+      <Item>
+        <Pomodoro />
+      </Item>
+      <Slack />
+      <Item>
+        <FormItemNumberC
+          id="number item"
+          label="Some number"
+          input={{ min: 0, max: 20, onChange() {}, value: 3 }}
+        />
+        <FormItemNumberC
+          id="333 item"
+          label="Some number"
+          error="wah ney"
+          input={{ min: 0, max: 20, onChange() {}, value: 3 }}
+        />
+        <FormItemPassword
+          id="ofijwef"
+          label="input password"
+          input={{
+            placeholder: 'enter passowrd',
+            onChange: () => {},
+            value: 'foo',
+          }}
+        />
+        <FormItemPassword
+          id="ofijwef"
+          label="input password"
+          error="oh my"
+          input={{
+            placeholder: 'enter passowrd',
+            onChange: () => {},
+            value: 'foo',
+          }}
+        />
+      </Item>
+      <Item>
+        <Header onClick={() => {}} page="Timer Settings" showClose />
+        <Header onClick={() => {}} page="Slack Settings" showClose={false} />
+        <InputSelect id="cheese" onChange={() => {}} initialValue="none" options={themes} />
+        <InputSelect id="butter" onChange={() => {}} initialValue="one-dark" options={themes} />
+      </Item>
+      <Item>
+        <Button type="button" variant="primary">
+          Primary
+        </Button>
+        <Button type="button" variant="secondary">
+          secondary
+        </Button>
+        <Button type="button" variant="tertiary">
+          tertiary
+        </Button>
+      </Item>
+      <Item>
+        <Button disabled type="button" variant="primary">
+          Primary
+        </Button>
+        <Button disabled type="button" variant="secondary">
+          secondary
+        </Button>
+        <Button disabled type="button" variant="tertiary">
+          tertiary
+        </Button>
+      </Item>
+    </div>
+  );
+}
+
+function Item({ children }: IChildren): JSX.Element {
+  return <div className="m-3 flex flex-col space-y-2">{children}</div>;
 }
 
 export function Theme(): JSX.Element {

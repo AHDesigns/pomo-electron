@@ -1,14 +1,12 @@
-/* eslint-disable no-nested-ternary */
-import { Theme } from '@client/components/Settings/Theme';
-import classNames from 'classnames';
-import React, { useState } from 'react';
-import { Box } from '@client/components';
 import { Header } from '@client/components/Header/Header';
-import { Navigation } from '@client/pages/Navigation';
-import { Timer } from '@client/components/Settings/Timer';
 import { Slack } from '@client/components/Settings/Slack';
+import { Theme } from '@client/components/Settings/Theme';
+import { Timer } from '@client/components/Settings/Timer';
 import { useTimerSettings } from '@client/hooks';
+import { Navigation } from '@client/pages/Navigation';
 import { Pomodoro } from '@client/pages/Pomodoro';
+import { assertUnreachable } from '@shared/asserts';
+import React, { useReducer } from 'react';
 
 export type Pages = 'Slack Settings' | 'Theme Settings' | 'Timer Settings' | 'Timer';
 
@@ -17,16 +15,14 @@ export interface IPageManager {
 }
 
 export function PageManager({ initialPage = 'Timer' }: IPageManager = {}): JSX.Element {
-  const [navVisible, setNavVisible] = useState(false);
-  const [page, navigatePageTo] = useState<Pages>(initialPage);
-  const timerActor = useTimerSettings();
+  const [{ page, navVisible }, dispatch] = useReducer(reducer, initialState(initialPage));
 
   return (
     <div className="flex h-full w-full flex-col overflow-y-scroll bg-thmBackground text-base text-thmWhite">
       <h1 style={{ display: 'none' }}>Pomodoro App</h1>
       <Header
         onClick={() => {
-          setNavVisible(!navVisible);
+          dispatch({ type: 'ToggleNav' });
         }}
         showClose={navVisible}
         page={page}
@@ -35,8 +31,7 @@ export function PageManager({ initialPage = 'Timer' }: IPageManager = {}): JSX.E
         <Navigation
           page={page}
           onNavigate={(p) => {
-            setNavVisible(false);
-            navigatePageTo(p);
+            dispatch({ type: 'Navigate', page: p });
           }}
         />
       ) : (
@@ -45,23 +40,52 @@ export function PageManager({ initialPage = 'Timer' }: IPageManager = {}): JSX.E
             page === 'Timer' ? 'justify-center' : 'justify-start'
           }`}
         >
-          {page === 'Timer' ? (
-            <Pomodoro />
-          ) : page === 'Timer Settings' ? (
-            timerActor ? (
-              <Timer actor={timerActor} />
-            ) : (
-              <p>'loading'</p>
-            )
-          ) : page === 'Slack Settings' ? (
-            <Slack />
-          ) : page === 'Theme Settings' ? (
-            <Theme />
-          ) : (
-            <p>ahh!</p>
-          )}
+          <Page page={page} />
         </div>
       )}
     </div>
   );
+}
+
+function Page({ page }: { page: Pages }): JSX.Element {
+  const timerActor = useTimerSettings();
+
+  switch (page) {
+    case 'Timer':
+      return <Pomodoro />;
+    case 'Timer Settings':
+      return timerActor ? <Timer actor={timerActor} /> : <p>'loading'</p>;
+    case 'Slack Settings':
+      return <Slack />;
+    case 'Theme Settings':
+      return <Theme />;
+    default:
+      return assertUnreachable(page);
+  }
+}
+
+interface State {
+  page: Pages;
+  navVisible: boolean;
+}
+
+type Action = { type: 'Navigate'; page: Pages } | { type: 'ToggleNav' };
+
+function reducer(state: State, action: Action): State {
+  const { type } = action;
+  switch (type) {
+    case 'ToggleNav':
+      return { ...state, navVisible: !state.navVisible };
+    case 'Navigate':
+      return { ...state, page: action.page, navVisible: false };
+    default:
+      return assertUnreachable(type);
+  }
+}
+
+function initialState(page: Pages): State {
+  return {
+    navVisible: false,
+    page,
+  };
 }

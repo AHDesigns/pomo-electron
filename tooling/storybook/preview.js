@@ -2,7 +2,7 @@
 import React from 'react';
 import { fakeRepositories } from '../../electron/repositories/fakes';
 import { BridgeProvider, LoggerProvider, MachinesProvider } from '../../client/hooks/providers';
-import { ThemeProvider, useTheme } from '../../client/hooks';
+import { ThemeProvider, themes, useTheme } from '../../client/hooks';
 import { createFakeHooks } from '../../client/machines';
 import { ErrorBoundary, ScrollBar } from '../../client/components';
 import '../../client/index.css';
@@ -15,10 +15,10 @@ export const globalTypes = {
   theme: {
     name: 'Theme',
     description: 'Pomo colour theme',
-    defaultValue: 'nord',
+    defaultValue: themes[0],
     toolbar: {
       icon: 'paintbrush',
-      items: ['nord', 'nord-light'],
+      items: themes,
     },
   },
 };
