@@ -1,12 +1,12 @@
 import React from 'react';
 import userEvent from '@testing-library/user-event';
-import { tick } from '@test/tick';
-import { screen, render, act } from '@test/rtl';
-import { ignoreWarnings } from '@test/ignore';
-import { pageModel, assert } from '@test/pageModels';
 import T from '@client/copy';
 import { ok } from '@shared/Result';
-import { emptyConfig, TimerHooks, UserConfig } from '@shared/types';
+import { emptyConfig, UserConfig } from '@shared/types';
+import { ignoreWarnings } from '@test/ignore';
+import { assert, pageModel } from '@test/pageModels';
+import { act, render, screen } from '@test/rtl';
+import { tick } from '@test/tick';
 import { Pomodoro } from './Pomodoro';
 
 beforeEach(() => {

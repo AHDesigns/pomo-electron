@@ -7,7 +7,7 @@ import { Header as HeaderComp, IHeader } from './Header';
 const meta: ComponentMeta<StoryArgs> = {
   component: HeaderComp,
   args: {
-    page: 'Pomodoro',
+    page: 'Timer',
     wrapped: true,
   },
 };
@@ -21,10 +21,10 @@ type StoryArgs = (
 
 export const Header: ComponentStory<StoryArgs> = (args) => (
   <PageWrapper wrapped={args.wrapped}>
-    <HeaderComp onClick={args.onClick} page={args.page} />
+    <HeaderComp onClick={args.onClick} page={args.page} showClose={false} />
   </PageWrapper>
 );
 
 Header.args = {
-  page: 'Pomodoro',
+  page: 'Timer',
 };

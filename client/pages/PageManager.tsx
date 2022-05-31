@@ -1,12 +1,9 @@
-import { Header } from '@client/components/Header/Header';
-import { Slack } from '@client/components/Settings/Slack';
-import { Theme } from '@client/components/Settings/Theme';
-import { Timer } from '@client/components/Settings/Timer';
+import { Header, Slack, Theme, Timer } from '@client/components';
 import { useTimerSettings } from '@client/hooks';
-import { Navigation } from '@client/pages/Navigation';
-import { Pomodoro } from '@client/pages/Pomodoro';
 import { assertUnreachable } from '@shared/asserts';
 import React, { useReducer } from 'react';
+import { Navigation } from './Navigation';
+import { Pomodoro } from './Pomodoro';
 
 export type Pages = 'Slack Settings' | 'Theme Settings' | 'Timer Settings' | 'Timer';
 

@@ -1,8 +1,13 @@
 /* eslint-disable react/jsx-filename-extension */
 import React from 'react';
 import { fakeRepositories } from '../../electron/repositories/fakes';
-import { BridgeProvider, LoggerProvider, MachinesProvider } from '../../client/hooks/providers';
-import { ThemeProvider, themes, useTheme } from '../../client/hooks';
+import {
+  BridgeProvider,
+  LoggerProvider,
+  MachinesProvider,
+  ThemeProvider,
+} from '../../client/hooks/providers';
+import { themes, useTheme } from '../../client/hooks';
 import { createFakeHooks } from '../../client/machines';
 import { ErrorBoundary, ScrollBar } from '../../client/components';
 import '../../client/index.css';

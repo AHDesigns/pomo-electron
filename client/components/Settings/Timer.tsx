@@ -1,9 +1,8 @@
 import React, { useRef } from 'react';
 import { useActor } from '@xstate/react';
 import T from '@client/copy';
-import { Button } from '@client/components';
+import { Button, FormItemNumber } from '@client/components';
 import { TimerSettingsActorRef, timerSettingsModel } from '@client/machines';
-import { FormItemNumber } from '@client/components/Form/FormItem';
 import { Setting } from './Setting';
 
 const { CANCEL, SAVE, UPDATE } = timerSettingsModel.events;

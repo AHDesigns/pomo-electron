@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { ErrorBoundary, ScrollBar } from '@client/components';
-import { BridgeProvider, LoggerProvider, MachinesProvider } from '@client/hooks/providers';
-import { ThemeProvider } from '@client/hooks/useTheme';
+import {
+  BridgeProvider,
+  LoggerProvider,
+  MachinesProvider,
+  ThemeProvider,
+} from '@client/hooks/providers';
 import { IBridge } from '@shared/types';
-import { PageManager } from '@client/pages/PageManager';
+import { PageManager } from '@client/pages';
 import { App } from './App';
 import { hooks } from './integrations';
 

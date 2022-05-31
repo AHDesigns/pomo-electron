@@ -1,8 +1,7 @@
-import React, { useRef, useState } from 'react';
-import { IInputNumber, InputNumber } from '@client/components/Inputs/InputNumber';
-import { IInputPassword, InputPassword } from '@client/components/Inputs/InputPassword';
+import { IInputNumber, IInputPassword, InputNumber, InputPassword } from '@client/components';
 import { EyeClosed, EyeOpen } from '@client/components/Icons';
 import { IChildren } from '@shared/types';
+import React, { useRef, useState } from 'react';
 
 interface IFormItemNumber extends IFormItem {
   input: Omit<IInputNumber, 'hasError' | 'id'>;

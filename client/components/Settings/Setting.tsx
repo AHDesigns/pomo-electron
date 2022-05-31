@@ -1,5 +1,5 @@
-import React, { ChangeEventHandler, ReactNode } from 'react';
 import { Box, Checkbox } from '@client/components';
+import React, { ReactNode } from 'react';
 
 interface ISettingCommon {
   heading: string;
@@ -13,8 +13,8 @@ interface ISettingSimple extends ISettingCommon {
 
 interface ISettingToggle extends ISettingCommon {
   variant: 'toggle';
-  onToggle: ChangeEventHandler<HTMLInputElement>;
   checked: boolean;
+  onToggle(checked: boolean): void;
 }
 
 type ISetting = ISettingSimple | ISettingToggle;
@@ -24,7 +24,11 @@ export function Setting({ children, heading, onSubmit, ...props }: ISetting): JS
     <Box className="mb-8 mt-4">
       <div className="mb-2 bg-thmBackgroundProminent py-2 px-2">
         {props.variant === 'toggle' ? (
-          <Checkbox initiallyChecked={props.checked} onChange={props.onToggle}>
+          <Checkbox
+            id={`${heading}-form-checkbox`}
+            initiallyChecked={props.checked}
+            onChange={props.onToggle}
+          >
             <h2 className="text-lg">{heading}</h2>
           </Checkbox>
         ) : (

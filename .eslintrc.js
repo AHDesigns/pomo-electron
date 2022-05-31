@@ -182,6 +182,7 @@ module.exports = {
       extends: ['plugin:storybook/recommended', 'plugin:storybook/csf-strict'],
       rules: {
         '@typescript-eslint/consistent-type-assertions': 'off',
+        '@typescript-eslint/no-explicit-any': 'off',
         'import/no-extraneous-dependencies': 'off',
         'react/function-component-definition': 'off',
       },

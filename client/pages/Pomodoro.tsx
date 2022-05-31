@@ -1,6 +1,6 @@
 import React from 'react';
 import { usePomodoro, useTimer } from '@client/hooks';
-import { Timer } from '@client/components';
+import { Countdown } from '@client/components';
 import { TimerType } from '@shared/types';
 import { assertUnreachable } from '@shared/asserts';
 
@@ -16,7 +16,7 @@ export function Pomodoro(): JSX.Element | null {
 
   return timerRef ? (
     <>
-      <Timer timerRef={timerRef} title={title} duration={duration} />
+      <Countdown timerRef={timerRef} title={title} duration={duration} />
       <div style={{ display: 'none' }}>
         <p>completed pomos: {pomo}</p>
         <p>completed breaks: {long}</p>

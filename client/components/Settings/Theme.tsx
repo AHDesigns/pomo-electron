@@ -1,8 +1,6 @@
-import React from 'react';
-import { Button } from '@client/components';
-import { FormItem } from '@client/components/Form/FormItem';
-import { InputSelectFactory } from '@client/components/Inputs/InputSelect';
-import { ThemeName, themes, useBridge, useTheme } from '@client/hooks';
+import React, { useState } from 'react';
+import { Button, FormItem, InputSelectFactory } from '@client/components';
+import { type ThemeName, themes, useBridge, useTheme } from '@client/hooks';
 import { Setting } from './Setting';
 
 const InputSelect = InputSelectFactory<ThemeName>();
@@ -11,6 +9,7 @@ export function Theme(): JSX.Element {
   const [theme, setTheme] = useTheme();
   const id = 'theme-selector';
   const bridge = useBridge();
+  const [selected, setSelected] = useState(theme);
 
   return (
     <Setting variant="simple" heading="Theme" onSubmit={() => {}}>

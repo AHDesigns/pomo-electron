@@ -1,12 +1,13 @@
-import { Button, Header, Timer } from '@client/components';
 import {
+  Button,
   FormItemNumber as FormItemNumberC,
   FormItemPassword,
-} from '@client/components/Form/FormItem';
-import { InputSelectFactory } from '@client/components/Inputs/InputSelect';
-import { Slack } from '@client/components/Settings/Slack';
-import { colors, palette, ThemeName, themes, useTheme, useTimerSettings } from '@client/hooks';
-import { Pomodoro } from '@client/pages/Pomodoro';
+  Header,
+  InputSelectFactory,
+  Slack,
+} from '@client/components';
+import { colors, palette, ThemeName, themes, useTheme } from '@client/hooks';
+import { Pomodoro } from '@client/pages';
 import { IChildren } from '@shared/types';
 import { ComponentMeta } from '@storybook/react';
 import React from 'react';

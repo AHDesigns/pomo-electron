@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { PageManager } from '@client/components';
+import { PageManager } from '@client/pages';
 import { merge } from '@shared/merge';
 import { ok } from '@shared/Result';
 import { emptyConfig, TimerHooks } from '@shared/types';
