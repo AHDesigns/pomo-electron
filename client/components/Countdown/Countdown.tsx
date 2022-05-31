@@ -4,15 +4,15 @@ import T from '@client/copy';
 import { displayNum } from '@shared/format';
 import { Box, Button, TimerProgress } from '@client/components';
 import { TimerActorRef } from '@client/machines';
-import './timer.css';
+import './countdown.css';
 
-export interface ITimer {
+export interface ICountdown {
   timerRef: TimerActorRef;
   title: string;
   duration: number;
 }
 
-export function Timer({ timerRef, title, duration }: ITimer): JSX.Element {
+export function Countdown({ timerRef, title, duration }: ICountdown): JSX.Element {
   const [state, send] = useActor(timerRef);
   const { minutes, seconds } = state.context;
 
