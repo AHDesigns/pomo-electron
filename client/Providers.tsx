@@ -1,13 +1,8 @@
-import React, { useEffect, useState } from 'react';
 import { ErrorBoundary, ScrollBar } from '@client/components';
-import {
-  BridgeProvider,
-  LoggerProvider,
-  MachinesProvider,
-  ThemeProvider,
-} from '@client/hooks/providers';
-import { IBridge } from '@shared/types';
+import { BridgeProvider, LoggerProvider, MachinesProvider } from '@client/hooks/providers';
 import { PageManager } from '@client/pages';
+import { IBridge } from '@shared/types';
+import React, { useEffect, useState } from 'react';
 import { App } from './App';
 import { hooks } from './integrations';
 
@@ -31,16 +26,14 @@ export function Providers({ bridge }: IProviders): JSX.Element {
   ) : (
     <BridgeProvider bridge={bridge}>
       <LoggerProvider>
-        <ThemeProvider theme="nord">
+        <MachinesProvider hooks={hooks}>
           <ErrorBoundary>
             <ScrollBar />
-            <MachinesProvider hooks={hooks}>
-              <App shouldInspect={shouldInspect}>
-                <PageManager />
-              </App>
-            </MachinesProvider>
+            <App shouldInspect={shouldInspect}>
+              <PageManager />
+            </App>
           </ErrorBoundary>
-        </ThemeProvider>
+        </MachinesProvider>
       </LoggerProvider>
     </BridgeProvider>
   );

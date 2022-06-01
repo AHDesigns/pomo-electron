@@ -7,7 +7,7 @@
     position: absolute;
     left: 0;
     height: 2px;
-    background-color: theme('colors.thmWhite');
+    background-color: theme('colors.thmFgDim');
     opacity: 1;
     transform: rotate(0deg);
     transition: all 0.2s;
@@ -23,10 +23,10 @@
   }
 
   .menu-button:hover .bar.showClose {
-    background-color: theme('colors.thmYellow');
+    background-color: theme('colors.thmWarn');
   }
   .menu-button:focus .bar.showClose {
-    background-color: theme('colors.thmYellow');
+    background-color: theme('colors.thmWarn');
   }
 }
 

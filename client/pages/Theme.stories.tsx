@@ -6,7 +6,8 @@ import {
   InputSelectFactory,
   Slack,
 } from '@client/components';
-import { colors, palette, ThemeName, themes, useTheme } from '@client/hooks';
+import { useConfig } from '@client/hooks';
+import { colors, palette, ThemeName, themes } from '@client/theme';
 import { Pomodoro } from '@client/pages';
 import { IChildren } from '@shared/types';
 import { ComponentMeta } from '@storybook/react';
@@ -17,11 +18,11 @@ export default {
 } as ComponentMeta<typeof Theme>;
 
 export function Palette(): JSX.Element {
-  const [theme] = useTheme();
+  const { config } = useConfig();
 
   return (
     <div>
-      <p>Current Theme: {theme}</p>
+      <p>Current Theme: {config?.theme ?? 'loading'}</p>
       <div className="mx-auto grid max-w-2xl grid-cols-2 gap-1">
         <p className="pl-3">var</p>
         <p className="pl-3">bg</p>
@@ -141,7 +142,7 @@ function Color({ col, children }: IChildren & { col: string }): JSX.Element {
         className="pl-3"
         style={{
           backgroundColor: `rgb(var(${col}))`,
-          color: 'reset',
+          color: 'rgb(var(--col-fg))',
         }}
       >
         {children}

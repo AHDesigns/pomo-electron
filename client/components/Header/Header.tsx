@@ -17,9 +17,9 @@ export function Header({ onClick, page, showClose }: IHeader): JSX.Element {
       <Box>
         <h2 className="text-center text-lg">{showClose ? 'Settings' : title}</h2>
       </Box>
-      <Box>
-        <p className="text-sm text-thmBackgroundBrightest">Beta</p>
-        <p className="text-xs text-thmBackgroundBright">{pj.version}</p>
+      <Box className="text-sm text-thmBackgroundBrightest">
+        <p>Beta</p>
+        <p className="text-xs">{pj.version}</p>
       </Box>
     </header>
   );

@@ -2,6 +2,7 @@
 import { IChildren } from '@shared/types';
 import classNames from 'classnames';
 import React, { ButtonHTMLAttributes } from 'react';
+import './button.css';
 
 type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   Partial<Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>>;
@@ -17,14 +18,14 @@ export interface IButton extends ButtonProps {
 // );
 const colors =
   'transition transition-all hover:brightness-125 disabled:hover:brightness-100 disabled:cursor-not-allowed active:brightness-150';
-const common =
-  'rounded w-fit p-2 px-4 outline-0 focus:ring focus:ring-offset-1 focus:ring-thmBright shadow-3xl focus:px-5 hover:px-5';
+const common = 'button w-fit p-2 px-4 shadow-3xl';
 
 export function Button({
   children,
   variant,
   fullWidth,
   type = 'button',
+  className,
   ...props
 }: IButton & IChildren): JSX.Element {
   const width = fullWidth ? 'w-full' : 'w-fit';
@@ -35,8 +36,9 @@ export function Button({
       className={classNames(
         colors,
         common,
-        'bg-thmBright uppercase text-thmBackground  hover:brightness-125 disabled:cursor-not-allowed disabled:bg-thmBackgroundBright disabled:text-thmBackground disabled:hover:brightness-100',
-        width
+        'bg-thmPrimary uppercase text-thmBackground focus:bg-thmBright disabled:bg-thmBackgroundBrightest disabled:text-thmBackground disabled:hover:brightness-100',
+        width,
+        className
       )}
       {...props}
     >
@@ -48,9 +50,10 @@ export function Button({
       className={classNames(
         colors,
         common,
-        // 'bg-thmBackgroundBrightest text-thmWhite disabled:bg-thmBackgroundProminent disabled:text-thmBackground',
-        'border-2 uppercase text-thmBright disabled:border-thmBackgroundBrightest disabled:text-thmBackgroundBrightest ',
-        width
+        // 'bg-thmBackgroundBrightest text-thmFgDim disabled:bg-thmBackgroundSubtle disabled:text-thmBackground',
+        'border-2 uppercase text-thmPrimary disabled:border-thmBackgroundBrightest disabled:text-thmBackgroundBrightest ',
+        width,
+        className
       )}
       {...props}
     >
@@ -61,8 +64,9 @@ export function Button({
       type={type}
       className={classNames(
         colors,
-        'rounded border-none p-0 text-thmBright underline underline-offset-1 shadow-none outline-none hover:underline-offset-2 focus:ring  focus:ring-thmBright disabled:border-thmBackgroundBrightest disabled:text-thmBackgroundBrightest',
-        width
+        'rounded border-none p-0 text-thmSecondary underline underline-offset-1 shadow-none outline-none hover:underline-offset-2 focus:ring  focus:ring-thmBright disabled:border-thmBackgroundBrightest disabled:text-thmBackgroundBrightest',
+        width,
+        className
       )}
       {...props}
     >

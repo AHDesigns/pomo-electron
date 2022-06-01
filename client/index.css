@@ -46,20 +46,17 @@
   --col-text: var(--col-fg);
 
   --color-background: 46 52 64;
-  --color-backgroundProminent: 59 66 82;
+  --color-backgroundSubtle: 59 66 82;
   --color-backgroundBright: 67 76 94;
   --color-backgroundBrightest: 76 86 106;
-  --color-accent: 255 255 255;
-  --color-white: 216 222 233;
-  --color-whiteBright: 229 233 240;
-  --color-whiteBrightest: 236 239 244;
+  --color-fgDim: 216 222 233;
+  --color-fg: 229 233 240;
+  --color-fgBrightest: 236 239 244;
   --color-primary: 143 188 187;
   --color-bright: 136 192 208;
   --color-secondary: 129 161 193;
   --color-tertiary: 94 129 172;
-  --color-red: 191 97 106;
-  --color-orange: 208 135 112;
-  --color-yellow: 235 203 139;
-  --color-green: 163 190 140;
-  --color-magenta: 180 142 173;
+  --color-error: 191 97 106;
+  --color-warning: 235 203 139;
+  --color-good: 163 190 140;
 }

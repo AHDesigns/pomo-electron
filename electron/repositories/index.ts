@@ -25,6 +25,11 @@ export const productionRepositories = ({ logger, mb }: RepoArgs): Repositories =
     storeConfig: {
       name: 'client',
       defaults: emptyConfig,
+      migrations: {
+        '>=0.4.2': (store) => {
+          store.set('theme', 'nord');
+        },
+      },
     },
     logger,
   }),

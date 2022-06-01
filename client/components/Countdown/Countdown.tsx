@@ -1,9 +1,9 @@
-import React from 'react';
-import { useActor } from '@xstate/react';
-import T from '@client/copy';
-import { displayNum } from '@shared/format';
 import { Box, Button, TimerProgress } from '@client/components';
+import T from '@client/copy';
 import { TimerActorRef } from '@client/machines';
+import { displayNum } from '@shared/format';
+import { useActor } from '@xstate/react';
+import React from 'react';
 import './countdown.css';
 
 export interface ICountdown {
@@ -17,15 +17,9 @@ export function Countdown({ timerRef, title, duration }: ICountdown): JSX.Elemen
   const { minutes, seconds } = state.context;
 
   return (
-    <div className="timer">
+    <div className="timer mt-5">
       <Box style={{ gridArea: 'timer' }}>
-        <TimerProgress
-          duration={duration}
-          mins={minutes}
-          seconds={seconds}
-          state={state}
-          title={title}
-        />
+        <TimerProgress duration={duration} mins={minutes} seconds={seconds} state={state} />
       </Box>
       <Box
         style={{
@@ -35,7 +29,7 @@ export function Countdown({ timerRef, title, duration }: ICountdown): JSX.Elemen
           fontSize: 14,
         }}
       >
-        <p className="text-center text-thmBright">{title}</p>
+        <p className="text-center text-thmPrimary">{title}</p>
       </Box>
       <Box
         className="mt-[7px]"
@@ -63,6 +57,7 @@ export function Countdown({ timerRef, title, duration }: ICountdown): JSX.Elemen
         >
           {state.can('START') && (
             <Button
+              className="animate-pulse"
               // variant="secondary"
               onClick={() => {
                 send({ type: 'START' });
@@ -73,6 +68,7 @@ export function Countdown({ timerRef, title, duration }: ICountdown): JSX.Elemen
           )}
           {state.can('STOP') && (
             <Button
+              className="text-thmWarn"
               variant="tertiary"
               onClick={() => {
                 send({ type: 'STOP' });
@@ -87,7 +83,11 @@ export function Countdown({ timerRef, title, duration }: ICountdown): JSX.Elemen
             </Button>
           )}
           {state.can('PLAY') && (
-            <Button variant="secondary" onClick={() => send({ type: 'PLAY' })}>
+            <Button
+              className="animate-pulse text-thmGood"
+              variant="tertiary"
+              onClick={() => send({ type: 'PLAY' })}
+            >
               {T.pomoTimer.play}
             </Button>
           )}

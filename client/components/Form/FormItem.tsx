@@ -42,7 +42,7 @@ export function FormItemPassword({ id: _id, input, label, error }: IFormItemPass
           onClick={() => {
             toggleVisibility();
           }}
-          className="rounded border border-thmBackgroundProminent bg-thmBackgroundBright fill-thmBright px-1 text-thmWhiteBright outline-none focus:ring focus:ring-thmBright"
+          className="input bg-thmBackgroundBright"
         >
           {isVisible ? (
             <EyeOpen color="bright" size="20px" />
@@ -95,7 +95,7 @@ function ErrorMsg({
   ...props
 }: IChildren & React.HTMLAttributes<HTMLParagraphElement>): JSX.Element {
   return (
-    <p {...props} className="text-thmRed">
+    <p {...props} className="text-thmError">
       {children}
     </p>
   );

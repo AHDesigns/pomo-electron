@@ -1,12 +1,7 @@
 import { App } from '@client/App';
 import { ErrorBoundary } from '@client/components';
 import { IMachinesProvider } from '@client/hooks/machines';
-import {
-  BridgeProvider,
-  LoggerProvider,
-  MachinesProvider,
-  ThemeProvider,
-} from '@client/hooks/providers';
+import { BridgeProvider, LoggerProvider, MachinesProvider } from '@client/hooks/providers';
 import { createFakeHooks } from '@client/machines';
 import { createFakeBridge } from '@electron/ipc/createFakeBridge';
 import { IBridge } from '@shared/types';
@@ -52,13 +47,11 @@ export function Providers({ children, bridge, hooks }: Overrides): JSX.Element {
   return (
     <BridgeProvider bridge={{ ...createFakeBridge(), ...bridge }}>
       <LoggerProvider>
-        <ThemeProvider theme="nord">
-          <ErrorBoundary>
-            <MachinesProvider hooks={{ ...createFakeHooks(), ...hooks }}>
-              <App shouldInspect={false}>{children}</App>
-            </MachinesProvider>
-          </ErrorBoundary>
-        </ThemeProvider>
+        <ErrorBoundary>
+          <MachinesProvider hooks={{ ...createFakeHooks(), ...hooks }}>
+            <App shouldInspect={false}>{children}</App>
+          </MachinesProvider>
+        </ErrorBoundary>
       </LoggerProvider>
     </BridgeProvider>
   );

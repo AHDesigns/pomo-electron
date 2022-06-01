@@ -19,12 +19,8 @@ export function InputNumber({
 }: IInputNumber): JSX.Element {
   return (
     <input
-      className={classNames(
-        'rounded border border-thmBackgroundProminent bg-thmBackgroundBright px-2 leading-8 outline-none ',
-        hasError ? 'text-thmRed' : 'text-thmWhiteBright',
-        hasError ? 'ring-1 ring-thmRed focus:ring' : 'focus:ring focus:ring-thmBright',
-        className
-      )}
+      data-error={hasError}
+      className={classNames('input', className)}
       id={id}
       type="number"
       {...(hasError && {

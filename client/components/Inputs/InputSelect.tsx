@@ -18,15 +18,11 @@ export const InputSelectFactory = <A extends string>() =>
       return (
         <select
           ref={ref}
+          data-error={hasError}
           className={classNames(
-            'w-full rounded border border-thmBackgroundProminent bg-thmBackgroundBright p-2 outline-none',
+            'input w-full',
             // eslint-disable-next-line no-nested-ternary
-            hasError
-              ? 'text-thmRed'
-              : selected === 'none'
-              ? 'text-thmBackgroundBrightest'
-              : 'text-thmWhiteBright',
-            hasError ? 'ring-1 ring-thmRed focus:ring' : 'focus:ring focus:ring-thmBright',
+            hasError ? 'text-thmError' : selected === 'none' ? 'text-thmFgDim' : 'text-thmFg',
             className
           )}
           id={id}
@@ -42,7 +38,7 @@ export const InputSelectFactory = <A extends string>() =>
           }}
         >
           {initialValue === 'none' && (
-            <option disabled value="none" className="hidden text-thmGreen">
+            <option disabled value="none" className="hidden text-thmGood">
               {' '}
               -- select an option --{' '}
             </option>

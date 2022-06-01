@@ -15,7 +15,7 @@ export function PageManager({ initialPage = 'Timer' }: IPageManager = {}): JSX.E
   const [{ page, navVisible }, dispatch] = useReducer(reducer, initialState(initialPage));
 
   return (
-    <div className="flex h-full w-full flex-col overflow-y-scroll bg-thmBackground text-base text-thmWhite">
+    <div className="flex h-full w-full flex-col overflow-y-scroll bg-thmBackground text-base text-thmFg">
       <h1 style={{ display: 'none' }}>Pomodoro App</h1>
       <Header
         onClick={() => {
@@ -32,11 +32,7 @@ export function PageManager({ initialPage = 'Timer' }: IPageManager = {}): JSX.E
           }}
         />
       ) : (
-        <div
-          className={`flex flex-grow flex-col justify-items-stretch ${
-            page === 'Timer' ? 'justify-center' : 'justify-start'
-          }`}
-        >
+        <div className="flex flex-grow flex-col  justify-start justify-items-stretch">
           <Page page={page} />
         </div>
       )}

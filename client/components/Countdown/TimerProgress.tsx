@@ -1,34 +1,27 @@
 import React from 'react';
-import { testWrap } from '../testWrap/testComp';
+import { testWrap } from '@client/components';
 
 interface ITimerProgress {
   duration: number;
   mins: number;
   seconds: number;
   state: { matches(state: string): boolean };
-  title: string;
 }
 
-export function TimerProgressC({
-  duration,
-  mins,
-  seconds,
-  state,
-  title,
-}: ITimerProgress): JSX.Element {
+export function TimerProgressC({ duration, mins, seconds, state }: ITimerProgress): JSX.Element {
   const totalDurationInSeconds = duration * 60;
 
   const secondsExpired = 60 - seconds;
   const minutesExpired = duration - mins;
   const timeExpired = secondsExpired + minutesExpired;
-  const stroke = 1;
+  const stroke = 2;
   const radius = 50 - stroke;
   const circumference = radius * 2 * Math.PI;
 
   return (
     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
       <circle
-        className="stroke-thmBackgroundProminent"
+        className="stroke-thmBackgroundSubtle"
         cx={50}
         cy={50}
         r={radius}
@@ -36,7 +29,7 @@ export function TimerProgressC({
         strokeWidth={stroke}
       />
       <circle
-        className="stroke-thmBright"
+        className="stroke-thmGood"
         style={{
           transform: 'rotate(-90deg)',
           transformOrigin: 'center',
