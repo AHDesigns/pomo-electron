@@ -1,11 +1,10 @@
-import React, { ChangeEventHandler, CSSProperties, ReactNode } from 'react';
-import styled, { useTheme } from 'styled-components';
 import { Box, Checkbox } from '@client/components';
+import React, { ReactNode } from 'react';
 
 interface ISettingCommon {
   heading: string;
-  styles?: CSSProperties;
   children: ReactNode;
+  onSubmit(): void;
 }
 
 interface ISettingSimple extends ISettingCommon {
@@ -14,36 +13,37 @@ interface ISettingSimple extends ISettingCommon {
 
 interface ISettingToggle extends ISettingCommon {
   variant: 'toggle';
-  onToggle: ChangeEventHandler<HTMLInputElement>;
   checked: boolean;
+  onToggle(checked: boolean): void;
 }
 
 type ISetting = ISettingSimple | ISettingToggle;
 
-export function Setting({ children, heading, styles, ...props }: ISetting): JSX.Element {
-  const theme = useTheme();
+export function Setting({ children, heading, onSubmit, ...props }: ISetting): JSX.Element {
   return (
-    <Box style={styles}>
-      <div
-        style={{
-          padding: `${theme.spacing.small}px ${theme.spacing.normal}px`,
-          marginBottom: `${theme.spacing.normal}px`,
-          backgroundColor: theme.palette.backgroundProminent,
-        }}
-      >
+    <Box className="mb-8 mt-4">
+      <div className="mb-2 bg-thmBackgroundSubtle py-2 px-2">
         {props.variant === 'toggle' ? (
-          <Checkbox checked={props.checked} onChange={props.onToggle}>
-            <H2>{heading}</H2>
+          <Checkbox
+            id={`${heading}-form-checkbox`}
+            initiallyChecked={props.checked}
+            onChange={props.onToggle}
+          >
+            <h2 className="text-lg">{heading}</h2>
           </Checkbox>
         ) : (
-          <H2>{heading}</H2>
+          <h2 className="text-lg">{heading}</h2>
         )}
       </div>
-      {children}
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit();
+        }}
+        className="mx-2 flex flex-col gap-3"
+      >
+        {children}
+      </form>
     </Box>
   );
 }
-
-const H2 = styled.h2`
-  font-size: ${({ theme }) => theme.typography.h2.fontSize};
-`;

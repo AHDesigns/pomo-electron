@@ -1,3 +1,5 @@
+import { themeMachine } from '@client/machines/theme/machine';
+import { type UpdateTheme } from '@client/theme';
 import { IBridge, TimerHooks, UserConfig } from '@shared/types';
 import { assign, createMachine, forwardTo, InterpreterFrom } from 'xstate';
 import configMachine from '../config/machine';
@@ -13,9 +15,16 @@ export interface IMainMachine {
    * Inject a config as a testing mechanism
    */
   configOverride?: UserConfig;
+  updateTheme: UpdateTheme;
 }
 
-const mainMachineFactory = ({ pomodoro, bridge, actions, configOverride }: IMainMachine) =>
+const mainMachineFactory = ({
+  pomodoro,
+  bridge,
+  actions,
+  configOverride,
+  updateTheme,
+}: IMainMachine) =>
   createMachine(
     {
       id: 'main',
@@ -28,7 +37,7 @@ const mainMachineFactory = ({ pomodoro, bridge, actions, configOverride }: IMain
       initial: 'active',
       on: {
         CONFIG_LOADED: {
-          actions: [forwardTo(actorIds.POMODORO), 'setLoaded'],
+          actions: [forwardTo(actorIds.POMODORO), forwardTo(actorIds.THEME), 'setLoaded'],
         },
         TIMER_PAUSE: { actions: 'onTimerPause' },
         TIMER_PLAY: { actions: 'onTimerPlay' },
@@ -42,6 +51,16 @@ const mainMachineFactory = ({ pomodoro, bridge, actions, configOverride }: IMain
           invoke: [
             { id: actorIds.POMODORO, src: pomodoroMachineFactory(pomodoro) },
             { id: actorIds.CONFIG, src: configMachine({ bridge, configOverride }) },
+            {
+              id: actorIds.THEME,
+              src: themeMachine.withConfig({
+                actions: {
+                  updateTheme: (_, e) => {
+                    updateTheme(e.data.theme);
+                  },
+                },
+              }),
+            },
           ],
         },
       },

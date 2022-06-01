@@ -38,10 +38,24 @@ module.exports = (_, options = {}) => ({
             plugins: [
               '@babel/plugin-proposal-optional-chaining',
               '@babel/plugin-proposal-nullish-coalescing-operator',
-              'babel-plugin-styled-components',
             ],
           },
         },
+      },
+      {
+        test: /\.css$/i,
+        use: [
+          'style-loader',
+          'css-loader',
+          {
+            loader: 'postcss-loader',
+            options: {
+              postcssOptions: {
+                plugins: ['tailwindcss', 'autoprefixer'],
+              },
+            },
+          },
+        ],
       },
     ],
   },

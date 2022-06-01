@@ -7,6 +7,7 @@ const unitTests = {
   testEnvironment: 'node',
   clearMocks: true,
   moduleNameMapper: {
+    '^.+\\.(css|less|scss)$': '<rootDir>/testHelpers/stringStub.ts',
     '^@shared(.*)$': '<rootDir>/shared/$1',
     '^@client(.*)$': '<rootDir>/client/$1',
     '^@electron(.*)$': '<rootDir>/electron/$1',

@@ -1,7 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ElectronLog } from 'electron-log';
+import { ThemeName } from '@client/theme';
 import { IpcMainEvent, IpcMainInvokeEvent } from '@electron/electron';
 import { Repositories } from '@electron/repositories';
+import { ElectronLog } from 'electron-log';
+import React from 'react';
 
 export interface ILogger extends ElectronLog {
   info: (...msg: any[]) => void;
@@ -25,6 +27,7 @@ export const emptyConfig: UserConfig = {
     beforePomo: false,
   },
   slack: { enabled: false },
+  theme: 'nord',
 };
 
 export interface UserConfig {
@@ -47,6 +50,7 @@ export interface UserConfig {
         slackDSCookie: string;
       }
     | { enabled: false };
+  theme: ThemeName;
 }
 
 /**
@@ -123,4 +127,8 @@ export interface TimerHooks {
   onPlayHook: Hook;
   onStopHook: Hook;
   onCompleteHook: Hook;
+}
+
+export interface IChildren {
+  children: React.ReactNode;
 }

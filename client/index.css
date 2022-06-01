@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --col-null: 255 0 198;
+
+  /* --------------------------------------------------------------------------
+   * colour palette 
+   * ------------------------------------------------------------------------ */
+
+  /* main */
+  --col-bg: var(--col-null);
+  --col-bg-alt: var(--col-null);
+  --col-fg: var(--col-null);
+  --col-fg-alt: var(--col-null);
+
+  /* base */
+  --col-base0: var(--col-null);
+  --col-base1: var(--col-null);
+  --col-base2: var(--col-null);
+  --col-base3: var(--col-null);
+  --col-base4: var(--col-null);
+  --col-base5: var(--col-null);
+  --col-base6: var(--col-null);
+  --col-base7: var(--col-null);
+  --col-base8: var(--col-null);
+
+  /* colours */
+  --col-grey: var(--col-null);
+  --col-red: var(--col-null);
+  --col-orange: var(--col-null);
+  --col-green: var(--col-null);
+  --col-teal: var(--col-null);
+  --col-yellow: var(--col-null);
+  --col-blue: var(--col-null);
+  --col-dark-blue: var(--col-null);
+  --col-magenta: var(--col-null);
+  --col-violet: var(--col-null);
+  --col-cyan: var(--col-null);
+  --col-dark-cyan: var(--col-null);
+
+  /* --------------------------------------------------------------------------
+   * Theme
+   * ------------------------------------------------------------------------ */
+  --col-text: var(--col-fg);
+
+  --color-background: 46 52 64;
+  --color-backgroundSubtle: 59 66 82;
+  --color-backgroundBright: 67 76 94;
+  --color-backgroundBrightest: 76 86 106;
+  --color-fgDim: 216 222 233;
+  --color-fg: 229 233 240;
+  --color-fgBrightest: 236 239 244;
+  --color-primary: 143 188 187;
+  --color-bright: 136 192 208;
+  --color-secondary: 129 161 193;
+  --color-tertiary: 94 129 172;
+  --color-error: 191 97 106;
+  --color-warning: 235 203 139;
+  --color-good: 163 190 140;
+}

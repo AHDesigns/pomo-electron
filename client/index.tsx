@@ -3,6 +3,7 @@ import { render } from 'react-dom';
 import { fakeRepositories } from '@electron/repositories/fakes';
 import { IBridge } from '@shared/types';
 import { Providers } from './Providers';
+import './index.css';
 
 const mainElement = document.createElement('div');
 mainElement.setAttribute('id', 'root');

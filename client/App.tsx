@@ -1,8 +1,7 @@
-/* eslint-disable react/jsx-no-useless-fragment */
 import React, { useLayoutEffect } from 'react';
 import { inspect } from '@xstate/inspect';
 import { useSelector } from '@xstate/react';
-import { useMachines } from './hooks/machines';
+import { useMachines } from '@client/hooks';
 
 interface IApp {
   children: React.ReactNode;
@@ -25,5 +24,9 @@ export function App({ children, shouldInspect }: IApp): JSX.Element {
   if (!loaded) {
     return <p data-testid="providers-loading">...booting</p>;
   }
-  return <>{children}</>;
+  return (
+    <div id="App-loaded" className="h-screen w-screen">
+      {children}
+    </div>
+  );
 }

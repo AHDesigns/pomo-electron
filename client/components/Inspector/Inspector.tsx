@@ -1,8 +1,5 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { inspect } from '@xstate/inspect';
-import styled from 'styled-components';
-
-const Button = styled.button``;
 
 export interface IInspector {
   toggleable?: boolean;
@@ -24,14 +21,14 @@ export function Inspector({ toggleable }: IInspector): JSX.Element {
   return (
     <>
       {toggleable && (
-        <Button
+        <button
           type="button"
           onClick={() => {
             setInspecting((x) => !x);
           }}
         >
           {inspecting ? 'hide inspector' : 'show inspector'}
-        </Button>
+        </button>
       )}
       <iframe
         id="xstate"

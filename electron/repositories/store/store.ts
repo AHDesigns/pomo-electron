@@ -1,4 +1,4 @@
-import Store from 'electron-store';
+import Store, { type Options } from 'electron-store';
 import { err, ok, Result } from '@shared/Result';
 import { DeepPartial, ILogger, UserConfig } from '@shared/types';
 import { getKeyPathsAndValues } from './getKeyPathsAndValues';
@@ -24,6 +24,7 @@ export interface StoreConfig<T> {
    * Initial values for config, if no config file exists
    */
   defaults: T;
+  migrations?: Options<T>['migrations'];
 }
 
 export interface StoreRepo<T> {

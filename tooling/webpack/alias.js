@@ -10,14 +10,20 @@ const shared = {
 
 const client = {
   '@client': path.resolve(root, 'client'),
+  '@sb': path.resolve(root, 'client/storybook'),
 };
 
 const server = {
   '@electron': path.resolve(root, 'electron'),
 };
 
+const test = {
+  '@test': path.resolve(root, 'testHelpers'),
+};
+
 module.exports = {
   shared,
   client,
   server,
+  test,
 };

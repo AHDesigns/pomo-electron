@@ -1,100 +1,88 @@
 import React, { useRef } from 'react';
+import { useActor } from '@xstate/react';
 import T from '@client/copy';
-import { useTimerSettings } from '@client/hooks';
-import { Button } from '@client/components';
-import { useTheme } from 'styled-components';
-import { timerSettingsModel } from '@client/machines';
-import { ButtonPair, ErrorMsg, Form, InputText, Label } from './Form';
+import { Button, FormItemNumber } from '@client/components';
+import { TimerSettingsActorRef, timerSettingsModel } from '@client/machines';
 import { Setting } from './Setting';
 
 const { CANCEL, SAVE, UPDATE } = timerSettingsModel.events;
 
-export function Timer(): JSX.Element {
-  const [state, send] = useTimerSettings();
+export function Timer({ actor }: { actor: TimerSettingsActorRef }): JSX.Element {
+  const [state, send] = useActor(actor);
   const {
     context: { long, pomo, short },
   } = state;
-  const { spacing } = useTheme();
   const inputRef = useRef<HTMLInputElement>(null);
 
   return (
-    <Setting variant="simple" heading="Timer" styles={{ marginTop: spacing.small }}>
-      <Form
-        onSubmit={(e) => {
-          e.preventDefault();
-          send(SAVE());
-          inputRef.current?.focus();
+    <Setting
+      variant="simple"
+      heading="Timer"
+      onSubmit={() => {
+        send(SAVE());
+        inputRef.current?.focus();
+      }}
+    >
+      <FormItemNumber
+        label="Pomodoro"
+        ariaLabel="Set the duration, in minutes, of a pomodoro timer"
+        error={pomo.error}
+        input={{
+          min: 1,
+          max: 100,
+          value: pomo.value,
+          onChange: (n) => {
+            send(UPDATE('pomo', n));
+          },
         }}
-      >
-        <Label htmlFor="pomo">Pomodoro</Label>
-        <InputText
-          ref={inputRef}
-          id="pomo"
-          type="number"
-          error={Boolean(pomo.error)}
-          min={1}
-          max={120}
-          value={pomo.value}
-          onChange={(e) => {
-            send(UPDATE('pomo', Number(e.target.value)));
+      />
+      <FormItemNumber
+        label="Short Break"
+        ariaLabel="Set the duration, in minutes, of each short break timer between pomodoros"
+        error={short.error}
+        input={{
+          min: 1,
+          max: 100,
+          value: short.value,
+          onChange: (n) => {
+            send(UPDATE('short', n));
+          },
+        }}
+      />
+      <FormItemNumber
+        label="Long Break"
+        ariaLabel="Set the duration, in minutes, of each long break timer which runs after completing several pomodoros"
+        error={long.error}
+        input={{
+          min: 1,
+          max: 100,
+          value: long.value,
+          onChange: (n) => {
+            send(UPDATE('long', n));
+          },
+        }}
+      />
+      <div className="flex justify-between">
+        <Button
+          disabled={!state.can('SAVE')}
+          type="submit"
+          style={{ gridColumn: 'middle-r / right' }}
+        >
+          {T.settings.submit}
+        </Button>
+        <Button
+          disabled={!state.can('CANCEL')}
+          type="button"
+          variant="secondary"
+          style={{ gridColumn: 'middle-r / right' }}
+          onClick={() => {
+            send(CANCEL());
+            inputRef.current?.focus();
           }}
-        />
-        {pomo.error && <ErrorMsg>{pomo.error}</ErrorMsg>}
-        <Label htmlFor="short-break">Short break</Label>
-        <InputText
-          name="short-break"
-          id="short-break"
-          error={Boolean(short.error)}
-          type="number"
-          min={1}
-          max={120}
-          value={short.value}
-          onChange={({ target: { value } }) => {
-            send(UPDATE('short', Number(value)));
-          }}
-        />
-        {short.error && <ErrorMsg>{short.error}</ErrorMsg>}
-        <Label htmlFor="long-break">Long break</Label>
-        <InputText
-          name="long-break"
-          id="long-break"
-          type="number"
-          error={Boolean(long.error)}
-          min={1}
-          max={120}
-          placeholder="xocx-..."
-          value={long.value}
-          onChange={({ target: { value } }) => {
-            send(UPDATE('long', Number(value)));
-          }}
-        />
-        {long.error && <ErrorMsg>{long.error}</ErrorMsg>}
-        <ButtonPair
-          Confirm={
-            <Button
-              disabled={!state.can('SAVE')}
-              type="submit"
-              style={{ gridColumn: 'middle-r / right' }}
-            >
-              {T.settings.submit}
-            </Button>
-          }
-          Cancel={
-            <Button
-              disabled={!state.can('CANCEL')}
-              type="button"
-              variant="secondary"
-              style={{ gridColumn: 'middle-r / right' }}
-              onClick={() => {
-                send(CANCEL());
-                inputRef.current?.focus();
-              }}
-            >
-              {T.settings.cancel}
-            </Button>
-          }
-        />
-      </Form>
+        >
+          {T.settings.cancel}
+        </Button>
+      </div>
     </Setting>
   );
 }

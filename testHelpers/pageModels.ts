@@ -15,7 +15,7 @@ export const pageModel = {
   },
   nav: {
     toSettings: () => screen.getByRole('button', { name: 'settings' }),
-    toTimer: () => screen.getByRole('button', { name: 'timer' }),
+    toTimer: () => screen.getByRole('button', { name: 'settings' }),
   },
   pomo: {
     title: () => screen.getByText('Timer'),
@@ -57,6 +57,7 @@ const timeouts = {
 export const userActions = {
   async navigateToSettings() {
     userEvent.click(pageModel.nav.toSettings());
+    userEvent.click(screen.getByRole('button', { name: 'Timer Settings' }));
     await screen.findByRole(
       'heading',
       { name: 'Settings', exact: true },
@@ -65,6 +66,7 @@ export const userActions = {
   },
   async navigateToTimer() {
     userEvent.click(pageModel.nav.toTimer());
+    userEvent.click(screen.getByRole('button', { name: 'Timer' }));
     await screen.findByRole('heading', { name: 'Timer' }, { timeout: timeouts.MEDIUM });
   },
 } as const;

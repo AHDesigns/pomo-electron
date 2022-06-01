@@ -1,10 +1,9 @@
 import { addons } from '@storybook/addons';
 import { create } from '@storybook/theming';
-import { theme } from '../../client/styles/theme';
 
 // const { white, background, accent } = theme.palette;
 const myTheme = create({
-  brandTitle: 'Pancake',
+  brandTitle: 'Pomo',
   brandUrl: 'https://github.com/AHDesigns/pancake-electron',
   brandImage: '/storybook-icon.png',
   base: 'dark',
@@ -14,7 +13,7 @@ const myTheme = create({
   // appContentBg: background,
   // barBg: background,
   // textColor: white,
-  fontBase: theme.typography.body.fontFamily,
+  // fontBase: theme.typography.body.fontFamily,
 });
 
 addons.setConfig({

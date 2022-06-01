@@ -1,4 +1,4 @@
-const { client, shared } = require('../webpack/alias');
+const { client, shared, server, test } = require('../webpack/alias');
 
 module.exports = ({ config }) => {
   // // a bunch of other rules here
@@ -12,6 +12,8 @@ module.exports = ({ config }) => {
   config.resolve.alias = {
     ...shared,
     ...client,
+    ...server,
+    ...test,
   };
 
   return config;

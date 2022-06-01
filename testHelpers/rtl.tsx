@@ -1,14 +1,12 @@
-import React, { ReactElement } from 'react';
-import { ThemeProvider } from 'styled-components';
+import { App } from '@client/App';
 import { ErrorBoundary } from '@client/components';
 import { IMachinesProvider } from '@client/hooks/machines';
-import { createFakeHooks } from '@client/machines';
 import { BridgeProvider, LoggerProvider, MachinesProvider } from '@client/hooks/providers';
-import { theme } from '@client/styles/theme';
+import { createFakeHooks } from '@client/machines';
 import { createFakeBridge } from '@electron/ipc/createFakeBridge';
 import { IBridge } from '@shared/types';
 import { render, RenderOptions, screen, waitForElementToBeRemoved } from '@testing-library/react';
-import { App } from '@client/App';
+import React, { ReactElement } from 'react';
 
 jest.mock('@xstate/inspect');
 
@@ -50,11 +48,9 @@ export function Providers({ children, bridge, hooks }: Overrides): JSX.Element {
     <BridgeProvider bridge={{ ...createFakeBridge(), ...bridge }}>
       <LoggerProvider>
         <ErrorBoundary>
-          <ThemeProvider theme={theme}>
-            <MachinesProvider hooks={{ ...createFakeHooks(), ...hooks }}>
-              <App shouldInspect={false}>{children}</App>
-            </MachinesProvider>
-          </ThemeProvider>
+          <MachinesProvider hooks={{ ...createFakeHooks(), ...hooks }}>
+            <App shouldInspect={false}>{children}</App>
+          </MachinesProvider>
         </ErrorBoundary>
       </LoggerProvider>
     </BridgeProvider>

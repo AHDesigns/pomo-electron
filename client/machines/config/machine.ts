@@ -1,10 +1,10 @@
 import { IBridge, UserConfig } from '@shared/types';
-import { ActorRefFrom, InterpreterFrom, sendParent, assign, createMachine } from 'xstate';
+import { ActorRefFrom, assign, createMachine, InterpreterFrom, sendParent } from 'xstate';
 import { respond } from 'xstate/lib/actions';
 import { actorIds } from '../constants';
 import mainModel from '../main/model';
-import { configModel, ConfigContext, ConfitEvents } from './model';
 import { createContext, timerSettingsMachine } from '../timerSettings/machine';
+import { ConfigContext, configModel, ConfitEvents } from './model';
 
 export interface IConfigMachine {
   bridge: IBridge;

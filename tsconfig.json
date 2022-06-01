@@ -6,6 +6,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
     "esModuleInterop": true,
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
@@ -18,7 +19,8 @@
       "@shared/*": ["shared/*"],
       "@electron/*": ["electron/*"],
       "@client/*": ["client/*"],
-      "@test/*": ["testHelpers/*"]
+      "@test/*": ["testHelpers/*"],
+      "@sb": ["client/storybook/*"]
     },
     "jsx": "react"
   },
@@ -27,6 +29,7 @@
     "./jest.config.js",
     "./jest.prettier.js",
     "./playwright.config.ts",
+    "./tailwind.config.js",
     "tooling",
     "client",
     "electron",
