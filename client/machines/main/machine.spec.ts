@@ -22,6 +22,7 @@ function getService(overrides?: Overrides): MainService {
     bridge: createFakeBridge(),
     actions: { ...createFakeHooks(), ...overrides?.actions },
     configOverride: overrides?.configOverride && merge(emptyConfig, overrides.configOverride),
+    updateTheme: () => {},
   });
 
   const service = interpret(machine);

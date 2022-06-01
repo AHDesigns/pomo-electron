@@ -1,4 +1,3 @@
-import { updateTheme } from '@client/theme/updateTheme';
 import { IBridge, UserConfig } from '@shared/types';
 import { ActorRefFrom, assign, createMachine, InterpreterFrom, sendParent } from 'xstate';
 import { respond } from 'xstate/lib/actions';
@@ -111,16 +110,12 @@ export default function configMachine({ bridge, configOverride }: IConfigMachine
       services: {
         loadConfig: async () => {
           if (configOverride) {
-            updateTheme(configOverride.theme);
             return configOverride;
           }
 
           const r = await bridge.storeRead();
           return r.match({
-            Ok: (config) => {
-              updateTheme(config.theme);
-              return config;
-            },
+            Ok: (config) => config,
             Err: (e) => {
               bridge.warn(e);
               throw new Error();
@@ -138,9 +133,6 @@ export default function configMachine({ bridge, configOverride }: IConfigMachine
           });
         },
         updateConfig: async (_, e) => {
-          if (e.data.theme) {
-            updateTheme(e.data.theme);
-          }
           const res = await bridge.storeUpdate(e.data);
           return res.match({
             Ok: (config) => config,

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/consistent-type-assertions, @typescript-eslint/explicit-module-boundary-types, @typescript-eslint/explicit-function-return-type */
+import { updateTheme } from '@client/theme';
 import { useActor, useInterpret, useSelector } from '@xstate/react';
 import React, { createContext, useContext, useEffect } from 'react';
 import {
@@ -30,7 +31,7 @@ export function MachinesProvider({ children, hooks }: IMachinesProvider): JSX.El
     bridge.info('client starting');
   }, [bridge]);
 
-  const main = useInterpret(mainMachine({ bridge, actions: hooks, pomodoro: {} }), {
+  const main = useInterpret(mainMachine({ bridge, actions: hooks, pomodoro: {}, updateTheme }), {
     devTools: true,
   });
 

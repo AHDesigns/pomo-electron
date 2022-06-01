@@ -1,3 +1,4 @@
+import { type ThemeActorRef } from '@client/machines/theme/machine';
 import { type ConfigActorRef } from './config/machine';
 import { type PomodoroActorRef } from './pomodoro/machine';
 import { type TimerActorRef } from './timer/machine';
@@ -8,6 +9,7 @@ export const actorIds = {
   CONFIG: 'CONFIG',
   TIMER: 'TIMER',
   TIMER_SETTINGS: 'TIMER_SETTINGS',
+  THEME: 'THEME',
 } as const;
 
 export interface Actors {
@@ -15,4 +17,5 @@ export interface Actors {
   TIMER: TimerActorRef;
   POMODORO: PomodoroActorRef;
   TIMER_SETTINGS: TimerSettingsActorRef;
+  THEME: ThemeActorRef;
 }
