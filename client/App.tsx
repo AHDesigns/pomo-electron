@@ -12,7 +12,6 @@ export function App({ children, shouldInspect }: IApp): JSX.Element {
   useLayoutEffect(() => {
     if (shouldInspect) {
       inspect({
-        url: 'https://statecharts.io/inspect',
         iframe: false,
       });
     }

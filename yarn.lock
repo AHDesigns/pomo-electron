@@ -4714,18 +4714,19 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@xstate/inspect@npm:0.6.2":
-  version: 0.6.2
-  resolution: "@xstate/inspect@npm:0.6.2"
+"@xstate/inspect@npm:^0.7.0":
+  version: 0.7.0
+  resolution: "@xstate/inspect@npm:0.7.0"
   dependencies:
-    fast-safe-stringify: ^2.0.7
+    fast-safe-stringify: ^2.1.1
   peerDependencies:
     "@types/ws": ^8.0.0
     ws: ^8.0.0
+    xstate: ^4.32.0
   peerDependenciesMeta:
     "@types/ws":
       optional: true
-  checksum: 0f9aef8a8538a94f253c2692609cd9679b512afb028ef037e90a62c28c2ae715572f5e2b26fbf87da45a0a171ae1ca80da15423ac5c69b6d5a5b205c007af7b9
+  checksum: dd6b68eaae227968384442889c288cdb0e0d8bf947cb6b19d581ff7f727e1c5f82d42c31a3cbe6d80a18906dc907154ae20a897af834458fba6559ae05573360
   languageName: node
   linkType: hard
 
@@ -9438,7 +9439,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-safe-stringify@npm:^2.0.7":
+"fast-safe-stringify@npm:^2.1.1":
   version: 2.1.1
   resolution: "fast-safe-stringify@npm:2.1.1"
   checksum: a851cbddc451745662f8f00ddb622d6766f9bd97642dabfd9a405fb0d646d69fc0b9a1243cbf67f5f18a39f40f6fa821737651ff1bceeba06c9992ca2dc5bd3d
@@ -15102,7 +15103,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": 5.12.0
     "@typescript-eslint/parser": 5.12.0
     "@xstate/cli": 0.1.5
-    "@xstate/inspect": 0.6.2
+    "@xstate/inspect": ^0.7.0
     "@xstate/react": 2.0.0
     autoprefixer: ^10.4.7
     babel-loader: ^8.2.4
