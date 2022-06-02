@@ -14,12 +14,22 @@ export interface ICountdown {
 
 export function Countdown({ timerRef, title, duration }: ICountdown): JSX.Element {
   const [state, send] = useActor(timerRef);
-  const { minutes, seconds } = state.context;
+  const { minutes, seconds, type } = state.context;
+
+  const timerState = (() => {
+    if (state.can('START')) {
+      return 'inactive';
+    }
+    if (type === 'pomo') {
+      return 'pomo';
+    }
+    return 'break';
+  })();
 
   return (
     <div className="timer mt-5">
       <Box style={{ gridArea: 'timer' }}>
-        <TimerProgress duration={duration} mins={minutes} seconds={seconds} state={state} />
+        <TimerProgress duration={duration} mins={minutes} seconds={seconds} state={timerState} />
       </Box>
       <Box
         style={{
@@ -29,7 +39,9 @@ export function Countdown({ timerRef, title, duration }: ICountdown): JSX.Elemen
           fontSize: 14,
         }}
       >
-        <p className="text-center text-thmPrimary">{title}</p>
+        <p className={`text-center ${type === 'pomo' ? 'text-thmPrimary' : 'text-thmGood'}`}>
+          {title}
+        </p>
       </Box>
       <Box
         className="mt-[7px]"
