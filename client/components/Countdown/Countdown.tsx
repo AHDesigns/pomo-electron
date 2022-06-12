@@ -70,7 +70,7 @@ export function Countdown({ timerRef, title, duration }: ICountdown): JSX.Elemen
           {state.can('START') && (
             <Button
               className="animate-pulse"
-              // variant="secondary"
+              variant="rounded"
               onClick={() => {
                 send({ type: 'START' });
               }}

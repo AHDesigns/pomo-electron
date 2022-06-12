@@ -8,7 +8,6 @@ export default {
 } as ComponentMeta<typeof Button>;
 
 const sharedArgs: Omit<IButton, 'type'> = {
-  fullWidth: false,
   disabled: false,
 };
 
@@ -22,6 +21,9 @@ export const VariantsCol: ComponentStory<typeof Button> = (args) => (
     </Button>
     <Button {...args} type="button" variant="tertiary">
       tertiary
+    </Button>
+    <Button {...args} type="button" variant="rounded">
+      rounded
     </Button>
   </PageWrapper>
 );
