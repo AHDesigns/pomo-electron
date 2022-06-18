@@ -2,7 +2,14 @@ import { autoUpdater as _autoUpdater } from 'electron-updater';
 import { createFakeLogger } from '../logger/createFakeLogger';
 import { checkForUpdates } from './updater';
 
+jest.mock('electron-updater', () => ({
+  autoUpdater: {
+    checkForUpdatesAndNotify: jest.fn(async () => Promise.resolve(undefined)),
+    on: jest.fn(),
+  },
+}));
 const autoUpdater = jest.mocked(_autoUpdater, true);
+autoUpdater.on.mockImplementation((key, cb) => autoUpdater);
 
 describe('checkForUpdates', () => {
   const spy = jest.fn();
