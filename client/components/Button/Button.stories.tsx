@@ -22,9 +22,6 @@ export const VariantsCol: ComponentStory<typeof Button> = (args) => (
     <Button {...args} type="button" variant="tertiary">
       tertiary
     </Button>
-    <Button {...args} type="button" variant="rounded">
-      rounded
-    </Button>
   </PageWrapper>
 );
 VariantsCol.args = { ...sharedArgs };

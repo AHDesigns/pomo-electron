@@ -70,6 +70,7 @@ export function Countdown({ timerRef, title, duration }: ICountdown): JSX.Elemen
         >
           {state.can('START') && (
             <Button
+              data-test-id="start-button"
               variant="icon"
               onClick={() => {
                 send({ type: 'START' });
@@ -82,6 +83,7 @@ export function Countdown({ timerRef, title, duration }: ICountdown): JSX.Elemen
           )}
           {state.can('STOP') && (
             <Button
+              data-test-id="stop-button"
               className="text-thmPrimary"
               variant="icon"
               onClick={() => {
