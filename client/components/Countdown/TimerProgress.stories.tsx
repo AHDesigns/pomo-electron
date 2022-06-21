@@ -10,6 +10,7 @@ export default {
     duration: 10,
     mins: 1,
     seconds: 10,
+    state: 'pomo',
   },
 } as ComponentMeta<StoryArgs>;
 
@@ -24,10 +25,6 @@ export const Timer: ComponentStory<StoryArgs> = ({ wrapped, state, seconds, mins
     <TimerProgress duration={duration} mins={mins} seconds={seconds} state={state} />
   </PageWrapper>
 );
-
-Timer.args = {
-  state: 'pomo',
-};
 
 export const TimerPomo = Timer.bind({});
 TimerPomo.args = {

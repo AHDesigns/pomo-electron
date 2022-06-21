@@ -1,6 +1,7 @@
 import { Box, Button, TimerProgress } from '@client/components';
 import T from '@client/copy';
 import { TimerActorRef } from '@client/machines';
+import { PauseIcon, PlayIcon, StopIcon } from '@heroicons/react/solid';
 import { displayNum } from '@shared/format';
 import { useActor } from '@xstate/react';
 import React from 'react';
@@ -69,38 +70,48 @@ export function Countdown({ timerRef, title, duration }: ICountdown): JSX.Elemen
         >
           {state.can('START') && (
             <Button
-              className="animate-pulse"
-              // variant="secondary"
+              data-test-id="start-button"
+              variant="icon"
               onClick={() => {
                 send({ type: 'START' });
               }}
+              aria-label={T.pomoTimer.start}
+              className="text-thmPrimary"
             >
-              {T.pomoTimer.start}
+              <PlayIcon />
             </Button>
           )}
           {state.can('STOP') && (
             <Button
-              className="text-thmWarn"
-              variant="tertiary"
+              data-test-id="stop-button"
+              className="text-thmPrimary"
+              variant="icon"
               onClick={() => {
                 send({ type: 'STOP' });
               }}
+              aria-label={T.pomoTimer.stop}
             >
-              {T.pomoTimer.stop}
+              <StopIcon />
             </Button>
           )}
           {state.can('PAUSE') && (
-            <Button variant="tertiary" onClick={() => send({ type: 'PAUSE' })}>
-              {T.pomoTimer.pause}
+            <Button
+              variant="icon"
+              onClick={() => send({ type: 'PAUSE' })}
+              aria-label={T.pomoTimer.pause}
+              className="text-thmPrimary"
+            >
+              <PauseIcon />
             </Button>
           )}
           {state.can('PLAY') && (
             <Button
-              className="animate-pulse text-thmGood"
-              variant="tertiary"
+              className="animate-pulse text-thmPrimary"
+              variant="icon"
               onClick={() => send({ type: 'PLAY' })}
+              aria-label={T.pomoTimer.play}
             >
-              {T.pomoTimer.play}
+              <PlayIcon />
             </Button>
           )}
         </Box>

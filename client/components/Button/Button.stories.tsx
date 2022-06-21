@@ -8,7 +8,6 @@ export default {
 } as ComponentMeta<typeof Button>;
 
 const sharedArgs: Omit<IButton, 'type'> = {
-  fullWidth: false,
   disabled: false,
 };
 

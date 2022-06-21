@@ -60,7 +60,7 @@ export const userActions = {
     userEvent.click(screen.getByRole('button', { name: 'Timer Settings' }));
     await screen.findByRole(
       'heading',
-      { name: 'Settings', exact: true },
+      { name: 'Timer Settings', exact: true },
       { timeout: timeouts.MEDIUM }
     );
   },

@@ -11,11 +11,11 @@ test('main screen', async () => {
 
   window.on('console', (msg) => logs.push(msg.text()));
 
-  await window.click('text=Start');
+  await window.click('data-test-id=start-button');
 
   expect(logs).toContain('set tray icon active');
 
-  await window.click('text=Stop');
+  await window.click('data-test-id=stop-button');
 
   expect(logs).toContain('set tray icon inactive');
 
