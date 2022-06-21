@@ -9,7 +9,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   Partial<Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>>;
 
 export interface IButton extends ButtonProps {
-  variant?: 'primary' | 'icon' | 'secondary' | 'tertiary';
+  variant?: 'icon' | 'primary' | 'secondary' | 'tertiary';
   fullWidth?: boolean;
 }
 
