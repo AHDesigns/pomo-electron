@@ -10,12 +10,11 @@ export interface IHeader {
 }
 
 export function Header({ onClick, page, showClose }: IHeader): JSX.Element {
-  const title = page.includes('Settings') ? 'Settings' : page;
   return (
     <header className="grid h-11 flex-shrink-0 grid-cols-[20%_60%_20%]">
       <MenuButton onClick={onClick} showClose={showClose} />
       <Box>
-        <h2 className="text-center text-lg">{showClose ? 'Settings' : title}</h2>
+        <h2 className="text-center text-lg">{showClose ? 'Menu' : page}</h2>
       </Box>
       <Box className="text-sm text-thmBackgroundBrightest">
         <p>Beta</p>

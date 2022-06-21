@@ -96,6 +96,7 @@
     "webpack-dev-server": "3.11.2"
   },
   "dependencies": {
+    "@heroicons/react": "^1.0.6",
     "@playwright/test": "^1.20.2",
     "@xstate/cli": "0.1.5",
     "@xstate/inspect": "^0.7.0",

@@ -9,7 +9,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> &
   Partial<Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'type'>>;
 
 export interface IButton extends ButtonProps {
-  variant?: 'primary' | 'rounded' | 'secondary' | 'tertiary';
+  variant?: 'primary' | 'icon' | 'secondary' | 'tertiary';
   fullWidth?: boolean;
 }
 
@@ -18,7 +18,7 @@ export interface IButton extends ButtonProps {
 // );
 const colors =
   'transition transition-all hover:brightness-125 disabled:hover:brightness-100 disabled:cursor-not-allowed active:brightness-150';
-const common = 'button w-fit p-2 px-4 shadow-3xl';
+const common = 'flex items-center button w-fit p-2 px-4 shadow-3xl';
 
 export function Button({
   children,
@@ -78,13 +78,13 @@ export function Button({
           {children}
         </button>
       );
-    case 'rounded':
+    case 'icon':
       return (
         <button
           type={type}
           className={classNames(
             colors,
-            'h-[60px] w-[60px] rounded-full border border-thmPrimary p-0 text-xs text-thmSecondary underline underline-offset-1 shadow-none outline-none hover:underline-offset-2 focus:ring  focus:ring-thmBright disabled:border-thmBackgroundBrightest disabled:text-thmBackgroundBrightest',
+            'h-[40px] w-[40px] p-0 lowercase shadow-none outline-none  disabled:text-thmBackgroundBrightest',
             width,
             className
           )}
