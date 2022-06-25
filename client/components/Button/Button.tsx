@@ -84,7 +84,7 @@ export function Button({
           type={type}
           className={classNames(
             colors,
-            'h-[40px] w-[40px] p-0 lowercase shadow-none outline-none  disabled:text-thmBackgroundBrightest',
+            'h-[40px] w-[40px] rounded-full p-0 lowercase shadow-none  outline-none focus:ring focus:ring-thmBright disabled:text-thmBackgroundBrightest',
             width,
             className
           )}

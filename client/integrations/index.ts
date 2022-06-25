@@ -21,7 +21,10 @@ function createHooks(): TimerHooks {
     (all, hook) => ({
       ...all,
       [hook]: (ctx: HookContext) => {
-        ctx.bridge.info(`${hook} called`);
+        if (hook !== 'onTickHook') {
+          // too annoying logging this every time
+          ctx.bridge.info(`${hook} called`);
+        }
 
         //-----------------------------------------------------------------------------
         // ADD INTEGRATIONS HERE

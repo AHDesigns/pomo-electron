@@ -1,8 +1,35 @@
-import { IInputNumber, IInputPassword, InputNumber, InputPassword } from '@client/components';
+import {
+  Checkbox,
+  ICheckbox,
+  IInputNumber,
+  IInputPassword,
+  InputNumber,
+  InputPassword,
+} from '@client/components';
 import { EyeClosed, EyeOpen } from '@client/components/Icons';
 import { IChildren } from '@shared/types';
 import React, { useRef, useState } from 'react';
 
+interface IFormCheckbox extends IFormItem {
+  checkbox: Omit<ICheckbox, 'children' | 'hasError' | 'id'>;
+}
+
+export function FormItemCheckbox({ checkbox, id: _id, label, error }: IFormCheckbox): JSX.Element {
+  const id = _id ?? `${label}form-input`;
+  return (
+    <div className="flex max-w-md flex-col gap-3 ">
+      {/* <label htmlFor={id} aria-label={ariaLabel} className="leading-8"> */}
+      <Checkbox {...checkbox} id={id} hasError={Boolean(error)}>
+        <p>{label}</p>
+      </Checkbox>
+      {error && (
+        <ErrorMsg id={`${id}-error`} aria-live="polite">
+          {error}
+        </ErrorMsg>
+      )}
+    </div>
+  );
+}
 interface IFormItemNumber extends IFormItem {
   input: Omit<IInputNumber, 'hasError' | 'id'>;
 }
@@ -76,8 +103,8 @@ export function FormItem({
 }: IChildren & IFormItem): JSX.Element {
   const id = _id ?? `${label}form-input`;
   return (
-    <div className="flex max-w-md flex-col gap-3 ">
-      <label htmlFor={id} aria-label={ariaLabel} className="leading-8">
+    <div className="flex max-w-md flex-col gap-1">
+      <label htmlFor={id} aria-label={ariaLabel}>
         {label}
       </label>
       {children}

@@ -2,12 +2,14 @@ import classNames from 'classnames';
 import React, { useState } from 'react';
 import './checkbox.css';
 
-interface ICheckbox {
+export interface ICheckbox {
   id: string;
   initiallyChecked: boolean;
   hasError?: boolean;
   disabled?: boolean;
   children: React.ReactNode;
+  ariaLabel?: string;
+  className?: string;
   onChange(checked: boolean): void;
 }
 
@@ -18,16 +20,23 @@ export function Checkbox({
   onChange,
   disabled,
   id,
+  ariaLabel,
+  className,
 }: ICheckbox): JSX.Element {
   const [checked, setChecked] = useState(initiallyChecked);
   return (
     <label
       htmlFor={id}
-      className={classNames('flex w-fit items-center space-x-2', {
-        'text-thmBackgroundBrightest': disabled,
-        'cursor-not-allowed': disabled,
-        'text-thmError': hasError,
-      })}
+      className={classNames(
+        'flex  items-center space-x-2',
+        {
+          'text-thmBackgroundBrightest': disabled,
+          'cursor-not-allowed': disabled,
+          'text-thmError': hasError,
+        },
+        className
+      )}
+      aria-label={ariaLabel}
     >
       {children}
       <input
