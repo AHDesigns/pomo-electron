@@ -2,11 +2,13 @@ import { osHooks } from './os';
 import { createCtx } from './createCtx';
 
 describe('osHooks', () => {
-  test('onStartHook updates tray timer', () => {
-    const { ctx, spies } = createCtx();
-    osHooks.onStartHook(ctx);
+  describe('onStartHook', () => {
+    it('should update tray timer', () => {
+      const { ctx, spies } = createCtx();
+      osHooks.onStartHook(ctx);
 
-    expect(spies.setTrayIcon).toHaveBeenCalledWith('active');
+      expect(spies.setTrayIcon).toHaveBeenCalledWith('active');
+    });
   });
 
   test('onStopHook updates tray timer', () => {
@@ -17,16 +19,28 @@ describe('osHooks', () => {
     expect(spies.setTrayTitle).toHaveBeenCalledWith('');
   });
 
-  test('onTickHook updates tray timer', () => {
-    const c = createCtx({ timer: { minutes: 4, seconds: 29 } });
-    osHooks.onTickHook(c.ctx);
+  describe('onTickHook', () => {
+    it('should update the tray timer', () => {
+      const c = createCtx({ timer: { minutes: 4, seconds: 29 } });
+      osHooks.onTickHook(c.ctx);
 
-    expect(c.spies.setTrayTitle).toHaveBeenCalledWith('4:29');
+      expect(c.spies.setTrayTitle).toHaveBeenCalledWith('4:29');
 
-    const c2 = createCtx({ timer: { minutes: 4, seconds: 2 } });
-    osHooks.onTickHook(c2.ctx);
+      const c2 = createCtx({ timer: { minutes: 4, seconds: 2 } });
+      osHooks.onTickHook(c2.ctx);
 
-    expect(c2.spies.setTrayTitle).toHaveBeenCalledWith('4:02');
+      expect(c2.spies.setTrayTitle).toHaveBeenCalledWith('4:02');
+    });
+    describe('when the user does not want a status timer', () => {
+      it('should not update the timer', () => {
+        const c = createCtx({
+          timer: { minutes: 4, seconds: 29 },
+          config: { displayTimerInStatusBar: false },
+        });
+        osHooks.onTickHook(c.ctx);
+        expect(c.spies.setTrayTitle).not.toHaveBeenCalled();
+      });
+    });
   });
 
   test('onCompleteHook updates tray timer and focusses the window', () => {

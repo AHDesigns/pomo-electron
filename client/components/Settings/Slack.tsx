@@ -1,4 +1,5 @@
 import { Button, FormItemPassword } from '@client/components';
+import { FormItemCheckbox } from '@client/components/Form/FormItem';
 import { useBridge, useConfig } from '@client/hooks';
 import React, { useState } from 'react';
 import { Setting } from './Setting';
@@ -29,15 +30,7 @@ export function Slack(): JSX.Element | null {
   return (
     <Setting
       heading="Slack"
-      variant="toggle"
-      checked={slack.enabled}
-      onToggle={() => {
-        storeUpdate({
-          slack: {
-            enabled: !slack.enabled,
-          },
-        });
-      }}
+      variant="simple"
       onSubmit={() => {
         storeUpdate({
           slack: {
@@ -48,6 +41,19 @@ export function Slack(): JSX.Element | null {
         });
       }}
     >
+      <FormItemCheckbox
+        checkbox={{
+          initiallyChecked: slack.enabled,
+          onChange() {
+            storeUpdate({
+              slack: {
+                enabled: !slack.enabled,
+              },
+            });
+          },
+        }}
+        label="Enabled"
+      />
       <FormItemPassword
         id="slackToken"
         label="Token"
@@ -97,7 +103,6 @@ export function Slack(): JSX.Element | null {
           Submit
         </Button>
         <Button
-          disabled={[token, cookie].includes('')}
           type="button"
           variant="secondary"
           onClick={() => {

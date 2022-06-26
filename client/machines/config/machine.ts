@@ -1,4 +1,5 @@
-import { IBridge, UserConfig } from '@shared/types';
+import { formatTrayTime } from '@shared/formatTrayTime';
+import { DeepPartial, IBridge, UserConfig } from '@shared/types';
 import { ActorRefFrom, assign, createMachine, InterpreterFrom, sendParent } from 'xstate';
 import { respond } from 'xstate/lib/actions';
 import { actorIds } from '../constants';
@@ -132,10 +133,13 @@ export default function configMachine({ bridge, configOverride }: IConfigMachine
             },
           });
         },
-        updateConfig: async (_, e) => {
+        updateConfig: async (c, e) => {
           const res = await bridge.storeUpdate(e.data);
           return res.match({
-            Ok: (config) => config,
+            Ok: (config) => {
+              updateIntegrations(e.data, bridge, c);
+              return config;
+            },
             Err: (er) => {
               bridge.warn(er);
               throw new Error();
@@ -157,3 +161,23 @@ type ConfigMachine = ReturnType<typeof configMachine>;
 export type ConfigService = InterpreterFrom<ConfigMachine>;
 
 export type ConfigActorRef = ActorRefFrom<ConfigMachine>;
+
+function updateIntegrations(
+  data: DeepPartial<UserConfig>,
+  bridge: IBridge,
+  { timers }: ConfigContext
+) {
+  const { displayTimerInStatusBar } = data;
+  if (displayTimerInStatusBar !== undefined) {
+    if (displayTimerInStatusBar) {
+      bridge.setTrayTitle(
+        formatTrayTime({
+          minutes: timers.pomo,
+          seconds: 0,
+        })
+      );
+    } else {
+      bridge.setTrayTitle('');
+    }
+  }
+}

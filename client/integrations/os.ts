@@ -1,8 +1,11 @@
+import { formatTrayTime } from '@shared/formatTrayTime';
 import { TimerHooks } from '@shared/types';
 
 export const osHooks: TimerHooks = {
-  onTickHook: ({ bridge, timer: { minutes, seconds } }) => {
-    bridge.setTrayTitle(`${minutes}:${seconds >= 10 ? seconds : `0${seconds}`}`);
+  onTickHook: ({ bridge, timer, config: { displayTimerInStatusBar } }) => {
+    if (displayTimerInStatusBar) {
+      bridge.setTrayTitle(formatTrayTime(timer));
+    }
   },
   onStartHook: ({ bridge }) => {
     bridge.setTrayIcon('active');

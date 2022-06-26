@@ -20,6 +20,7 @@ export const emptyConfig: UserConfig = {
     short: 5,
     long: 15,
   },
+  displayTimerInStatusBar: true,
   longBreakEvery: 3,
   autoStart: {
     beforeShortBreak: true,
@@ -36,6 +37,7 @@ export interface UserConfig {
     short: number;
     long: number;
   };
+  displayTimerInStatusBar: boolean;
   longBreakEvery: number;
   autoStart: {
     beforeShortBreak: boolean;
