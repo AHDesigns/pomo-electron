@@ -25,7 +25,7 @@
     "dev:electron": "wait-on http-get://localhost:4000/ && cross-env NODE_ENV=development webpack --config tooling/webpack/electron.webpack.js --mode development && yarn start",
     "dev:react": "cross-env NODE_ENV=development webpack-dev-server --config tooling/webpack/react.webpack.js --mode development",
     "checks": "run-s --print-name format:check lint types test build e2e",
-    "release": "electron-builder --mac",
+    "release": "API_KEY_ID=$POMO_API_KEY_ID electron-builder --mac",
     "postrelease": "rm -rf dist",
     "postinstall": "electron-builder install-app-deps"
   },

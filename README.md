@@ -10,8 +10,8 @@ your colleagues know when you'll be back
 _MacOS only right now_
 
 To use the app, head to the [Releases](https://github.com/AHDesigns/pomo-electron/releases) and grab
-the `.dmg` file (`assets` is a dropdown, see screenshot below, the `version` number may change, but
-you get the idea).
+the `.dmg` or `arm64.dmg` file, depending on whether you've got an intel or arm chip (`assets` is a
+dropdown, see screenshot below, the `version` number may change, but you get the idea).
 
 There are many small features to add and these are tracked on the
 [Roadmap](https://github.com/AHDesigns/pomo-electron/projects/1)
