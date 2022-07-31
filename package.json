@@ -106,7 +106,7 @@
     "electron-devtools-installer": "3.1.1",
     "electron-log": "4.3.2",
     "electron-store": "8.0.0",
-    "electron-updater": "4.3.5",
+    "electron-updater": "4.5.2",
     "got": "11.8.2",
     "lodash.merge": "4.6.2",
     "menubar": "9.1.1",
@@ -131,7 +131,10 @@
       "hardenedRuntime": true,
       "target": {
         "target": "default",
-        "arch": "universal"
+        "arch": [
+          "x64",
+          "arm64"
+        ]
       }
     },
     "directories": {
