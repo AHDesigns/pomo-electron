@@ -1,6 +1,6 @@
 {
   "name": "pomo",
-  "version": "0.5.9",
+  "version": "0.6.0",
   "description": "A simple pomodoro timer with 3rd party integrations",
   "main": "./build/main.js",
   "scripts": {
