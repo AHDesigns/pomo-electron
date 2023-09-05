@@ -15,6 +15,7 @@ export function createCtx(overrides?: DeepPartial<HookContext>): TestSetup {
     {
       slack: {
         enabled: true,
+        slackDomain: 'slackUrl',
         slackDCookie: 'slackDCookie',
         slackDSCookie: 'slackDSCookie',
         slackToken: 'slackToken',

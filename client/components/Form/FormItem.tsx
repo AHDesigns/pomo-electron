@@ -9,6 +9,7 @@ import {
 import { EyeClosed, EyeOpen } from '@client/components/Icons';
 import { IChildren } from '@shared/types';
 import React, { useRef, useState } from 'react';
+import { IInputText, InputText } from '../Inputs';
 
 interface IFormCheckbox extends IFormItem {
   checkbox: Omit<ICheckbox, 'children' | 'hasError' | 'id'>;
@@ -39,6 +40,19 @@ export function FormItemNumber({ id: _id, input, label, error }: IFormItemNumber
   return (
     <FormItem id={id} label={label} error={error}>
       <InputNumber {...input} id={id} hasError={Boolean(error)} />
+    </FormItem>
+  );
+}
+
+interface IFormItemText extends IFormItem {
+  input: Omit<IInputText, 'hasError' | 'id'>;
+}
+
+export function FormItemText({ id: _id, input, label, error }: IFormItemText): JSX.Element {
+  const id = _id ?? `${label}form-input`;
+  return (
+    <FormItem id={id} label={label} error={error}>
+      <InputText {...input} id={id} hasError={Boolean(error)} />
     </FormItem>
   );
 }

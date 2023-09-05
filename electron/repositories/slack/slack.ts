@@ -3,6 +3,7 @@ import got from 'got';
 import { ILogger } from '@shared/types';
 
 export interface SlackAuth {
+  domain: string;
   token: string;
   dCookie: string;
   dSCookie: string;
@@ -81,8 +82,8 @@ export const slackRepository = ({ logger }: SlackParams): SlackRepository => {
     auth: SlackAuth
   ): Promise<Result<A, SlackErr>> {
     try {
-      const { dCookie, dSCookie, token } = auth;
-      const res = await got.post<A | SlackErr>(`https://sky.slack.com/api${path}`, {
+      const { dCookie, dSCookie, token, domain } = auth;
+      const res = await got.post<A | SlackErr>(`https://${domain}.slack.com/api${path}`, {
         responseType: 'json',
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         json: payload,

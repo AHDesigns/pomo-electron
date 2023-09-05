@@ -47,6 +47,7 @@ export interface UserConfig {
   slack:
     | {
         enabled: true;
+        slackDomain: string;
         slackToken: string;
         slackDCookie: string;
         slackDSCookie: string;
