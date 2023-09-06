@@ -36,7 +36,7 @@ export const slackHooks: TimerHooks = {
 
     if (type === 'pomo' && slackAuth) {
       bridge.slackSetPresence(slackAuth, 'active');
-      bridge.slackSetSnooze(slackAuth, 0);
+      bridge.slackEndSnooze(slackAuth);
       bridge.slackSetProfile(slackAuth, {
         text: '',
         emoji: '',
@@ -48,7 +48,7 @@ export const slackHooks: TimerHooks = {
 
     if (type === 'pomo' && slackAuth) {
       bridge.slackSetPresence(slackAuth, 'active');
-      bridge.slackSetSnooze(slackAuth, 0);
+      bridge.slackEndSnooze(slackAuth);
       bridge.slackSetProfile(slackAuth, {
         text: '',
         emoji: '',

@@ -71,7 +71,8 @@ export const slackRepository = ({ logger }: SlackParams): SlackRepository => {
     },
 
     async slackSetSnooze(auth, duration) {
-      return slackReq<SlackOk>(`/dnd.setSnooze?num_minutes=${duration}`, {}, auth);
+      slackReq<SlackOk>(`/dnd.info`, {}, auth);
+      return slackReq<SlackOk>(`/dnd.setSnooze`, { num_minutes: duration }, auth);
     },
   };
 
@@ -98,7 +99,7 @@ export const slackRepository = ({ logger }: SlackParams): SlackRepository => {
         },
       });
 
-      logger.info(`SLACK -->`, res.requestUrl);
+      logger.info(`SLACK -->`, res.requestUrl, JSON.stringify(payload));
       logger.info('SLACK <--', res.body);
       return res.body.ok ? ok(res.body) : err(res.body);
     } catch (e: unknown) {
