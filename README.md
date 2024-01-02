@@ -28,6 +28,15 @@ the top left takes you there), and then you’ll see a form to add the relevant 
 
 - a slack token: go to https://my.slack.com/customize, open your browser devTools and copy what you
   get from typing `TS.boot_data.api_token`
+
+  *you can copy and paste this into the browser console, then click the page to automate this*  
+  **always** check you understand what you are running when you paste code to your browser console
+  ```javascript
+  document.body.addEventListener('click', () => {
+    navigator.clipboard.writeText(TS.boot_data.api_token).then(() => { alert('saved to clipboard'); }, (e) => alert('failed', e.message) )
+  })
+  ```
+  *tested in chrome
 - a 'd' cookie: to get the cookies, you can go to slack in the browser (like any normal chat window,
   not the customise page) and grab the `d` and `d-s` cookies
 - a 'd-s' cookie: as above.
