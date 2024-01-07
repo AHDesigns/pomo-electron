@@ -1,3 +1,8 @@
+> archive notice
+>
+> This works and you can use it, but development has continued over at [pomo](https://github.com/codethread/pomo) and has feature parity (with the benefit of being a much smaller app with lower mem/cpu usage thanks to [tauri](https://tauri.app/) > [electron](https://www.electronjs.org/))
+
+
 # Pomo 🍅
 
 Simple Pomodoro timer, with integrations such as Slack, to politely mute your notifications and let
